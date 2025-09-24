@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* WhatsApp AI Platform Design System - All colors MUST be HSL */
+
+@layer base {
+  :root {
+    /* Core WhatsApp-inspired palette */
+    --whatsapp: 142 70% 49%;
+    --whatsapp-dark: 142 70% 39%;
+    --whatsapp-light: 142 50% 89%;
+    
+    /* Background system */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Primary using WhatsApp green */
+    --primary: 142 70% 49%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 142 20% 96%;
+    --secondary-foreground: 142 70% 20%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 142 30% 94%;
+    --accent-foreground: 142 70% 20%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 142 70% 49%;
+
+    --radius: 0.75rem;
+
+    /* Beautiful gradients */
+    --gradient-whatsapp: linear-gradient(135deg, hsl(142 70% 49%), hsl(142 80% 59%));
+    --gradient-subtle: linear-gradient(180deg, hsl(142 10% 98%), hsl(142 15% 96%));
+    
+    /* Elegant shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(142 70% 49% / 0.3);
+    --shadow-glow: 0 0 40px hsl(142 70% 49% / 0.2);
+
+    /* Smooth transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Sidebar colors */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 142 70% 49%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 142 20% 96%;
+    --sidebar-accent-foreground: 142 70% 20%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 142 70% 49%;
+  }
+
+  .dark {
+    /* Dark mode with WhatsApp theme */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 142 70% 55%;
+    --primary-foreground: 222.2 84% 4.9%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 142 70% 55%;
+
+    /* Dark mode gradients */
+    --gradient-whatsapp: linear-gradient(135deg, hsl(142 70% 45%), hsl(142 80% 55%));
+    --gradient-subtle: linear-gradient(180deg, hsl(222.2 84% 6%), hsl(217.2 32.6% 15%));
+    
+    /* Dark shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(142 70% 35% / 0.4);
+    --shadow-glow: 0 0 40px hsl(142 70% 45% / 0.3);
+
+    /* Sidebar dark colors */
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 142 70% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 142 70% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

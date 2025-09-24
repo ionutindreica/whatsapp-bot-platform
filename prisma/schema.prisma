@@ -1,0 +1,440 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Management
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  avatar    String?
+  role      UserRole @default(USER)
+  status    UserStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  accounts     Account[]
+  sessions     Session[]
+  bots         Bot[]
+  conversations Conversation[]
+  teamMemberships TeamMember[]
+  billingInfo  BillingInfo?
+  usageStats   UsageStats[]
+  apiKeys      ApiKey[]
+  webhooks     Webhook[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// Bot Management
+model Bot {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  status      BotStatus @default(INACTIVE)
+  phoneNumber String?
+  personality String?
+  welcomeMessage String?
+  settings    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId        String
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversations Conversation[]
+  trainingData  TrainingData[]
+  integrations  BotIntegration[]
+  analytics     BotAnalytics[]
+
+  @@map("bots")
+}
+
+// Conversation Management
+model Conversation {
+  id        String   @id @default(cuid())
+  botId     String
+  userId    String
+  status    ConversationStatus @default(ACTIVE)
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  metadata  Json?
+
+  // Relations
+  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    Message[]
+  analytics   ConversationAnalytics?
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String      @id @default(cuid())
+  conversationId String
+  content        String
+  role           MessageRole
+  timestamp      DateTime    @default(now())
+  metadata       Json?
+  isRead         Boolean     @default(false)
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+// AI Training & Knowledge
+model TrainingData {
+  id          String   @id @default(cuid())
+  botId       String
+  type        TrainingDataType
+  content     String
+  processed   Boolean  @default(false)
+  accuracy    Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bot Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@map("training_data")
+}
+
+model KnowledgeBase {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  type        KnowledgeType
+  content     String
+  status      KnowledgeStatus @default(ACTIVE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("knowledge_base")
+}
+
+// Team Management
+model Team {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  members TeamMember[]
+
+  @@map("teams")
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+  teamId   String
+  userId   String
+  role     TeamRole @default(MEMBER)
+  status   TeamMemberStatus @default(PENDING)
+  joinedAt DateTime @default(now())
+
+  // Relations
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@map("team_members")
+}
+
+// Billing & Subscription
+model BillingInfo {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  plan          String
+  status        BillingStatus @default(ACTIVE)
+  currentPeriod DateTime
+  nextBilling   DateTime
+  amount        Float
+  currency      String   @default("USD")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoices Invoice[]
+
+  @@map("billing_info")
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  billingInfoId String
+  amount        Float
+  currency      String   @default("USD")
+  status        InvoiceStatus @default(PENDING)
+  dueDate       DateTime
+  paidAt        DateTime?
+  createdAt     DateTime @default(now())
+
+  // Relations
+  billingInfo BillingInfo @relation(fields: [billingInfoId], references: [id], onDelete: Cascade)
+
+  @@map("invoices")
+}
+
+model UsageStats {
+  id          String   @id @default(cuid())
+  userId      String
+  metric      String
+  value       Float
+  period      String
+  recordedAt  DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("usage_stats")
+}
+
+// API & Integrations
+model ApiKey {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  key         String   @unique
+  permissions String[]
+  lastUsed    DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+}
+
+model Webhook {
+  id          String   @id @default(cuid())
+  userId      String
+  url         String
+  events      String[]
+  secret      String
+  status      WebhookStatus @default(ACTIVE)
+  lastTriggered DateTime?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("webhooks")
+}
+
+model BotIntegration {
+  id          String   @id @default(cuid())
+  botId       String
+  type        IntegrationType
+  config      Json
+  status      IntegrationStatus @default(ACTIVE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bot Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@map("bot_integrations")
+}
+
+// Analytics
+model BotAnalytics {
+  id          String   @id @default(cuid())
+  botId       String
+  metric      String
+  value       Float
+  period      String
+  recordedAt  DateTime @default(now())
+
+  // Relations
+  bot Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@map("bot_analytics")
+}
+
+model ConversationAnalytics {
+  id             String   @id @default(cuid())
+  conversationId String   @unique
+  duration       Int?
+  messageCount   Int
+  satisfaction   Float?
+  resolution     Boolean?
+  recordedAt     DateTime @default(now())
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("conversation_analytics")
+}
+
+// Notifications
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// Enums
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum BotStatus {
+  ACTIVE
+  INACTIVE
+  PAUSED
+  TRAINING
+}
+
+enum ConversationStatus {
+  ACTIVE
+  ENDED
+  PAUSED
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum TrainingDataType {
+  CONVERSATION
+  DOCUMENT
+  FAQ
+  KNOWLEDGE
+}
+
+enum KnowledgeType {
+  FAQ
+  DOCUMENTATION
+  ARTICLE
+  MANUAL
+}
+
+enum KnowledgeStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+enum TeamRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum TeamMemberStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+}
+
+enum BillingStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  UNPAID
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+enum WebhookStatus {
+  ACTIVE
+  INACTIVE
+  FAILED
+}
+
+enum IntegrationType {
+  WHATSAPP
+  WEBSITE
+  EMAIL
+  SMS
+  CRM
+  CALENDAR
+}
+
+enum IntegrationStatus {
+  ACTIVE
+  INACTIVE
+  ERROR
+}
+
+enum NotificationType {
+  SYSTEM
+  BILLING
+  BOT
+  TEAM
+  SECURITY
+}
