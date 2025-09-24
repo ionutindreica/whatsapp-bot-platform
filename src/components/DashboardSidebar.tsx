@@ -34,7 +34,8 @@ import {
   Target,
   TrendingUp,
   Instagram,
-  Facebook
+  Facebook,
+  Crown
 } from "lucide-react";
 import {
   Sidebar,
