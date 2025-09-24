@@ -113,8 +113,8 @@ export default function DashboardSidebar() {
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
-      ? "bg-blue-500/10 text-blue-600 font-medium border-r-2 border-blue-500" 
-      : "hover:bg-muted/50 text-foreground";
+      ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium border-r-2 border-blue-500 dark:border-blue-400" 
+      : "hover:bg-gray-100 dark:hover:bg-gray-800/50 text-foreground hover:text-blue-600 dark:hover:text-blue-400";
 
   return (
     <Sidebar className={collapsed ? "w-14" : "w-64"} collapsible="icon">
@@ -125,10 +125,10 @@ export default function DashboardSidebar() {
         <div className="mb-6 p-4">
           {!collapsed && (
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg flex items-center justify-center">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ChatFlow AI</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">ChatFlow AI</span>
             </div>
           )}
         </div>
