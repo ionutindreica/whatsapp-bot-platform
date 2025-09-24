@@ -26,7 +26,11 @@ import {
   Monitor,
   Smartphone,
   Mail,
-  MessageCircle
+  MessageCircle,
+  Megaphone,
+  Headphones,
+  Target,
+  TrendingUp
 } from "lucide-react";
 import {
   Sidebar,
@@ -46,6 +50,9 @@ const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "My Bots", url: "/bots", icon: Bot },
   { title: "Conversations", url: "/conversations", icon: MessageSquare },
+  { title: "Broadcast Messages", url: "/broadcast", icon: Megaphone },
+  { title: "Polls & Surveys", url: "/polls", icon: TrendingUp },
+  { title: "Live Agent", url: "/live-agent", icon: Headphones },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
 ];
 

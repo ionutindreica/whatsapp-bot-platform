@@ -33,6 +33,11 @@ model User {
   webhooks     Webhook[]
   notifications Notification[]
   knowledgeBase KnowledgeBase[]
+  // New relations
+  userTags     UserTag[]
+  broadcastRecipients BroadcastRecipient[]
+  pollResponses PollResponse[]
+  agent        Agent?
 
   @@map("users")
 }
@@ -87,6 +92,12 @@ model Bot {
   trainingData  TrainingData[]
   integrations  BotIntegration[]
   analytics     BotAnalytics[]
+  // New relations
+  broadcasts    Broadcast[]
+  tags          Tag[]
+  segments      Segment[]
+  polls         Poll[]
+  messageTemplates MessageTemplate[]
 
   @@map("bots")
 }
@@ -106,6 +117,7 @@ model Conversation {
   user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages    Message[]
   analytics   ConversationAnalytics?
+  agentTransfers AgentTransfer[]
 
   @@map("conversations")
 }
@@ -438,4 +450,249 @@ enum NotificationType {
   BOT
   TEAM
   SECURITY
+}
+
+// Broadcast & Messaging
+model Broadcast {
+  id          String   @id @default(cuid())
+  botId       String
+  title       String
+  message     String
+  type        BroadcastType
+  status      BroadcastStatus @default(DRAFT)
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+  recipients  BroadcastRecipient[]
+  analytics   BroadcastAnalytics?
+
+  @@map("broadcasts")
+}
+
+model BroadcastRecipient {
+  id          String   @id @default(cuid())
+  broadcastId String
+  userId      String
+  status      RecipientStatus @default(PENDING)
+  sentAt      DateTime?
+  deliveredAt DateTime?
+  readAt      DateTime?
+
+  // Relations
+  broadcast   Broadcast @relation(fields: [broadcastId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([broadcastId, userId])
+  @@map("broadcast_recipients")
+}
+
+model BroadcastAnalytics {
+  id          String   @id @default(cuid())
+  broadcastId String   @unique
+  totalSent   Int      @default(0)
+  delivered   Int      @default(0)
+  read        Int      @default(0)
+  clicked     Int      @default(0)
+  responded   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  broadcast   Broadcast @relation(fields: [broadcastId], references: [id], onDelete: Cascade)
+
+  @@map("broadcast_analytics")
+}
+
+// Segmentation & Tags
+model Tag {
+  id          String   @id @default(cuid())
+  botId       String
+  name        String
+  color       String   @default("#3B82F6")
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+  userTags    UserTag[]
+
+  @@unique([botId, name])
+  @@map("tags")
+}
+
+model UserTag {
+  id        String   @id @default(cuid())
+  userId    String
+  tagId     String
+  addedAt   DateTime @default(now())
+  addedBy   String?  // Bot ID or User ID who added the tag
+
+  // Relations
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag       Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tagId])
+  @@map("user_tags")
+}
+
+model Segment {
+  id          String   @id @default(cuid())
+  botId       String
+  name        String
+  description String?
+  rules       Json     // Segment rules (conditions)
+  userCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@unique([botId, name])
+  @@map("segments")
+}
+
+// Polls & Surveys
+model Poll {
+  id          String   @id @default(cuid())
+  botId       String
+  title       String
+  question    String
+  type        PollType
+  options     Json     // Poll options
+  status      PollStatus @default(ACTIVE)
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+  responses   PollResponse[]
+
+  @@map("polls")
+}
+
+model PollResponse {
+  id        String   @id @default(cuid())
+  pollId    String
+  userId    String
+  answer    Json     // Selected option(s)
+  answeredAt DateTime @default(now())
+
+  // Relations
+  poll      Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([pollId, userId])
+  @@map("poll_responses")
+}
+
+// Live Agent Transfer
+model Agent {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  name        String
+  status      AgentStatus @default(OFFLINE)
+  maxConcurrent Int    @default(5)
+  currentLoad  Int     @default(0)
+  specializations Json? // Agent specializations
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transfers   AgentTransfer[]
+
+  @@map("agents")
+}
+
+model AgentTransfer {
+  id          String   @id @default(cuid())
+  conversationId String
+  agentId     String
+  reason      String?
+  status      TransferStatus @default(PENDING)
+  requestedAt DateTime @default(now())
+  acceptedAt  DateTime?
+  completedAt DateTime?
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  agent       Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("agent_transfers")
+}
+
+// Message Templates
+model MessageTemplate {
+  id          String   @id @default(cuid())
+  botId       String
+  name        String
+  content     String
+  variables   Json?    // Template variables
+  category    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@unique([botId, name])
+  @@map("message_templates")
+}
+
+// Additional Enums
+enum BroadcastType {
+  IMMEDIATE
+  SCHEDULED
+  RECURRING
+}
+
+enum BroadcastStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  FAILED
+}
+
+enum RecipientStatus {
+  PENDING
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum PollType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  RATING
+  TEXT
+}
+
+enum PollStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+enum AgentStatus {
+  ONLINE
+  OFFLINE
+  BUSY
+  AWAY
+}
+
+enum TransferStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
 }

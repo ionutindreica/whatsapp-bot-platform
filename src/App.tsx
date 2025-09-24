@@ -36,6 +36,9 @@ import SettingsProfile from "./pages/SettingsProfile";
 import SettingsSecurity from "./pages/SettingsSecurity";
 import SettingsExport from "./pages/SettingsExport";
 import BotBuilder from "./pages/BotBuilder";
+import BroadcastMessages from "./pages/BroadcastMessages";
+import PollsSurveys from "./pages/PollsSurveys";
+import LiveAgent from "./pages/LiveAgent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +54,9 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bots" element={<Bots />} />
           <Route path="/conversations" element={<Conversations />} />
+          <Route path="/broadcast" element={<BroadcastMessages />} />
+          <Route path="/polls" element={<PollsSurveys />} />
+          <Route path="/live-agent" element={<LiveAgent />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/docs" element={<Docs />} />
