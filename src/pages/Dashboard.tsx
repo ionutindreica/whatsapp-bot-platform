@@ -32,8 +32,8 @@ const Dashboard = () => {
   const [bots, setBots] = useState([
     {
       id: 1,
-      name: "Customer Support Bot",
-      phone: "+1 (555) 123-4567",
+      name: "Omnichannel Support Bot",
+      channels: ["WhatsApp", "Instagram", "Website"],
       status: "active",
       messages: 1247,
       users: 89,
@@ -42,8 +42,8 @@ const Dashboard = () => {
     },
     {
       id: 2,
-      name: "Sales Assistant",
-      phone: "+1 (555) 765-4321",
+      name: "Multi-Platform Sales Assistant",
+      channels: ["Messenger", "WhatsApp", "Website"],
       status: "paused",
       messages: 856,
       users: 67,
@@ -52,8 +52,8 @@ const Dashboard = () => {
     },
     {
       id: 3,
-      name: "Lead Qualifier",
-      phone: "+1 (555) 987-6543",
+      name: "Cross-Channel Lead Qualifier",
+      channels: ["WhatsApp", "Instagram"],
       status: "active",
       messages: 423,
       users: 34,
@@ -359,7 +359,7 @@ const Dashboard = () => {
                   Your AI Agents
                 </CardTitle>
                 <CardDescription>
-                  Manage and monitor your WhatsApp AI bots
+                  Manage and monitor your omnichannel AI bots across all platforms
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -377,14 +377,19 @@ const Dashboard = () => {
                         <CardContent className="p-6">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-4">
-                              <div className="w-12 h-12 bg-gradient-whatsapp rounded-lg flex items-center justify-center">
+                              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                                 <Bot className="w-6 h-6 text-white" />
                               </div>
                               <div>
                                 <h3 className="font-semibold text-lg">{bot.name}</h3>
                                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                                  <Phone className="w-4 h-4" />
-                                  <span>{bot.phone}</span>
+                                  <div className="flex items-center gap-1">
+                                    {bot.channels.map((channel, index) => (
+                                      <span key={index} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {channel}
+                                      </span>
+                                    ))}
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -452,9 +457,9 @@ const Dashboard = () => {
                       <CardContent className="p-6">
                         <div className="text-center py-12">
                           <TrendingUp className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                          <h3 className="text-lg font-semibold mb-2">Analytics Dashboard</h3>
+                          <h3 className="text-lg font-semibold mb-2">Omnichannel Analytics Dashboard</h3>
                           <p className="text-muted-foreground">
-                            Connect to Supabase to unlock detailed analytics and insights
+                            Track performance across all channels with detailed analytics and insights
                           </p>
                         </div>
                       </CardContent>
@@ -466,9 +471,9 @@ const Dashboard = () => {
                       <CardContent className="p-6">
                         <div className="text-center py-12">
                           <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                          <h3 className="text-lg font-semibold mb-2">Conversation History</h3>
+                          <h3 className="text-lg font-semibold mb-2">Cross-Channel Conversation History</h3>
                           <p className="text-muted-foreground">
-                            View and manage all bot conversations here
+                            View and manage conversations across all channels in one unified interface
                           </p>
                         </div>
                       </CardContent>
@@ -480,9 +485,9 @@ const Dashboard = () => {
                       <CardContent className="p-6">
                         <div className="text-center py-12">
                           <Settings className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                          <h3 className="text-lg font-semibold mb-2">Bot Settings</h3>
+                          <h3 className="text-lg font-semibold mb-2">Omnichannel Bot Settings</h3>
                           <p className="text-muted-foreground">
-                            Configure your bots' behavior and responses
+                            Configure your bots' behavior and responses across all channels
                           </p>
                         </div>
                       </CardContent>
