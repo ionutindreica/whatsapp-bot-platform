@@ -32,7 +32,8 @@ import {
   Headphones,
   Target,
   TrendingUp,
-  Instagram
+  Instagram,
+  Facebook
 } from "lucide-react";
 import {
   Sidebar,
@@ -50,17 +51,18 @@ import { Button } from "@/components/ui/button";
 
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "My Bots", url: "/bots", icon: Bot },
-  { title: "Conversations", url: "/conversations", icon: MessageSquare },
+  { title: "My AI Agents", url: "/bots", icon: Bot },
+  { title: "Cross-Channel Conversations", url: "/conversations", icon: MessageSquare },
   { title: "Broadcast Messages", url: "/broadcast", icon: Megaphone },
   { title: "Polls & Surveys", url: "/polls", icon: TrendingUp },
-  { title: "Live Agent", url: "/live-agent", icon: Headphones },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Live Agent Transfer", url: "/live-agent", icon: Headphones },
+  { title: "Omnichannel Analytics", url: "/analytics", icon: BarChart3 },
 ];
 
 const integrationItems = [
   { title: "Website Integration", url: "/integrations/website", icon: Globe },
   { title: "Instagram Integration", url: "/integrations/instagram", icon: Instagram },
+  { title: "Messenger Integration", url: "/integrations/messenger", icon: Facebook },
   { title: "Widget Builder", url: "/integrations/widget", icon: Code },
   { title: "API Keys", url: "/integrations/api", icon: Key },
   { title: "Webhooks", url: "/integrations/webhooks", icon: Webhook },
@@ -69,9 +71,10 @@ const integrationItems = [
 
 const channelsItems = [
   { title: "WhatsApp", url: "/channels/whatsapp", icon: MessageCircle },
+  { title: "Instagram", url: "/channels/instagram", icon: Instagram },
+  { title: "Messenger", url: "/channels/messenger", icon: Facebook },
   { title: "Website Chat", url: "/channels/website", icon: Monitor },
   { title: "Mobile App", url: "/channels/mobile", icon: Smartphone },
-  { title: "Email", url: "/channels/email", icon: Mail },
 ];
 
 const advancedItems = [
@@ -79,6 +82,7 @@ const advancedItems = [
   { title: "Templates", url: "/ai/templates", icon: FileText },
   { title: "Customization", url: "/ai/customization", icon: Palette },
   { title: "Knowledge Base", url: "/ai/knowledge", icon: Database },
+  { title: "Flow Builder", url: "/flows", icon: Target },
 ];
 
 const teamItems = [
@@ -120,10 +124,10 @@ export default function DashboardSidebar() {
         <div className="mb-6 p-4">
           {!collapsed && (
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-whatsapp rounded-lg flex items-center justify-center">
-                <MessageSquare className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold">WhatsBot AI</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ChatFlow AI</span>
             </div>
           )}
         </div>
@@ -149,7 +153,7 @@ export default function DashboardSidebar() {
 
         {/* Integration Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Integration</SidebarGroupLabel>
+          <SidebarGroupLabel>Integrations</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {integrationItems.map((item) => (
@@ -168,7 +172,7 @@ export default function DashboardSidebar() {
 
         {/* Channels Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Channels</SidebarGroupLabel>
+          <SidebarGroupLabel>Omnichannel</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {channelsItems.map((item) => (
@@ -187,7 +191,7 @@ export default function DashboardSidebar() {
 
         {/* AI & Advanced Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>AI & Advanced</SidebarGroupLabel>
+          <SidebarGroupLabel>AI & Automation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {advancedItems.map((item) => (
