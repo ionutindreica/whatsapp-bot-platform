@@ -38,6 +38,7 @@ model User {
   broadcastRecipients BroadcastRecipient[]
   pollResponses PollResponse[]
   agent        Agent?
+  flowExecutions FlowExecution[]
 
   @@map("users")
 }
@@ -98,6 +99,9 @@ model Bot {
   segments      Segment[]
   polls         Poll[]
   messageTemplates MessageTemplate[]
+  triggers      Trigger[]
+  flows         Flow[]
+  instagramAccounts InstagramAccount[]
 
   @@map("bots")
 }
@@ -436,6 +440,9 @@ enum IntegrationType {
   SMS
   CRM
   CALENDAR
+  INSTAGRAM
+  FACEBOOK
+  TELEGRAM
 }
 
 enum IntegrationStatus {
@@ -644,6 +651,134 @@ model MessageTemplate {
 
   @@unique([botId, name])
   @@map("message_templates")
+}
+
+// Trigger System & Flow Builder
+model Trigger {
+  id          String   @id @default(cuid())
+  botId       String
+  name        String
+  description String?
+  triggerType TriggerType
+  conditions  Json     // Trigger conditions (keywords, patterns, etc.)
+  isActive    Boolean  @default(true)
+  priority    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+  actions     TriggerAction[]
+
+  @@map("triggers")
+}
+
+model TriggerAction {
+  id        String   @id @default(cuid())
+  triggerId String
+  actionType ActionType
+  config    Json     // Action configuration
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  // Relations
+  trigger    Trigger @relation(fields: [triggerId], references: [id], onDelete: Cascade)
+
+  @@map("trigger_actions")
+}
+
+model Flow {
+  id          String   @id @default(cuid())
+  botId       String
+  name        String
+  description String?
+  nodes       Json     // Flow nodes configuration
+  connections Json     // Node connections
+  isActive    Boolean  @default(true)
+  isTemplate  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+  executions  FlowExecution[]
+
+  @@map("flows")
+}
+
+model FlowExecution {
+  id          String   @id @default(cuid())
+  flowId      String
+  userId      String
+  currentNode String?
+  status      FlowStatus @default(ACTIVE)
+  context     Json?    // Execution context/variables
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+
+  // Relations
+  flow        Flow @relation(fields: [flowId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("flow_executions")
+}
+
+// Instagram Integration
+model InstagramAccount {
+  id              String   @id @default(cuid())
+  botId           String
+  accountId       String   @unique
+  username        String
+  accessToken     String
+  refreshToken    String?
+  tokenExpiresAt  DateTime?
+  permissions     Json     // Instagram permissions
+  isActive        Boolean  @default(true)
+  lastSyncAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  bot             Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@map("instagram_accounts")
+}
+
+// Additional Enums for Triggers and Flows
+enum TriggerType {
+  KEYWORD
+  PHRASE
+  REGEX
+  INTENT
+  ENTITY
+  SENTIMENT
+  TIME_BASED
+  USER_ATTRIBUTE
+  CONVERSATION_STATE
+}
+
+enum ActionType {
+  SEND_MESSAGE
+  SEND_TEMPLATE
+  SET_VARIABLE
+  ADD_TAG
+  REMOVE_TAG
+  TRIGGER_FLOW
+  TRANSFER_AGENT
+  SCHEDULE_MESSAGE
+  WEBHOOK
+  CONDITION
+  DELAY
+  RANDOM
+}
+
+enum FlowStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  FAILED
+  CANCELLED
 }
 
 // Additional Enums

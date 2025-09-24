@@ -39,6 +39,8 @@ import BotBuilder from "./pages/BotBuilder";
 import BroadcastMessages from "./pages/BroadcastMessages";
 import PollsSurveys from "./pages/PollsSurveys";
 import LiveAgent from "./pages/LiveAgent";
+import InstagramChannel from "./pages/InstagramChannel";
+import TriggerSystem from "./pages/TriggerSystem";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,9 +65,11 @@ const App = () => (
           <Route path="/support" element={<Support />} />
           <Route path="/integrations" element={<IntegrationsIndex />} />
           <Route path="/integrations/website" element={<WebsiteIntegration />} />
+          <Route path="/integrations/instagram" element={<InstagramChannel />} />
           <Route path="/integrations/widget" element={<WidgetBuilder />} />
           <Route path="/integrations/api" element={<ApiKeys />} />
           <Route path="/integrations/webhooks" element={<Webhooks />} />
+          <Route path="/triggers" element={<TriggerSystem />} />
           <Route path="/channels" element={<Channels />} />
           <Route path="/channels/whatsapp" element={<WhatsAppChannel />} />
           <Route path="/channels/website" element={<WebsiteChannel />} />

@@ -30,7 +30,8 @@ import {
   Megaphone,
   Headphones,
   Target,
-  TrendingUp
+  TrendingUp,
+  Instagram
 } from "lucide-react";
 import {
   Sidebar,
@@ -58,9 +59,11 @@ const mainItems = [
 
 const integrationItems = [
   { title: "Website Integration", url: "/integrations/website", icon: Globe },
+  { title: "Instagram Integration", url: "/integrations/instagram", icon: Instagram },
   { title: "Widget Builder", url: "/integrations/widget", icon: Code },
   { title: "API Keys", url: "/integrations/api", icon: Key },
   { title: "Webhooks", url: "/integrations/webhooks", icon: Webhook },
+  { title: "Trigger System", url: "/triggers", icon: Target },
 ];
 
 const channelsItems = [
