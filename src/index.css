@@ -76,42 +76,42 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 142 70% 55%;
-    --primary-foreground: 222.2 84% 4.9%;
+    --primary: 221 83% 65%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 217.2 32.6% 20%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 217.2 32.6% 15%;
+    --muted-foreground: 215 20.2% 70%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 217.2 32.6% 20%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 221 83% 55%;
+    --border: 217.2 32.6% 25%;
+    --input: 217.2 32.6% 20%;
+    --ring: 221 83% 65%;
 
     /* Dark mode gradients */
-    --gradient-whatsapp: linear-gradient(135deg, hsl(221 83% 45%), hsl(221 90% 55%));
-    --gradient-subtle: linear-gradient(180deg, hsl(222.2 84% 6%), hsl(217.2 32.6% 15%));
+    --gradient-whatsapp: linear-gradient(135deg, hsl(221 83% 60%), hsl(221 90% 70%));
+    --gradient-subtle: linear-gradient(180deg, hsl(222.2 84% 8%), hsl(217.2 32.6% 18%));
     
     /* Dark shadows */
-    --shadow-elegant: 0 10px 30px -10px hsl(221 83% 35% / 0.4);
-    --shadow-glow: 0 0 40px hsl(221 83% 45% / 0.3);
+    --shadow-elegant: 0 10px 30px -10px hsl(221 83% 40% / 0.5);
+    --shadow-glow: 0 0 40px hsl(221 83% 50% / 0.4);
 
     /* Sidebar dark colors */
-    --sidebar-background: 240 5.9% 10%;
+    --sidebar-background: 240 5.9% 8%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 221 83% 55%;
+    --sidebar-primary: 221 83% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent: 240 3.7% 18%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 221 83% 55%;
+    --sidebar-border: 240 3.7% 20%;
+    --sidebar-ring: 221 83% 65%;
   }
 }
 
@@ -122,5 +122,44 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Enhanced contrast for dark mode */
+  .dark .text-primary {
+    @apply text-blue-400;
+  }
+  
+  .dark .bg-primary {
+    @apply bg-blue-600;
+  }
+  
+  .dark .border-primary {
+    @apply border-blue-500;
+  }
+  
+  .dark .ring-primary {
+    @apply ring-blue-500;
+  }
+  
+  /* Better button contrast in dark mode */
+  .dark .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white;
+  }
+  
+  /* Enhanced card contrast */
+  .dark .card {
+    @apply bg-gray-800 border-gray-700;
+  }
+  
+  /* Better input contrast */
+  .dark .input {
+    @apply bg-gray-800 border-gray-600 text-white;
+  }
+  
+  /* Enhanced sidebar contrast */
+  .dark .sidebar {
+    @apply bg-gray-900 border-gray-800;
   }
 }
