@@ -103,7 +103,7 @@ const SubscriptionTiers = () => {
 
   const getFeatureIcon = (available: boolean) => {
     if (available) {
-      return <Check className="w-4 h-4 text-green-600" />;
+      return <Check className="w-4 h-4 text-blue-600" />;
     }
     return <Lock className="w-4 h-4 text-gray-400" />;
   };
@@ -262,7 +262,7 @@ const SubscriptionTiers = () => {
                   <Button 
                     className={`w-full ${
                       isCurrentPlan 
-                        ? 'bg-green-600 hover:bg-green-700' 
+                        ? 'bg-blue-600 hover:bg-blue-700' 
                         : tier.id === 'pro' 
                           ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
                           : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
@@ -309,7 +309,7 @@ const SubscriptionTiers = () => {
                       {tiers.map((tier) => (
                         <td key={tier.id} className="p-4 text-center">
                           {tier.features[index]?.available ? (
-                            <Check className="w-5 h-5 text-green-600 mx-auto" />
+                            <Check className="w-5 h-5 text-blue-600 mx-auto" />
                           ) : (
                             <Lock className="w-5 h-5 text-gray-400 mx-auto" />
                           )}
