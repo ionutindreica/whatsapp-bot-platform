@@ -129,7 +129,7 @@ const Billing = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     Current Plan
-                    <Badge variant="secondary" className="bg-green-100 text-green-700">
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-700">
                       {currentPlan.status}
                     </Badge>
                   </CardTitle>
@@ -141,7 +141,7 @@ const Billing = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-2xl font-bold">{currentPlan.name}</h3>
-                      <p className="text-3xl font-bold text-green-600">{currentPlan.price}/month</p>
+                      <p className="text-3xl font-bold text-blue-600">{currentPlan.price}/month</p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-600">Next billing date</p>
@@ -201,8 +201,8 @@ const Billing = () => {
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-center">
-                      <div className="p-2 bg-green-100 rounded-lg">
-                        <Calendar className="w-5 h-5 text-green-600" />
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <Calendar className="w-5 h-5 text-blue-600" />
                       </div>
                       <div className="ml-4">
                         <p className="text-sm font-medium text-gray-600">Member Since</p>
@@ -256,7 +256,7 @@ const Billing = () => {
                           <p className="font-medium">${invoice.amount.toFixed(2)}</p>
                           <Badge 
                             variant={invoice.status === 'paid' ? 'default' : 'secondary'}
-                            className={invoice.status === 'paid' ? 'bg-green-100 text-green-700' : ''}
+                            className={invoice.status === 'paid' ? 'bg-blue-100 text-blue-700' : ''}
                           >
                             {invoice.status === 'paid' ? (
                               <>
@@ -365,7 +365,7 @@ const Billing = () => {
                             ? 'bg-red-500' 
                             : currentPlan.usage.messages / currentPlan.usage.limit > 0.6
                             ? 'bg-yellow-500'
-                            : 'bg-green-500'
+                            : 'bg-blue-500'
                         }`}
                         style={{ 
                           width: `${Math.min((currentPlan.usage.messages / currentPlan.usage.limit) * 100, 100)}%` 
@@ -380,8 +380,8 @@ const Billing = () => {
                         </>
                       ) : (
                         <>
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-green-600">Within limits</span>
+                          <CheckCircle className="w-4 h-4 text-blue-500" />
+                          <span className="text-blue-600">Within limits</span>
                         </>
                       )}
                     </div>
@@ -406,15 +406,15 @@ const Billing = () => {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
-                        className="h-2 rounded-full bg-green-500"
+                        className="h-2 rounded-full bg-blue-500"
                         style={{ 
                           width: `${(currentPlan.usage.bots / currentPlan.usage.botsLimit) * 100}%` 
                         }}
                       />
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
-                      <span className="text-green-600">Within limits</span>
+                      <CheckCircle className="w-4 h-4 text-blue-500" />
+                      <span className="text-blue-600">Within limits</span>
                     </div>
                   </div>
                 </CardContent>

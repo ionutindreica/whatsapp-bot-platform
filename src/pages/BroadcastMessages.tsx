@@ -114,9 +114,9 @@ const BroadcastMessages = () => {
       icon: MessageCircle,
       description: "Send via WhatsApp Business API",
       subscriberCount: 1250,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-      borderColor: "border-green-200"
+        color: "text-blue-600",
+        bgColor: "bg-blue-50",
+        borderColor: "border-blue-200"
     },
     {
       id: "instagram",
@@ -309,7 +309,7 @@ const BroadcastMessages = () => {
                                   </span>
                                 </div>
                                 {isSelected && (
-                                  <Check className="w-4 h-4 text-green-600" />
+                                  <Check className="w-4 h-4 text-blue-600" />
                                 )}
                               </div>
                               <p className="text-xs text-gray-600 mb-2">{channel.description}</p>
@@ -559,8 +559,8 @@ const BroadcastMessages = () => {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <CheckCircle className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Delivered</p>

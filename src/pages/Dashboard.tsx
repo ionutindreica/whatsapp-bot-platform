@@ -171,7 +171,7 @@ const Dashboard = () => {
       value: "2,394",
       change: "+8.2%",
       icon: Users,
-      color: "text-green-600"
+      color: "text-blue-600"
     },
     {
       title: "Active Bots",
@@ -236,7 +236,7 @@ const Dashboard = () => {
                       <div>
                         <p className="text-sm text-muted-foreground">{stat.title}</p>
                         <p className="text-2xl font-bold">{stat.value}</p>
-                        <p className="text-sm text-green-600">{stat.change}</p>
+                        <p className="text-sm text-blue-600">{stat.change}</p>
                       </div>
                       <stat.icon className={`w-8 h-8 ${stat.color}`} />
                     </div>
@@ -253,7 +253,7 @@ const Dashboard = () => {
                   <Card className="cursor-pointer hover:shadow-md transition-shadow">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Megaphone className="w-5 h-5 text-green-600" />
+                        <Megaphone className="w-5 h-5 text-blue-600" />
                         Broadcast Messages
                       </CardTitle>
                       <CardDescription>Send bulk messages to your subscribers</CardDescription>
@@ -278,7 +278,7 @@ const Dashboard = () => {
                   <Card className="cursor-pointer hover:shadow-md transition-shadow">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Target className="w-5 h-5 text-green-600" />
+                        <Target className="w-5 h-5 text-blue-600" />
                         Trigger System
                       </CardTitle>
                       <CardDescription>Automate responses with keyword triggers</CardDescription>
@@ -303,7 +303,7 @@ const Dashboard = () => {
                   <Card className="cursor-pointer hover:shadow-md transition-shadow">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Headphones className="w-5 h-5 text-green-600" />
+                        <Headphones className="w-5 h-5 text-blue-600" />
                         Live Agent Transfer
                       </CardTitle>
                       <CardDescription>Transfer complex queries to human agents</CardDescription>
@@ -328,7 +328,7 @@ const Dashboard = () => {
                   <Card className="cursor-pointer hover:shadow-md transition-shadow">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <BarChart3 className="w-5 h-5 text-green-600" />
+                        <BarChart3 className="w-5 h-5 text-blue-600" />
                         Advanced Analytics
                       </CardTitle>
                       <CardDescription>Detailed insights and reporting</CardDescription>
@@ -410,7 +410,7 @@ const Dashboard = () => {
                               
                               <Badge 
                                 variant={bot.status === 'active' ? 'default' : 'secondary'}
-                                className={bot.status === 'active' ? 'bg-green-100 text-green-800' : ''}
+                                className={bot.status === 'active' ? 'bg-blue-100 text-blue-800' : ''}
                               >
                                 {bot.status}
                               </Badge>
@@ -419,7 +419,7 @@ const Dashboard = () => {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className={bot.status === 'active' ? 'text-orange-600' : 'text-green-600'}
+                                  className={bot.status === 'active' ? 'text-orange-600' : 'text-blue-600'}
                                   onClick={() => handleBotToggle(bot.id)}
                                 >
                                   {bot.status === 'active' ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
