@@ -8,6 +8,7 @@ import {
   User, 
   Phone,
   CreditCard,
+  Receipt,
   LogOut,
   Globe,
   Code,
@@ -90,7 +91,7 @@ const settingsItems = [
   { title: "Phone Numbers", url: "/settings/phone", icon: Phone },
   { title: "Account Settings", url: "/settings/account", icon: Settings },
   { title: "Profile", url: "/settings/profile", icon: User },
-  { title: "Billing", url: "/settings/billing", icon: CreditCard },
+  { title: "Billing & Invoicing", url: "/billing", icon: CreditCard },
   { title: "Security", url: "/settings/security", icon: Shield },
   { title: "Export Data", url: "/settings/export", icon: Download },
 ];

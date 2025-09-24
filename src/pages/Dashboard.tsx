@@ -3,11 +3,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bot, MessageSquare, Users, TrendingUp, Phone, Settings, Play, Pause, MoreVertical } from "lucide-react";
+import { 
+  Bot, 
+  MessageSquare, 
+  Users, 
+  TrendingUp, 
+  Phone, 
+  Settings, 
+  Play, 
+  Pause, 
+  MoreVertical,
+  Crown,
+  Lock,
+  AlertTriangle,
+  Zap,
+  Megaphone,
+  Target,
+  Headphones,
+  BarChart3
+} from "lucide-react";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 
 const Dashboard = () => {
+  const { currentPlan, userSubscription, getUsagePercentage, isFeatureAvailable } = useSubscription();
+  
   const [bots, setBots] = useState([
     {
       id: 1,
@@ -50,6 +71,72 @@ const Dashboard = () => {
           : bot
       )
     );
+  };
+
+  const handleUpgrade = () => {
+    console.log('Upgrading plan');
+    // Navigate to pricing or billing page
+  };
+
+  const FeatureLockCard = ({ feature, icon: Icon, title, description, upgradeText }: {
+    feature: string;
+    icon: any;
+    title: string;
+    description: string;
+    upgradeText: string;
+  }) => (
+    <Card className="relative opacity-60">
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg" />
+      <div className="absolute top-2 right-2">
+        <Lock className="w-4 h-4 text-gray-400" />
+      </div>
+      <CardHeader className="relative">
+        <CardTitle className="flex items-center gap-2">
+          <Icon className="w-5 h-5 text-gray-400" />
+          {title}
+        </CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent className="relative">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={handleUpgrade}
+          className="w-full"
+        >
+          <Crown className="w-4 h-4 mr-2" />
+          {upgradeText}
+        </Button>
+      </CardContent>
+    </Card>
+  );
+
+  const UsageWarning = () => {
+    const messageUsage = getUsagePercentage('messages');
+    const botUsage = getUsagePercentage('bots');
+    
+    if (messageUsage > 80 || botUsage > 80) {
+      return (
+        <Card className="border-orange-200 bg-orange-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-orange-600" />
+              <div className="flex-1">
+                <h4 className="font-medium text-orange-900">Usage Warning</h4>
+                <p className="text-sm text-orange-700">
+                  You're approaching your plan limits. Consider upgrading to avoid service interruptions.
+                </p>
+              </div>
+              <Button size="sm" onClick={handleUpgrade}>
+                <TrendingUp className="w-4 h-4 mr-2" />
+                Upgrade
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+    return null;
   };
 
   const handleBotSettings = (botId: number) => {
@@ -112,17 +199,33 @@ const Dashboard = () => {
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold">Dashboard</h1>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl font-bold">Dashboard</h1>
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                    {currentPlan?.name} Plan
+                  </Badge>
+                </div>
                 <p className="text-muted-foreground">Manage your WhatsApp AI agents</p>
               </div>
-              <Button 
-                className="bg-whatsapp hover:bg-whatsapp/90"
-                onClick={handleCreateBot}
-              >
-                <Bot className="mr-2 w-4 h-4" />
-                Create New Bot
-              </Button>
+              <div className="flex gap-2">
+                {currentPlan?.id === 'free' && (
+                  <Button variant="outline" onClick={handleUpgrade}>
+                    <Crown className="mr-2 w-4 h-4" />
+                    Upgrade Plan
+                  </Button>
+                )}
+                <Button 
+                  className="bg-whatsapp hover:bg-whatsapp/90"
+                  onClick={handleCreateBot}
+                >
+                  <Bot className="mr-2 w-4 h-4" />
+                  Create New Bot
+                </Button>
+              </div>
             </div>
+
+            {/* Usage Warning */}
+            <UsageWarning />
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -140,6 +243,112 @@ const Dashboard = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+
+            {/* Premium Features Grid */}
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold">Advanced Features</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {isFeatureAvailable('broadcast') ? (
+                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Megaphone className="w-5 h-5 text-green-600" />
+                        Broadcast Messages
+                      </CardTitle>
+                      <CardDescription>Send bulk messages to your subscribers</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button className="w-full" variant="outline">
+                        Access Feature
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <FeatureLockCard
+                    feature="broadcast"
+                    icon={Megaphone}
+                    title="Broadcast Messages"
+                    description="Send bulk messages to your subscribers"
+                    upgradeText="Upgrade to Pro"
+                  />
+                )}
+
+                {isFeatureAvailable('triggers') ? (
+                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Target className="w-5 h-5 text-green-600" />
+                        Trigger System
+                      </CardTitle>
+                      <CardDescription>Automate responses with keyword triggers</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button className="w-full" variant="outline">
+                        Access Feature
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <FeatureLockCard
+                    feature="triggers"
+                    icon={Target}
+                    title="Trigger System"
+                    description="Automate responses with keyword triggers"
+                    upgradeText="Upgrade to Pro"
+                  />
+                )}
+
+                {isFeatureAvailable('live_agent') ? (
+                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Headphones className="w-5 h-5 text-green-600" />
+                        Live Agent Transfer
+                      </CardTitle>
+                      <CardDescription>Transfer complex queries to human agents</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button className="w-full" variant="outline">
+                        Access Feature
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <FeatureLockCard
+                    feature="live_agent"
+                    icon={Headphones}
+                    title="Live Agent Transfer"
+                    description="Transfer complex queries to human agents"
+                    upgradeText="Upgrade to Pro"
+                  />
+                )}
+
+                {isFeatureAvailable('advanced_analytics') ? (
+                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <BarChart3 className="w-5 h-5 text-green-600" />
+                        Advanced Analytics
+                      </CardTitle>
+                      <CardDescription>Detailed insights and reporting</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button className="w-full" variant="outline">
+                        Access Feature
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <FeatureLockCard
+                    feature="advanced_analytics"
+                    icon={BarChart3}
+                    title="Advanced Analytics"
+                    description="Detailed insights and reporting"
+                    upgradeText="Upgrade to Pro"
+                  />
+                )}
+              </div>
             </div>
 
             {/* Bots Management */}

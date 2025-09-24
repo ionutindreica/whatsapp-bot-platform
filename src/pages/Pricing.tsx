@@ -19,26 +19,36 @@ const Pricing = () => {
 
   const plans = [
     {
-      name: "Starter",
-      price: "$29",
+      id: "free",
+      name: "Free",
+      price: "$0",
       period: "/month",
-      description: "Perfect for small businesses getting started",
+      description: "Perfect for testing and small projects",
       icon: Zap,
       features: [
         "1 WhatsApp Bot",
-        "1,000 messages/month",
+        "500 messages/month",
         "Basic AI responses",
-        "24/7 support",
-        "Dashboard access",
-        "Basic analytics"
+        "Community support",
+        "Basic dashboard",
+        "1 channel integration",
+        "Basic analytics",
+        "7-day message history"
       ],
-      color: "border-border",
+      limitations: [
+        "Limited to 500 messages/month",
+        "Basic support only",
+        "No advanced features"
+      ],
+      color: "border-gray-200",
       buttonVariant: "outline" as const,
-      popular: false
+      popular: false,
+      stripePriceId: null
     },
     {
-      name: "Professional",
-      price: "$79",
+      id: "pro",
+      name: "Pro",
+      price: "$29",
       period: "/month",
       description: "Ideal for growing businesses",
       icon: Crown,
@@ -47,18 +57,28 @@ const Pricing = () => {
         "10,000 messages/month",
         "Advanced AI with personality",
         "Priority support",
-        "Advanced analytics",
-        "Custom integrations",
-        "Workflow automation",
-        "Multi-language support"
+        "Advanced analytics & reporting",
+        "All channel integrations",
+        "Broadcast messages",
+        "Trigger system & automation",
+        "Live agent transfer",
+        "Polls & surveys",
+        "90-day message history",
+        "Custom branding"
       ],
-      color: "border-whatsapp",
+      limitations: [
+        "Limited to 10,000 messages/month",
+        "Standard support response time"
+      ],
+      color: "border-green-500",
       buttonVariant: "default" as const,
-      popular: true
+      popular: true,
+      stripePriceId: "price_pro_monthly"
     },
     {
+      id: "enterprise",
       name: "Enterprise",
-      price: "$199",
+      price: "$99",
       period: "/month",
       description: "For large organizations and agencies",
       icon: Rocket,
@@ -68,14 +88,23 @@ const Pricing = () => {
         "Custom AI training",
         "Dedicated account manager",
         "White-label solution",
-        "API access",
-        "Advanced security",
-        "SLA guarantee",
-        "Custom onboarding"
+        "Full API access",
+        "Advanced security & compliance",
+        "SLA guarantee (99.9%)",
+        "Custom integrations",
+        "Unlimited message history",
+        "Advanced team collaboration",
+        "Custom onboarding",
+        "Priority feature requests"
+      ],
+      limitations: [
+        "Contact sales for custom limits",
+        "Minimum 12-month commitment"
       ],
       color: "border-purple-500",
       buttonVariant: "outline" as const,
-      popular: false
+      popular: false,
+      stripePriceId: "price_enterprise_monthly"
     }
   ];
 
