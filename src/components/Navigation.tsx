@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Menu, X, Zap } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,6 +35,7 @@ const Navigation = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             <Link to="/dashboard">
               <Button variant="ghost">
                 Dashboard
@@ -59,19 +61,23 @@ const Navigation = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col space-y-4">
-              <Link to="/#features" className="text-foreground hover:text-whatsapp transition-colors">
+              <Link to="/#features" className="text-foreground hover:text-blue-600 transition-colors">
                 Features
               </Link>
-              <Link to="/pricing" className="text-foreground hover:text-whatsapp transition-colors">
+              <Link to="/pricing" className="text-foreground hover:text-blue-600 transition-colors">
                 Pricing
               </Link>
-              <Link to="/docs" className="text-foreground hover:text-whatsapp transition-colors">
+              <Link to="/docs" className="text-foreground hover:text-blue-600 transition-colors">
                 Docs
               </Link>
-              <Link to="/support" className="text-foreground hover:text-whatsapp transition-colors">
+              <Link to="/support" className="text-foreground hover:text-blue-600 transition-colors">
                 Support
               </Link>
-              <div className="flex flex-col space-y-2 pt-4 border-t border-border">
+              <div className="flex items-center justify-between pt-4 border-t border-border">
+                <span className="text-sm text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
+              <div className="flex flex-col space-y-2">
                 <Link to="/dashboard">
                   <Button variant="ghost" className="justify-start w-full">
                     Dashboard

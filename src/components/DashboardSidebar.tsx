@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { 
   Home, 
   Bot, 
@@ -112,7 +113,7 @@ export default function DashboardSidebar() {
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
-      ? "bg-whatsapp/10 text-whatsapp font-medium border-r-2 border-whatsapp" 
+      ? "bg-blue-500/10 text-blue-600 font-medium border-r-2 border-blue-500" 
       : "hover:bg-muted/50 text-foreground";
 
   return (
@@ -246,9 +247,13 @@ export default function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Logout Button */}
+        {/* Theme Toggle and Logout */}
         {!collapsed && (
-          <div className="mt-auto p-4 border-t border-border">
+          <div className="mt-auto p-4 border-t border-border space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Theme</span>
+              <ThemeToggle />
+            </div>
             <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-destructive">
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
