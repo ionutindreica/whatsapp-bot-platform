@@ -36,12 +36,12 @@ const Navigation = () => {
 
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
-            <Link to="/dashboard">
+            <Link to="/login">
               <Button variant="ghost">
-                Dashboard
+                Sign In
               </Button>
             </Link>
-            <Link to="/dashboard">
+            <Link to="/register">
               <Button>
                 Get Started
               </Button>
@@ -78,12 +78,12 @@ const Navigation = () => {
                 <ThemeToggle />
               </div>
               <div className="flex flex-col space-y-2">
-                <Link to="/dashboard">
+                <Link to="/login">
                   <Button variant="ghost" className="justify-start w-full">
-                    Dashboard
+                    Sign In
                   </Button>
                 </Link>
-                <Link to="/dashboard">
+                <Link to="/register">
                   <Button className="justify-start w-full">
                     Get Started
                   </Button>

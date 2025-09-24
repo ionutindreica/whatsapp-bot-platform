@@ -97,6 +97,7 @@ const settingsItems = [
   { title: "Account Settings", url: "/settings/account", icon: Settings },
   { title: "Profile", url: "/settings/profile", icon: User },
   { title: "Billing & Invoicing", url: "/billing", icon: CreditCard },
+  { title: "Subscription Tiers", url: "/subscription-tiers", icon: Crown },
   { title: "Security", url: "/settings/security", icon: Shield },
   { title: "Export Data", url: "/settings/export", icon: Download },
 ];

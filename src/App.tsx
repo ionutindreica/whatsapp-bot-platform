@@ -43,6 +43,9 @@ import PollsSurveys from "./pages/PollsSurveys";
 import LiveAgent from "./pages/LiveAgent";
 import InstagramChannel from "./pages/InstagramChannel";
 import TriggerSystem from "./pages/TriggerSystem";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import SubscriptionTiers from "./pages/SubscriptionTiers";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -94,6 +97,9 @@ const App = () => (
           <Route path="/settings/export" element={<SettingsExport />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/bot-builder" element={<BotBuilder />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/subscription-tiers" element={<SubscriptionTiers />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
