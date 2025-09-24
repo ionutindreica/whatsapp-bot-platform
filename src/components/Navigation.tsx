@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Menu, X } from "lucide-react";
+import { MessageCircle, Menu, X, Zap } from "lucide-react";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,24 +11,24 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-whatsapp rounded-lg flex items-center justify-center">
-              <MessageCircle className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold">WhatsBot AI</span>
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ChatFlow AI</span>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/#features" className="text-foreground hover:text-whatsapp transition-colors">
+            <Link to="/#features" className="text-foreground hover:text-blue-600 transition-colors">
               Features
             </Link>
-            <Link to="/pricing" className="text-foreground hover:text-whatsapp transition-colors">
+            <Link to="/pricing" className="text-foreground hover:text-blue-600 transition-colors">
               Pricing
             </Link>
-            <Link to="/docs" className="text-foreground hover:text-whatsapp transition-colors">
+            <Link to="/docs" className="text-foreground hover:text-blue-600 transition-colors">
               Docs
             </Link>
-            <Link to="/support" className="text-foreground hover:text-whatsapp transition-colors">
+            <Link to="/support" className="text-foreground hover:text-blue-600 transition-colors">
               Support
             </Link>
           </div>

@@ -4,8 +4,8 @@ const Features = () => {
   const features = [
     {
       icon: Phone,
-      title: "Easy Phone Integration",
-      description: "Connect your WhatsApp Business number in seconds. No complex setup or technical knowledge required."
+      title: "Multi-Channel Integration",
+      description: "Connect WhatsApp, Instagram, Messenger, and Website chat in seconds. No complex setup or technical knowledge required."
     },
     {
       icon: Brain,
@@ -45,7 +45,7 @@ const Features = () => {
     {
       icon: Globe,
       title: "Global Support",
-      description: "Support for multiple languages and international phone numbers. Reach customers worldwide."
+      description: "Support for multiple languages and international channels. Reach customers worldwide across all platforms."
     }
   ];
 
@@ -55,24 +55,24 @@ const Features = () => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold mb-6">
             Everything You Need to Build{" "}
-            <span className="bg-gradient-whatsapp bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               Powerful AI Agents
             </span>
           </h2>
           <p className="text-xl text-muted-foreground">
             From simple customer support to complex sales funnels, our platform provides all the tools 
-            you need to create intelligent WhatsApp experiences.
+            you need to create intelligent omnichannel experiences.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="group p-6 rounded-2xl bg-card border border-border hover:border-whatsapp/20 transition-all duration-300 hover-scale">
+            <div key={index} className="group p-6 rounded-2xl bg-card border border-border hover:border-blue-500/20 transition-all duration-300 hover-scale">
               <div className="mb-4">
-                <div className="w-12 h-12 bg-gradient-whatsapp rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-whatsapp transition-colors">
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-600 transition-colors">
                   {feature.title}
                 </h3>
               </div>

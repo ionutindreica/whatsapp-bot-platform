@@ -107,7 +107,7 @@ const Billing = () => {
                 Billing & Invoicing
               </h1>
               <p className="text-gray-600 mt-2">
-                Manage your subscription, payment methods, and view invoices
+                Manage your omnichannel AI platform subscription, payment methods, and view invoices
               </p>
             </div>
           </div>

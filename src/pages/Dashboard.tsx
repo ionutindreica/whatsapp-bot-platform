@@ -178,14 +178,14 @@ const Dashboard = () => {
       value: "8",
       change: "+2",
       icon: Bot,
-      color: "text-whatsapp"
+      color: "text-purple-600"
     },
     {
-      title: "Conversion Rate",
-      value: "23.4%",
-      change: "+3.1%",
+      title: "Channels Connected",
+      value: "4",
+      change: "+1",
       icon: TrendingUp,
-      color: "text-purple-600"
+      color: "text-indigo-600"
     }
   ];
 
@@ -205,7 +205,7 @@ const Dashboard = () => {
                     {currentPlan?.name} Plan
                   </Badge>
                 </div>
-                <p className="text-muted-foreground">Manage your WhatsApp AI agents</p>
+                <p className="text-muted-foreground">Manage your omnichannel AI agents</p>
               </div>
               <div className="flex gap-2">
                 {currentPlan?.id === 'free' && (
@@ -215,7 +215,7 @@ const Dashboard = () => {
                   </Button>
                 )}
                 <Button 
-                  className="bg-whatsapp hover:bg-whatsapp/90"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                   onClick={handleCreateBot}
                 >
                   <Bot className="mr-2 w-4 h-4" />
