@@ -77,6 +77,9 @@ const BotBuilder = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [activeTab, setActiveTab] = useState("basic");
   const [userTimezone, setUserTimezone] = useState("");
   const [copiedField, setCopiedField] = useState("");
@@ -85,6 +88,17 @@ const BotBuilder = () => {
 
   // Detect user timezone on component mount
   useEffect(() => {
+    // Încarcă configurația salvată
+    const savedConfig = localStorage.getItem('botConfig');
+    if (savedConfig) {
+      try {
+        const parsedConfig = JSON.parse(savedConfig);
+        setBotConfig(parsedConfig);
+      } catch (error) {
+        console.error('Error loading saved config:', error);
+      }
+    }
+    
     const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     setUserTimezone(detectedTimezone);
     
@@ -116,11 +130,62 @@ const BotBuilder = () => {
         [field]: value
       }));
     }
+    
+    // Marchează că există modificări nesalvate
+    setHasUnsavedChanges(true);
+    
+    // Auto-save pentru câmpuri importante
+    const importantFields = ['name', 'description', 'welcomeMessage', 'fallbackMessage'];
+    if (importantFields.includes(field) || importantFields.includes(field.split('.')[0])) {
+      // Debounce auto-save - salvează după 3 secunde de inactivitate
+      setTimeout(() => {
+        if (saveStatus === 'idle' && !isSaving) {
+          handleSave();
+        }
+      }, 3000);
+    }
   };
 
-  const handleSave = () => {
-    console.log("Saving bot configuration:", botConfig);
-    alert("Bot saved successfully!");
+  const handleSave = async () => {
+    if (isSaving) return;
+    
+    setIsSaving(true);
+    setSaveStatus('saving');
+    
+    try {
+      // Simulează salvarea (înlocuiește cu API call real)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Validează configurația
+      if (!botConfig.name.trim()) {
+        throw new Error('Bot name is required');
+      }
+      
+      // Salvează în localStorage pentru demo
+      localStorage.setItem('botConfig', JSON.stringify(botConfig));
+      
+      // Log pentru debugging
+      console.log("Bot configuration saved:", botConfig);
+      
+      setSaveStatus('saved');
+      setHasUnsavedChanges(false);
+      
+      // Reset status după 3 secunde
+      setTimeout(() => {
+        setSaveStatus('idle');
+      }, 3000);
+      
+    } catch (error) {
+      console.error("Error saving bot:", error);
+      setSaveStatus('error');
+      
+      // Reset status după 3 secunde
+      setTimeout(() => {
+        setSaveStatus('idle');
+      }, 3000);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleTest = () => {
@@ -275,9 +340,38 @@ const BotBuilder = () => {
               <Eye className="mr-2 w-4 h-4" />
               {isPreviewMode ? "Exit Preview" : "Preview"}
             </Button>
-            <Button variant="outline" onClick={handleSave}>
-              <Save className="mr-2 w-4 h-4" />
-              Save
+            <Button 
+              variant="outline" 
+              onClick={handleSave}
+              disabled={isSaving}
+              className={`relative ${
+                saveStatus === 'saved' ? 'bg-green-50 border-green-200 text-green-700' : 
+                saveStatus === 'error' ? 'bg-red-50 border-red-200 text-red-700' : 
+                saveStatus === 'saving' ? 'bg-blue-50 border-blue-200 text-blue-700' : 
+                hasUnsavedChanges ? 'bg-orange-50 border-orange-200 text-orange-700' : ''
+              }`}
+            >
+              {saveStatus === 'saving' ? (
+                <>
+                  <div className="mr-2 w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  Saving...
+                </>
+              ) : saveStatus === 'saved' ? (
+                <>
+                  <Check className="mr-2 w-4 h-4" />
+                  Saved!
+                </>
+              ) : saveStatus === 'error' ? (
+                <>
+                  <Save className="mr-2 w-4 h-4" />
+                  Save Failed
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 w-4 h-4" />
+                  {hasUnsavedChanges ? 'Save Changes' : 'Save'}
+                </>
+              )}
             </Button>
             <Button className="bg-whatsapp hover:bg-whatsapp/90" onClick={handleDeploy}>
               <Zap className="mr-2 w-4 h-4" />
