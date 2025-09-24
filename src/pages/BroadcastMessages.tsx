@@ -29,7 +29,8 @@ import {
   Instagram,
   Smartphone,
   Globe,
-  Check
+  Check,
+  Facebook
 } from "lucide-react";
 
 const BroadcastMessages = () => {
@@ -128,24 +129,14 @@ const BroadcastMessages = () => {
       borderColor: "border-pink-200"
     },
     {
-      id: "email",
-      name: "Email",
-      icon: Mail,
-      description: "Send via Email Marketing",
-      subscriberCount: 2100,
+      id: "messenger",
+      name: "Messenger",
+      icon: Facebook,
+      description: "Send via Facebook Messenger",
+      subscriberCount: 680,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
       borderColor: "border-blue-200"
-    },
-    {
-      id: "sms",
-      name: "SMS",
-      icon: Smartphone,
-      description: "Send via SMS",
-      subscriberCount: 650,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-      borderColor: "border-purple-200"
     },
     {
       id: "website",
