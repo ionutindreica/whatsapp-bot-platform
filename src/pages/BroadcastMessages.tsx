@@ -23,7 +23,13 @@ import {
   Target,
   BarChart3,
   MessageSquare,
-  Settings
+  Settings,
+  MessageCircle,
+  Mail,
+  Instagram,
+  Smartphone,
+  Globe,
+  Check
 } from "lucide-react";
 
 const BroadcastMessages = () => {
@@ -39,7 +45,8 @@ const BroadcastMessages = () => {
     type: "IMMEDIATE",
     scheduledAt: "",
     segment: "",
-    template: ""
+    template: "",
+    channels: [] as string[]
   });
 
   // Templates
@@ -98,15 +105,86 @@ const BroadcastMessages = () => {
     }
   ];
 
+  // Available channels
+  const availableChannels = [
+    {
+      id: "whatsapp",
+      name: "WhatsApp",
+      icon: MessageCircle,
+      description: "Send via WhatsApp Business API",
+      subscriberCount: 1250,
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      borderColor: "border-green-200"
+    },
+    {
+      id: "instagram",
+      name: "Instagram",
+      icon: Instagram,
+      description: "Send via Instagram Direct Messages",
+      subscriberCount: 890,
+      color: "text-pink-600",
+      bgColor: "bg-pink-50",
+      borderColor: "border-pink-200"
+    },
+    {
+      id: "email",
+      name: "Email",
+      icon: Mail,
+      description: "Send via Email Marketing",
+      subscriberCount: 2100,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      borderColor: "border-blue-200"
+    },
+    {
+      id: "sms",
+      name: "SMS",
+      icon: Smartphone,
+      description: "Send via SMS",
+      subscriberCount: 650,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      borderColor: "border-purple-200"
+    },
+    {
+      id: "website",
+      name: "Website Widget",
+      icon: Globe,
+      description: "Show in website chat widget",
+      subscriberCount: 320,
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+      borderColor: "border-orange-200"
+    }
+  ];
+
+  const handleChannelToggle = (channelId: string) => {
+    setNewBroadcast(prev => ({
+      ...prev,
+      channels: prev.channels.includes(channelId)
+        ? prev.channels.filter(id => id !== channelId)
+        : [...prev.channels, channelId]
+    }));
+  };
+
   const handleSendBroadcast = async () => {
     if (!newBroadcast.title || !newBroadcast.message) {
       alert("Please fill in title and message");
       return;
     }
 
+    if (newBroadcast.channels.length === 0) {
+      alert("Please select at least one channel to send the broadcast");
+      return;
+    }
+
     // Simulate sending
     console.log("Sending broadcast:", newBroadcast);
-    alert("Broadcast sent successfully!");
+    const channelNames = newBroadcast.channels.map(id => 
+      availableChannels.find(c => c.id === id)?.name
+    ).join(", ");
+    alert(`Broadcast sent successfully to ${channelNames}!`);
     
     // Reset form
     setNewBroadcast({
@@ -115,7 +193,8 @@ const BroadcastMessages = () => {
       type: "IMMEDIATE",
       scheduledAt: "",
       segment: "",
-      template: ""
+      template: "",
+      channels: []
     });
   };
 
@@ -210,6 +289,64 @@ const BroadcastMessages = () => {
                       />
                     </div>
 
+                    {/* Channel Selection */}
+                    <div>
+                      <label className="text-sm font-medium mb-3 block">
+                        Select Channels
+                        <span className="text-red-500 ml-1">*</span>
+                      </label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {availableChannels.map((channel) => {
+                          const IconComponent = channel.icon;
+                          const isSelected = newBroadcast.channels.includes(channel.id);
+                          
+                          return (
+                            <div
+                              key={channel.id}
+                              className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                                isSelected 
+                                  ? `${channel.bgColor} ${channel.borderColor} border-2` 
+                                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                              }`}
+                              onClick={() => handleChannelToggle(channel.id)}
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                  <IconComponent className={`w-5 h-5 ${isSelected ? channel.color : 'text-gray-500'}`} />
+                                  <span className={`font-medium text-sm ${isSelected ? channel.color : 'text-gray-700'}`}>
+                                    {channel.name}
+                                  </span>
+                                </div>
+                                {isSelected && (
+                                  <Check className="w-4 h-4 text-green-600" />
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-600 mb-2">{channel.description}</p>
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-gray-500">
+                                  {channel.subscriberCount.toLocaleString()} subscribers
+                                </span>
+                                {isSelected && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    Selected
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {newBroadcast.channels.length > 0 && (
+                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <p className="text-sm text-blue-700">
+                            <strong>Selected channels:</strong> {newBroadcast.channels.map(id => 
+                              availableChannels.find(c => c.id === id)?.name
+                            ).join(", ")}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm font-medium mb-2 block">Broadcast Type</label>
@@ -241,9 +378,18 @@ const BroadcastMessages = () => {
                     </div>
 
                     <div className="flex gap-2 pt-4">
-                      <Button onClick={handleSendBroadcast} className="flex-1">
+                      <Button 
+                        onClick={handleSendBroadcast} 
+                        className="flex-1"
+                        disabled={newBroadcast.channels.length === 0}
+                      >
                         <Send className="mr-2 w-4 h-4" />
                         {newBroadcast.type === "IMMEDIATE" ? "Send Now" : "Schedule Broadcast"}
+                        {newBroadcast.channels.length > 0 && (
+                          <Badge variant="secondary" className="ml-2">
+                            {newBroadcast.channels.length} channel{newBroadcast.channels.length > 1 ? 's' : ''}
+                          </Badge>
+                        )}
                       </Button>
                       <Button variant="outline">
                         <Clock className="mr-2 w-4 h-4" />
