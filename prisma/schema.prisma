@@ -1,4 +1,4 @@
-// This is your Prisma schema file for SQLite compatibility
+// This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
@@ -6,380 +6,325 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// ---------- MODELS DE BAZĂ ----------
-
+// User model with RBAC
 model User {
-  id             String      @id @default(cuid())
-  email          String      @unique
-  password       String
-  name           String?
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  roleId         String
-  role           Role        @relation(fields: [roleId], references: [id])
-  workspaces     WorkspaceMember[]
-  sessions       Session[]
-  auditLogs      AuditLog[]
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String?
+  role          UserRole  @default(CLIENT)
+  status        UserStatus @default(PENDING_VERIFICATION)
+  planTier      PlanTier  @default(STARTER)
+  workspaceId   String?
+  permissions   String[]  @default([])
+  features      String[]  @default([])
+  twoFactorEnabled Boolean @default(false)
+  twoFactorSecret String?
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  workspace     Workspace? @relation(fields: [workspaceId], references: [id])
+  sessions      Session[]
+  auditLogs     AuditLog[]
+  apiKeys       ApiKey[]
+  bots          Bot[]
+  conversations Conversation[]
 
   @@map("users")
 }
 
+// Session management
 model Session {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  token       String   @unique
-  ip          String?
-  userAgent   String?
-  createdAt   DateTime @default(now())
-  expiresAt   DateTime
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
-// ---------- RBAC (Roles + Permissions) ----------
-
-model Role {
-  id          String        @id @default(cuid())
-  name        String        @unique   // root, superadmin, owner, manager, agent, viewer
-  description String?
-  level       Int           // 100 = root, 90 = superadmin, 80 = owner, etc.
-  permissions Permission[]  @relation("RolePermissions")
-  users       User[]
-  isSystem    Boolean       @default(false) // System roles cannot be deleted
-
-  @@map("roles")
-}
-
-model Permission {
-  id          String   @id @default(cuid())
-  key         String   @unique  // ex: can_manage_users, can_edit_bots
-  name        String
-  description String?
-  category    String   // System Management, User Management, etc.
-  roles       Role[]   @relation("RolePermissions")
-
-  @@map("permissions")
-}
-
-// ---------- WORKSPACES & MEMBERS ----------
-
+// Workspace/Organization model
 model Workspace {
-  id          String             @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
-  planId      String
-  plan        Plan               @relation(fields: [planId], references: [id])
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  members     WorkspaceMember[]
+  domain      String?
+  planTier    PlanTier @default(STARTER)
+  status      WorkspaceStatus @default(ACTIVE)
+  settings    Json     @default("{}")
+  limits      Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users       User[]
   bots        Bot[]
+  apiKeys     ApiKey[]
+  webhooks    Webhook[]
   conversations Conversation[]
+  auditLogs   AuditLog[]
 
   @@map("workspaces")
 }
 
-model WorkspaceMember {
-  id           String     @id @default(cuid())
-  userId       String
-  workspaceId  String
-  role         String     @default("AGENT") // OWNER, ADMIN, MANAGER, AGENT, VIEWER, GUEST
-  user         User       @relation(fields: [userId], references: [id])
-  workspace    Workspace  @relation(fields: [workspaceId], references: [id])
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-
-  @@unique([userId, workspaceId])
-  @@map("workspace_members")
-}
-
-// ---------- PLANS / TIERS ----------
-
-model Plan {
-  id          String        @id @default(cuid())
-  name        String        @unique    // starter, pro, enterprise
-  displayName String
+// Role-based access control
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
   description String?
-  price       Int           // Price in cents
-  currency    String        @default("USD")
-  interval    String        @default("month") // month, year
-  features    String        // JSON cu feature flags
-  limits      String        // JSON cu limite (bots_limit, users_limit, etc.)
-  workspaces  Workspace[]
-  isActive    Boolean       @default(true)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  permissions String[] @default([])
+  features    String[] @default([])
+  level       Int      @default(1)
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@map("plans")
+  @@map("roles")
 }
 
-// ---------- BOTS / CANALE ----------
-
+// Bot management
 model Bot {
-  id            String      @id @default(cuid())
-  name          String
-  platform      String      // WHATSAPP, FACEBOOK_MESSENGER, INSTAGRAM, WEB_CHAT, TELEGRAM, EMAIL, SMS
-  workspaceId   String
-  workspace     Workspace   @relation(fields: [workspaceId], references: [id])
-  config        String      // JSON parametri specifici platformei
-  status        String      @default("DRAFT") // DRAFT, ACTIVE, PAUSED, ARCHIVED
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  platform    Platform
+  status      BotStatus @default(INACTIVE)
+  settings    Json     @default("{}")
+  flows       Json     @default("[]")
+  userId      String
+  workspaceId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user          User           @relation(fields: [userId], references: [id])
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id])
   conversations Conversation[]
 
   @@map("bots")
 }
 
-// ---------- CONVERSATIONS ----------
-
+// Conversation tracking
 model Conversation {
   id          String   @id @default(cuid())
+  botId       String
+  userId      String
   workspaceId String
-  botId       String?
-  workspace   Workspace @relation(fields: [workspaceId], references: [id])
-  bot         Bot?      @relation(fields: [botId], references: [id])
-  platform    String   // WHATSAPP, FACEBOOK_MESSENGER, INSTAGRAM, WEB_CHAT, TELEGRAM, EMAIL, SMS
-  status      String   @default("ACTIVE") // ACTIVE, PAUSED, ENDED, ARCHIVED
-  metadata    String?  // JSON Additional platform-specific data
+  platform    Platform
+  status      ConversationStatus @default(ACTIVE)
+  metadata    Json     @default("{}")
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User           @relation(fields: [userId], references: [id])
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id])
+  bot         Bot            @relation(fields: [botId], references: [id])
   messages    Message[]
 
   @@map("conversations")
 }
 
+// Message storage
 model Message {
   id             String   @id @default(cuid())
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  role           MessageRole
   content        String
-  role           String   // USER, ASSISTANT, SYSTEM
-  metadata       String?  // JSON
-  createdAt      DateTime @default(now())
+  metadata       Json     @default("{}")
+  timestamp      DateTime @default(now())
+
+  // Relations
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@map("messages")
 }
 
-// ---------- AUDIT LOGS ----------
-
-model AuditLog {
-  id          String    @id @default(cuid())
-  userId      String?
-  user        User?     @relation(fields: [userId], references: [id])
-  action      String    // CREATE_USER, DELETE_BOT, etc.
-  resource    String    // user, bot, workspace, etc.
-  resourceId  String?   // ID of the affected resource
-  metadata    String?   // JSON Additional context data
-  ip          String?
-  userAgent   String?
-  createdAt   DateTime  @default(now())
-
-  @@map("audit_logs")
-}
-
-// ---------- FEATURE FLAGS ----------
-
-model FeatureFlag {
-  id          String   @id @default(cuid())
-  key         String   @unique
-  name        String
-  description String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("feature_flags")
-}
-
-// ---------- API KEYS ----------
-
+// API Key management
 model ApiKey {
   id          String   @id @default(cuid())
   name        String
   key         String   @unique
+  permissions String[] @default([])
+  status      ApiKeyStatus @default(ACTIVE)
+  usage       Json     @default("{}")
+  userId      String?
   workspaceId String?
-  permissions String?  // JSON Array of permissions
-  lastUsed    DateTime?
   expiresAt   DateTime?
-  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User?      @relation(fields: [userId], references: [id])
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
 
   @@map("api_keys")
 }
 
-// ---------- WEBHOOKS ----------
-
+// Webhook management
 model Webhook {
   id          String   @id @default(cuid())
   name        String
   url         String
-  workspaceId String?
-  events      String   // JSON Array of events to listen for
+  events      String[] @default([])
+  status      WebhookStatus @default(ACTIVE)
   secret      String?
-  isActive    Boolean  @default(true)
+  retryCount  Int      @default(3)
+  successRate Float    @default(0.0)
   lastTriggered DateTime?
+  workspaceId String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // Relations
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
 
   @@map("webhooks")
 }
 
-// ---------- NOTIFICATIONS ----------
-
-model Notification {
-  id        String   @id @default(cuid())
-  userId    String?
-  title     String
-  message   String
-  type      String   // INFO, WARNING, ERROR, SUCCESS
-  read      Boolean  @default(false)
-  metadata  String?  // JSON
-  createdAt DateTime @default(now())
-
-  @@map("notifications")
-}
-
-// ---------- KNOWLEDGE BASE ----------
-
-model KnowledgeBase {
+// Audit logging
+model AuditLog {
   id          String   @id @default(cuid())
-  name        String
-  description String?
-  content     String
-  tags        String?  // JSON Array of tags
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("knowledge_base")
-}
-
-// ---------- BROADCASTS ----------
-
-model Broadcast {
-  id          String   @id @default(cuid())
-  name        String
-  message     String
+  action      String
+  resource    String
+  userId      String?
   workspaceId String?
-  status      String   @default("DRAFT") // DRAFT, SCHEDULED, SENDING, SENT, FAILED, CANCELLED
-  scheduledAt DateTime?
-  sentAt      DateTime?
+  metadata    Json     @default("{}")
+  ip          String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User?      @relation(fields: [userId], references: [id])
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+
+  @@map("audit_logs")
+}
+
+// Background job tracking
+model Job {
+  id          String   @id @default(cuid())
+  type        String
+  status      JobStatus @default(PENDING)
+  payload     Json     @default("{}")
+  result      Json?
+  error       String?
+  attempts    Int      @default(0)
+  maxAttempts Int      @default(3)
+  scheduledAt DateTime @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@map("broadcasts")
+  @@map("jobs")
 }
 
-// ---------- POLLS & SURVEYS ----------
-
-model Poll {
+// File storage tracking
+model File {
   id          String   @id @default(cuid())
-  title       String
-  description String?
-  options     String   // JSON Array of poll options
-  type        String   // SINGLE_CHOICE, MULTIPLE_CHOICE, TEXT, RATING
-  status      String   @default("DRAFT") // DRAFT, ACTIVE, PAUSED, COMPLETED, ARCHIVED
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int
+  url         String
+  userId      String?
   workspaceId String?
+  metadata    Json     @default("{}")
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
-  @@map("polls")
+  @@map("files")
 }
 
-// ---------- AUTOMATION & TRIGGERS ----------
-
-model Trigger {
-  id          String   @id @default(cuid())
-  name        String
-  type        String   // KEYWORD, INTENT, ENTITY, TIME, EVENT, WEBHOOK
-  conditions  String   // JSON Trigger conditions
-  actions     String   // JSON Actions to perform
-  isActive    Boolean  @default(true)
-  workspaceId String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("triggers")
+// Enums
+enum UserRole {
+  ROOT_OWNER
+  SUPER_ADMIN
+  ADMIN
+  MANAGER
+  AGENT
+  VIEWER
+  CLIENT
 }
 
-// ---------- FLOWS ----------
-
-model Flow {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  nodes       String   // JSON Flow nodes configuration
-  edges       String   // JSON Flow edges configuration
-  status      String   @default("DRAFT") // DRAFT, ACTIVE, PAUSED, ARCHIVED
-  workspaceId String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("flows")
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+  BANNED
 }
 
-// ---------- INTEGRATIONS ----------
-
-model Integration {
-  id          String   @id @default(cuid())
-  name        String
-  type        String   // whatsapp, instagram, etc.
-  config      String   // JSON Integration-specific configuration
-  workspaceId String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("integrations")
+enum PlanTier {
+  STARTER
+  PRO
+  ENTERPRISE
 }
 
-// ---------- ANALYTICS ----------
-
-model Analytics {
-  id          String   @id @default(cuid())
-  workspaceId String?
-  metric      String   // conversations_count, messages_sent, etc.
-  value       Float
-  date        DateTime
-  metadata    String?  // JSON
-  createdAt   DateTime @default(now())
-
-  @@map("analytics")
+enum WorkspaceStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  TRIAL
 }
 
-// ---------- BILLING ----------
-
-model BillingInfo {
-  id          String   @id @default(cuid())
-  workspaceId String   @unique
-  customerId  String?  // Stripe customer ID
-  subscriptionId String? // Stripe subscription ID
-  planId      String
-  status      String   @default("ACTIVE") // ACTIVE, CANCELED, PAST_DUE, UNPAID, TRIALING
-  currentPeriodStart DateTime?
-  currentPeriodEnd   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("billing_info")
+enum Platform {
+  WHATSAPP
+  MESSENGER
+  INSTAGRAM
+  WEBSITE
+  TELEGRAM
+  SLACK
 }
 
-// ---------- TEAM MANAGEMENT ----------
+enum BotStatus {
+  ACTIVE
+  INACTIVE
+  ERROR
+  PAUSED
+}
 
-model TeamInvite {
-  id          String   @id @default(cuid())
-  email       String
-  workspaceId String
-  role        String   // OWNER, ADMIN, MANAGER, AGENT, VIEWER, GUEST
-  token       String   @unique
-  expiresAt   DateTime
-  acceptedAt  DateTime?
-  createdAt   DateTime @default(now())
+enum ConversationStatus {
+  ACTIVE
+  ENDED
+  TRANSFERRED
+  ABANDONED
+}
 
-  @@unique([email, workspaceId])
-  @@map("team_invites")
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum ApiKeyStatus {
+  ACTIVE
+  INACTIVE
+  REVOKED
+}
+
+enum WebhookStatus {
+  ACTIVE
+  INACTIVE
+  ERROR
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
 }

@@ -1,60 +1,106 @@
 version: '3.8'
 
 services:
-  # MySQL Database
-  mysql:
-    image: mysql:8.0
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: whatsapp-bot-postgres
     environment:
-      MYSQL_DATABASE: whatsapp_bot_db
-      MYSQL_USER: whatsapp_user
-      MYSQL_PASSWORD: whatsapp_password
-      MYSQL_ROOT_PASSWORD: root_password
+      POSTGRES_DB: whatsapp_bot_platform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # Redis for caching and sessions
+  # Redis for caching and job queues
   redis:
     image: redis:7-alpine
+    container_name: whatsapp-bot-redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    command: redis-server --appendonly yes --requirepass redis
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PgBouncer for connection pooling
+  pgbouncer:
+    image: pgbouncer/pgbouncer:latest
+    container_name: whatsapp-bot-pgbouncer
+    environment:
+      DATABASES_HOST: postgres
+      DATABASES_PORT: 5432
+      DATABASES_USER: postgres
+      DATABASES_PASSWORD: postgres
+      DATABASES_DBNAME: whatsapp_bot_platform
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 1000
+      DEFAULT_POOL_SIZE: 25
+    ports:
+      - "6432:5432"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   # Application
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: whatsapp-bot-app
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres@pgbouncer:5432/whatsapp_bot_platform?pgbouncer=true
+      REDIS_URL: redis://:redis@redis:6379
+      NEXTAUTH_SECRET: your-super-secret-key-here
+      NEXTAUTH_URL: http://localhost:3000
     ports:
       - "3000:3000"
-    environment:
-      - DATABASE_URL=mysql://whatsapp_user:whatsapp_password@mysql:3306/whatsapp_bot_db
-      - REDIS_URL=redis://redis:6379
-      - NEXTAUTH_URL=http://localhost:3000
-      - NEXTAUTH_SECRET=your-secret-key-here
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
-      - .:/app
-      - /app/node_modules
-    command: npm run dev
+      - ./logs:/app/logs
+    restart: unless-stopped
 
-  # Nginx reverse proxy
+  # Background Job Worker
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: whatsapp-bot-worker
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres@pgbouncer:5432/whatsapp_bot_platform?pgbouncer=true
+      REDIS_URL: redis://:redis@redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    command: ["npm", "run", "worker"]
+
+  # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
+    container_name: whatsapp-bot-nginx
     ports:
       - "80:80"
       - "443:443"
@@ -63,7 +109,42 @@ services:
       - ./ssl:/etc/nginx/ssl
     depends_on:
       - app
+    restart: unless-stopped
+
+  # Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: whatsapp-bot-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: whatsapp-bot-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    restart: unless-stopped
 
 volumes:
-  mysql_data:
+  postgres_data:
   redis_data:
+  prometheus_data:
+  grafana_data:
