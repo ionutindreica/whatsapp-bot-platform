@@ -8,6 +8,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const billingRoutes = require('./routes/billing');
 const adminRoutes = require('./routes/admin');
+const botsRoutes = require('./routes/bots');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -48,6 +49,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/billing', billingRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/bots', botsRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

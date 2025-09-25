@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '@/contexts/AuthContext';
+import { ApiError } from '@/services/api';
 import { 
   Users, 
   DollarSign, 
@@ -31,6 +33,7 @@ import {
 } from 'lucide-react';
 
 const SuperAdminDashboard = () => {
+  const { user } = useAuth();
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -43,6 +46,7 @@ const SuperAdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     loadDashboardData();
@@ -50,56 +54,59 @@ const SuperAdminDashboard = () => {
 
   const loadDashboardData = async () => {
     try {
-      // Mock data - replace with real API calls
-      setStats({
-        totalUsers: 1250,
-        activeUsers: 890,
-        totalRevenue: 45600,
-        monthlyRevenue: 8900,
-        totalBots: 3400,
-        totalMessages: 125000
+      setError('');
+      
+      // Check if user is super admin
+      if (!user || user.role !== 'SUPER_ADMIN') {
+        setError('Access denied. Super admin privileges required.');
+        setLoading(false);
+        return;
+      }
+
+      // Load dashboard stats from API
+      const statsResponse = await fetch('http://localhost:3001/api/admin/dashboard', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        }
       });
 
-      setUsers([
-        {
-          id: '1',
-          name: 'John Doe',
-          email: 'john@example.com',
-          role: 'USER',
-          status: 'ACTIVE',
-          plan: 'Pro',
-          createdAt: '2024-01-15',
-          lastLogin: '2024-01-20',
-          bots: 3,
-          messages: 1250
-        },
-        {
-          id: '2',
-          name: 'Jane Smith',
-          email: 'jane@example.com',
-          role: 'ADMIN',
-          status: 'ACTIVE',
-          plan: 'Enterprise',
-          createdAt: '2024-01-10',
-          lastLogin: '2024-01-19',
-          bots: 8,
-          messages: 5600
-        },
-        {
-          id: '3',
-          name: 'Bob Johnson',
-          email: 'bob@example.com',
-          role: 'USER',
-          status: 'SUSPENDED',
-          plan: 'Free',
-          createdAt: '2024-01-05',
-          lastLogin: '2024-01-18',
-          bots: 1,
-          messages: 45
+      if (!statsResponse.ok) {
+        throw new Error('Failed to load dashboard stats');
+      }
+
+      const statsData = await statsResponse.json();
+      setStats(statsData.stats);
+
+      // Load users from API
+      const usersResponse = await fetch('http://localhost:3001/api/admin/users', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
         }
-      ]);
+      });
+
+      if (!usersResponse.ok) {
+        throw new Error('Failed to load users');
+      }
+
+      const usersData = await usersResponse.json();
+      setUsers(usersData.users);
+
     } catch (error) {
       console.error('Error loading dashboard data:', error);
+      setError(error.message || 'Failed to load dashboard data');
+      
+      // Fallback to demo data if API fails
+      setStats({
+        totalUsers: 0,
+        activeUsers: 0,
+        totalRevenue: 0,
+        monthlyRevenue: 0,
+        totalBots: 0,
+        totalMessages: 0
+      });
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -109,35 +116,68 @@ const SuperAdminDashboard = () => {
     try {
       console.log(`Performing ${action} on user ${userId}`);
       
-      // Update local state for demo
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        alert('Authentication required');
+        return;
+      }
+
+      let response;
+      
       if (action === 'suspend') {
-        setUsers(prev => prev.map(user => 
-          user.id === userId ? { ...user, status: 'SUSPENDED' } : user
-        ));
-        alert(`User ${userId} has been suspended`);
+        response = await fetch(`http://localhost:3001/api/admin/users/${userId}/suspend`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ reason: 'Suspended by SuperAdmin' })
+        });
       } else if (action === 'activate') {
-        setUsers(prev => prev.map(user => 
-          user.id === userId ? { ...user, status: 'ACTIVE' } : user
-        ));
-        alert(`User ${userId} has been activated`);
+        response = await fetch(`http://localhost:3001/api/admin/users/${userId}/activate`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
       } else if (action === 'edit') {
         const user = users.find(u => u.id === userId);
         const newName = prompt('Enter new name:', user?.name || '');
         if (newName) {
-          setUsers(prev => prev.map(user => 
-            user.id === userId ? { ...user, name: newName } : user
-          ));
-          alert(`User ${userId} has been updated`);
+          response = await fetch(`http://localhost:3001/api/admin/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: newName })
+          });
         }
       } else if (action === 'delete') {
         if (confirm(`Are you sure you want to delete user ${userId}?`)) {
-          setUsers(prev => prev.filter(user => user.id !== userId));
-          alert(`User ${userId} has been deleted`);
+          response = await fetch(`http://localhost:3001/api/admin/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
         }
       }
+
+      if (response && !response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Action failed');
+      }
+
+      // Reload data after successful action
+      await loadDashboardData();
+      alert(`User ${userId} ${action} action completed successfully`);
+
     } catch (error) {
       console.error('Error performing user action:', error);
-      alert('Error performing action');
+      alert(`Error performing action: ${error.message}`);
     }
   };
 
@@ -166,10 +206,25 @@ const SuperAdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex w-full bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading SuperAdmin Dashboard...</p>
+          <p className="text-muted-foreground">Loading SuperAdmin Dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex w-full bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-red-600 mb-2">Access Denied</h2>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button onClick={() => window.location.href = '/login'}>
+            Go to Login
+          </Button>
         </div>
       </div>
     );

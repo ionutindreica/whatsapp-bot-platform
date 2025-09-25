@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/AuthContext";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 import { 
   Bot, 
   MessageSquare, 
@@ -27,9 +29,81 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 
 const Dashboard = () => {
+  const { user } = useAuth();
   const { currentPlan, userSubscription, getUsagePercentage, isFeatureAvailable } = useSubscription();
-  
-  const [bots, setBots] = useState([
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    activeUsers: 0,
+    totalRevenue: 0,
+    monthlyRevenue: 0,
+    totalBots: 0,
+    totalMessages: 0
+  });
+  const [bots, setBots] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setError('');
+      
+      if (!user) {
+        setError('Authentication required');
+        setLoading(false);
+        return;
+      }
+
+      // Load user stats
+      const statsResponse = await fetch('http://localhost:3001/api/user/usage', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        setStats(statsData);
+      }
+
+      // Load user's bots
+      const botsResponse = await fetch('http://localhost:3001/api/bots', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (botsResponse.ok) {
+        const botsData = await botsResponse.json();
+        setBots(botsData.bots || []);
+      }
+
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+      setError('Failed to load dashboard data');
+      
+      // Fallback to empty data
+      setStats({
+        totalUsers: 0,
+        activeUsers: 0,
+        totalRevenue: 0,
+        monthlyRevenue: 0,
+        totalBots: 0,
+        totalMessages: 0
+      });
+      setBots([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Mock data for demo (will be replaced by real API calls)
+  const mockBots = [
     {
       id: 1,
       name: "Omnichannel Support Bot",
@@ -161,21 +235,21 @@ const Dashboard = () => {
   const stats = [
     {
       title: "Total Messages",
-      value: "12,847",
+      value: stats.totalMessages.toLocaleString(),
       change: "+12.5%",
       icon: MessageSquare,
       color: "text-blue-600"
     },
     {
       title: "Active Users",
-      value: "2,394",
+      value: stats.activeUsers.toLocaleString(),
       change: "+8.2%",
       icon: Users,
       color: "text-blue-600"
     },
     {
       title: "Active Bots",
-      value: "8",
+      value: stats.totalBots.toString(),
       change: "+2",
       icon: Bot,
       color: "text-purple-600"
@@ -188,6 +262,42 @@ const Dashboard = () => {
       color: "text-indigo-600"
     }
   ];
+
+  if (loading) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-background">
+          <DashboardSidebar />
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading Dashboard...</p>
+            </div>
+          </div>
+        </div>
+      </SidebarProvider>
+    );
+  }
+
+  if (error) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-background">
+          <DashboardSidebar />
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-red-500 text-xl mb-4">⚠️</div>
+              <h2 className="text-2xl font-bold text-red-600 mb-2">Error</h2>
+              <p className="text-muted-foreground mb-4">{error}</p>
+              <Button onClick={loadDashboardData}>
+                Retry
+              </Button>
+            </div>
+          </div>
+        </div>
+      </SidebarProvider>
+    );
+  }
 
   return (
     <SidebarProvider>
