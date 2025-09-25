@@ -86,6 +86,7 @@ function App() {
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/unauthorized" element={<Unauthorized />} />
+                  <Route path="/pricing" element={<Pricing />} />
                   
                   {/* Protected routes with Layout */}
                   <Route path="/dashboard" element={<Layout />}>
