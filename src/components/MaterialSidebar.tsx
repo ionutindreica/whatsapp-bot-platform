@@ -175,7 +175,7 @@ const menuSections = [
     items: [
       { title: "Subscription Plans", url: "/dashboard/subscription-tiers", icon: Crown },
       { title: "Billing Overview", url: "/dashboard/billing", icon: CreditCard },
-      { title: "Root Admin Dashboard", url: "/dashboard/superadmin", icon: Shield },
+      { title: "Super Admin Dashboard", url: "/dashboard/superadmin", icon: Shield },
       { title: "Users Management", url: "/dashboard/admin/users", icon: Users },
       { title: "Roles & Permissions", url: "/dashboard/admin/roles", icon: Shield },
       { title: "Workspaces", url: "/dashboard/admin/workspaces", icon: Building2 }
