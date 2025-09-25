@@ -75,6 +75,7 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = () => {
   const { hasPermission } = useAuthorization();
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [blockedIPs, setBlockedIPs] = useState<BlockedIP[]>([]);
+  const [threatAnalysis, setThreatAnalysis] = useState<any>(null);
   const [stats, setStats] = useState<SecurityStats>({
     totalEvents: 0,
     criticalEvents: 0,
@@ -98,17 +99,31 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = () => {
   const loadSecurityData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/admin/security', {
+      
+      // Load main security data
+      const securityResponse = await fetch('http://localhost:5000/api/admin/security', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (securityResponse.ok) {
+        const data = await securityResponse.json();
         setSecurityEvents(data.events || []);
         setBlockedIPs(data.blockedIPs || []);
         setStats(data.stats || stats);
+      }
+
+      // Load threat analysis data
+      const threatResponse = await fetch('http://localhost:5000/api/admin/security/threat-analysis', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (threatResponse.ok) {
+        const threatData = await threatResponse.json();
+        setThreatAnalysis(threatData);
       }
     } catch (error) {
       console.error('Failed to load security data:', error);
@@ -520,7 +535,7 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-muted-foreground">High Risk Threats</p>
-                      <p className="text-2xl font-bold text-red-600">3</p>
+                      <p className="text-2xl font-bold text-red-600">{threatAnalysis?.overview?.highRiskThreats || 0}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -534,7 +549,7 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-muted-foreground">Active Monitoring</p>
-                      <p className="text-2xl font-bold text-yellow-600">12</p>
+                      <p className="text-2xl font-bold text-yellow-600">{threatAnalysis?.overview?.activeMonitoring || 0}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -548,7 +563,7 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-muted-foreground">Threats Blocked</p>
-                      <p className="text-2xl font-bold text-green-600">47</p>
+                      <p className="text-2xl font-bold text-green-600">{threatAnalysis?.overview?.threatsBlocked || 0}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -636,73 +651,50 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-start space-x-3 p-4 border-l-4 border-red-500 bg-red-50 rounded-r-lg">
-                    <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium text-red-900">Multiple Failed Login Attempts</h4>
-                        <span className="text-xs text-red-700">2 minutes ago</span>
-                      </div>
-                      <p className="text-sm text-red-800 mt-1">
-                        IP 192.168.1.100 attempted 7 failed logins for user admin@example.com
-                      </p>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <Badge variant="destructive" className="text-xs">HIGH RISK</Badge>
-                        <Badge variant="outline" className="text-xs">IP Blocked</Badge>
-                      </div>
+                  {threatAnalysis?.threatAlerts?.length > 0 ? (
+                    threatAnalysis.threatAlerts.map((alert, index) => {
+                      const borderColor = alert.severity === 'high' ? 'border-red-500' : 
+                                         alert.severity === 'medium' ? 'border-yellow-500' : 'border-blue-500';
+                      const bgColor = alert.severity === 'high' ? 'bg-red-50' : 
+                                     alert.severity === 'medium' ? 'bg-yellow-50' : 'bg-blue-50';
+                      const textColor = alert.severity === 'high' ? 'text-red-900' : 
+                                       alert.severity === 'medium' ? 'text-yellow-900' : 'text-blue-900';
+                      const iconColor = alert.severity === 'high' ? 'text-red-600' : 
+                                       alert.severity === 'medium' ? 'text-yellow-600' : 'text-blue-600';
+                      
+                      const timeAgo = new Date(alert.timestamp).toLocaleString();
+                      
+                      return (
+                        <div key={alert.id} className={`flex items-start space-x-3 p-4 border-l-4 ${borderColor} ${bgColor} rounded-r-lg`}>
+                          <AlertTriangle className={`h-5 w-5 ${iconColor} mt-0.5`} />
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <h4 className={`font-medium ${textColor}`}>{alert.title}</h4>
+                              <span className={`text-xs ${textColor.replace('900', '700')}`}>{timeAgo}</span>
+                            </div>
+                            <p className={`text-sm ${textColor.replace('900', '800')} mt-1`}>
+                              {alert.description}
+                            </p>
+                            <div className="flex items-center space-x-2 mt-2">
+                              <Badge 
+                                variant={alert.risk === 'HIGH RISK' ? 'destructive' : 
+                                        alert.risk === 'MEDIUM RISK' ? 'secondary' : 'outline'} 
+                                className="text-xs"
+                              >
+                                {alert.risk}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs">{alert.status}</Badge>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="text-center py-8">
+                      <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                      <p className="text-muted-foreground">No recent threat alerts detected</p>
                     </div>
-                  </div>
-
-                  <div className="flex items-start space-x-3 p-4 border-l-4 border-yellow-500 bg-yellow-50 rounded-r-lg">
-                    <Clock className="h-5 w-5 text-yellow-600 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium text-yellow-900">Unusual Login Time</h4>
-                        <span className="text-xs text-yellow-700">15 minutes ago</span>
-                      </div>
-                      <p className="text-sm text-yellow-800 mt-1">
-                        User john@example.com logged in at 3:47 AM from New York
-                      </p>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <Badge variant="secondary" className="text-xs">MEDIUM RISK</Badge>
-                        <Badge variant="outline" className="text-xs">Under Review</Badge>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-3 p-4 border-l-4 border-orange-500 bg-orange-50 rounded-r-lg">
-                    <MapPin className="h-5 w-5 text-orange-600 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium text-orange-900">New Geographic Location</h4>
-                        <span className="text-xs text-orange-700">1 hour ago</span>
-                      </div>
-                      <p className="text-sm text-orange-800 mt-1">
-                        User mike@example.com logged in from Germany (first time)
-                      </p>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <Badge variant="secondary" className="text-xs">LOW RISK</Badge>
-                        <Badge variant="outline" className="text-xs">Verified</Badge>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-3 p-4 border-l-4 border-blue-500 bg-blue-50 rounded-r-lg">
-                    <User className="h-5 w-5 text-blue-600 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium text-blue-900">Suspicious User Agent</h4>
-                        <span className="text-xs text-blue-700">2 hours ago</span>
-                      </div>
-                      <p className="text-sm text-blue-800 mt-1">
-                        Request from unknown browser: "BotScanner/1.0" on /api/admin/users
-                      </p>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <Badge variant="destructive" className="text-xs">HIGH RISK</Badge>
-                        <Badge variant="outline" className="text-xs">Blocked</Badge>
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -723,18 +715,19 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = () => {
                   <div className="space-y-3">
                     <h4 className="font-medium">Known Malicious IPs</h4>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between p-2 bg-red-50 rounded">
-                        <span className="font-mono text-sm">192.168.1.100</span>
-                        <Badge variant="destructive" className="text-xs">Blocked</Badge>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-red-50 rounded">
-                        <span className="font-mono text-sm">10.0.0.45</span>
-                        <Badge variant="destructive" className="text-xs">Blocked</Badge>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-yellow-50 rounded">
-                        <span className="font-mono text-sm">172.16.0.23</span>
-                        <Badge variant="secondary" className="text-xs">Monitored</Badge>
-                      </div>
+                      {threatAnalysis?.knownMaliciousIPs?.length > 0 ? (
+                        threatAnalysis.knownMaliciousIPs.map((ip, index) => (
+                          <div key={index} className="flex items-center justify-between p-2 bg-red-50 rounded">
+                            <span className="font-mono text-sm">{ip.ip}</span>
+                            <Badge variant="destructive" className="text-xs">{ip.status}</Badge>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-4">
+                          <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                          <p className="text-sm text-muted-foreground">No malicious IPs detected</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -743,19 +736,19 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm">Overall Security</span>
-                        <span className="font-bold text-green-600">8.5/10</span>
+                        <span className="font-bold text-green-600">{threatAnalysis?.securityScores?.overallSecurity || 0}/10</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm">Threat Detection</span>
-                        <span className="font-bold text-blue-600">9.2/10</span>
+                        <span className="font-bold text-blue-600">{threatAnalysis?.securityScores?.threatDetection || 0}/10</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm">Response Time</span>
-                        <span className="font-bold text-yellow-600">7.8/10</span>
+                        <span className="font-bold text-yellow-600">{threatAnalysis?.securityScores?.responseTime || 0}/10</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm">Prevention Rate</span>
-                        <span className="font-bold text-green-600">94%</span>
+                        <span className="font-bold text-green-600">{threatAnalysis?.securityScores?.preventionRate || 0}%</span>
                       </div>
                     </div>
                   </div>

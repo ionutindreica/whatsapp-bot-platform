@@ -1353,81 +1353,62 @@ app.get('/api/admin/security', authenticateToken, (req, res) => {
   try {
     const db = readDatabase();
     
-    // Generate mock security events for demo
-    const securityEvents = [
-      {
-        id: '1',
-        type: 'failed_login',
-        severity: 'medium',
-        description: 'Multiple failed login attempts detected',
-        ipAddress: '192.168.1.100',
-        location: 'Bucharest, Romania',
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
-        userId: 'user1',
-        userEmail: 'test@example.com',
-        metadata: { attempts: 5 }
-      },
-      {
-        id: '2',
-        type: 'login_attempt',
-        severity: 'low',
-        description: 'Successful login from new device',
-        ipAddress: '192.168.1.101',
-        location: 'Bucharest, Romania',
-        userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(), // 1 hour ago
-        userId: 'user2',
-        userEmail: 'admin@example.com',
-        metadata: { device: 'iPhone' }
-      },
-      {
-        id: '3',
-        type: 'suspicious_activity',
-        severity: 'high',
-        description: 'Unusual API access pattern detected',
-        ipAddress: '8.8.8.8',
-        location: 'Mountain View, CA',
-        userAgent: 'curl/7.68.0',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
-        userId: 'user3',
-        userEmail: 'user@example.com',
-        metadata: { requests: 1000, timeWindow: '5 minutes' }
-      },
-      {
-        id: '4',
-        type: '2fa_enabled',
-        severity: 'low',
-        description: 'Two-factor authentication enabled',
-        ipAddress: '192.168.1.102',
-        location: 'Bucharest, Romania',
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(), // 4 hours ago
-        userId: 'user4',
-        userEmail: 'manager@example.com',
-        metadata: { method: 'TOTP' }
-      }
-    ];
+    // Get real audit logs for security events
+    const auditLogs = db.auditLogs || [];
+    const sessions = db.sessions || [];
+    const users = db.users || [];
     
-    const blockedIPs = [
-      {
-        id: '1',
-        ipAddress: '1.2.3.4',
-        reason: 'Multiple failed login attempts',
-        blockedAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
-        blockedBy: 'admin@example.com',
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(), // 24 hours from now
-        isActive: true
-      },
-      {
-        id: '2',
-        ipAddress: '5.6.7.8',
-        reason: 'Suspicious API activity',
-        blockedAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
-        blockedBy: 'system',
-        isActive: true
+    // Filter security-related audit logs from last 7 days
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const recentLogs = auditLogs.filter(log => new Date(log.timestamp) > sevenDaysAgo);
+    
+    // Convert audit logs to security events
+    const securityEvents = recentLogs.map(log => {
+      let severity = 'low';
+      let type = 'login_attempt';
+      
+      // Determine severity and type based on action
+      if (log.action.includes('failed') || log.action.includes('invalid')) {
+        severity = 'medium';
+        type = 'failed_login';
+      } else if (log.action.includes('block') || log.action.includes('suspend')) {
+        severity = 'high';
+        type = 'suspicious_activity';
+      } else if (log.action.includes('login') || log.action.includes('auth')) {
+        severity = 'low';
+        type = 'login_attempt';
+      } else if (log.action.includes('2fa') || log.action.includes('mfa')) {
+        severity = 'low';
+        type = '2fa_enabled';
+      } else if (log.action.includes('password')) {
+        severity = 'medium';
+        type = 'password_changed';
       }
-    ];
+      
+      const user = users.find(u => u.id === log.userId);
+      
+      return {
+        id: log.id,
+        type: type,
+        severity: severity,
+        description: log.action,
+        ipAddress: log.ipAddress || 'Unknown',
+        location: log.metadata?.location || 'Unknown',
+        userAgent: log.metadata?.userAgent || 'Unknown',
+        timestamp: log.timestamp,
+        userId: log.userId,
+        userEmail: user?.email || 'Unknown',
+        metadata: log.metadata
+      };
+    }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    // Get blocked IPs from database
+    const blockedIPs = db.blockedIPs || [];
+    
+    // Calculate real stats
+    const now = new Date();
+    const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const last24HourEvents = securityEvents.filter(e => new Date(e.timestamp) > last24Hours);
     
     const stats = {
       totalEvents: securityEvents.length,
@@ -1435,12 +1416,12 @@ app.get('/api/admin/security', authenticateToken, (req, res) => {
       blockedIPs: blockedIPs.filter(ip => ip.isActive).length,
       failedLogins: securityEvents.filter(e => e.type === 'failed_login').length,
       suspiciousActivities: securityEvents.filter(e => e.type === 'suspicious_activity').length,
-      activeSessions: (db.sessions || []).filter(s => s.isActive).length,
-      uniqueUsers: new Set((db.sessions || []).map(s => s.userId)).size,
+      activeSessions: sessions.filter(s => s.isActive).length,
+      uniqueUsers: new Set(sessions.map(s => s.userId)).size,
       last24Hours: {
-        loginAttempts: securityEvents.filter(e => e.type === 'login_attempt').length,
-        failedLogins: securityEvents.filter(e => e.type === 'failed_login').length,
-        blockedIPs: blockedIPs.filter(ip => ip.isActive).length
+        loginAttempts: last24HourEvents.filter(e => e.type === 'login_attempt').length,
+        failedLogins: last24HourEvents.filter(e => e.type === 'failed_login').length,
+        blockedIPs: blockedIPs.filter(ip => ip.isActive && new Date(ip.blockedAt) > last24Hours).length
       }
     };
     
@@ -1513,6 +1494,109 @@ app.delete('/api/admin/security/blocked-ips/:ipId', authenticateToken, (req, res
   } catch (error) {
     console.error('Unblock IP error:', error);
     res.status(500).json({ error: 'Failed to unblock IP address' });
+  }
+});
+
+// Threat Analysis endpoint
+app.get('/api/admin/security/threat-analysis', authenticateToken, (req, res) => {
+  try {
+    const db = readDatabase();
+    
+    // Get real data for threat analysis
+    const auditLogs = db.auditLogs || [];
+    const sessions = db.sessions || [];
+    const users = db.users || [];
+    const blockedIPs = db.blockedIPs || [];
+    
+    // Calculate threat metrics from real data
+    const now = new Date();
+    const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const last7Days = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    
+    // Recent security events
+    const recentEvents = auditLogs.filter(log => new Date(log.timestamp) > last7Days);
+    
+    // Calculate high risk threats (failed logins, blocked IPs, suspicious activity)
+    const highRiskThreats = recentEvents.filter(log => 
+      log.action.includes('failed') || 
+      log.action.includes('block') || 
+      log.action.includes('suspend')
+    ).length;
+    
+    // Active monitoring (ongoing suspicious activities)
+    const activeMonitoring = blockedIPs.filter(ip => ip.isActive).length + 
+                           sessions.filter(s => s.isActive && new Date(s.createdAt) > last24Hours).length;
+    
+    // Threats blocked (successful blocks and suspensions)
+    const threatsBlocked = blockedIPs.filter(ip => ip.isActive).length + 
+                          recentEvents.filter(log => log.action.includes('block')).length;
+    
+    // Generate threat alerts based on real events
+    const threatAlerts = recentEvents.slice(0, 4).map(log => {
+      const user = users.find(u => u.id === log.userId);
+      let severity = 'low';
+      let risk = 'LOW RISK';
+      
+      if (log.action.includes('failed') || log.action.includes('invalid')) {
+        severity = 'high';
+        risk = 'HIGH RISK';
+      } else if (log.action.includes('block') || log.action.includes('suspend')) {
+        severity = 'high';
+        risk = 'HIGH RISK';
+      } else if (log.action.includes('login') && new Date(log.timestamp).getHours() < 6) {
+        severity = 'medium';
+        risk = 'MEDIUM RISK';
+      }
+      
+      return {
+        id: log.id,
+        title: log.action,
+        description: log.action + (user ? ` by ${user.email}` : ''),
+        severity: severity,
+        risk: risk,
+        timestamp: log.timestamp,
+        status: log.action.includes('block') ? 'Blocked' : 'Under Review'
+      };
+    });
+    
+    // Known malicious IPs (from blocked IPs)
+    const knownMaliciousIPs = blockedIPs.filter(ip => ip.isActive).map(ip => ({
+      ip: ip.ipAddress,
+      status: 'Blocked',
+      reason: ip.reason
+    }));
+    
+    // Calculate security scores based on real metrics
+    const totalEvents = recentEvents.length;
+    const criticalEvents = recentEvents.filter(log => 
+      log.action.includes('failed') || log.action.includes('block')
+    ).length;
+    
+    const overallSecurity = Math.max(0, 10 - (criticalEvents * 0.5) - (blockedIPs.length * 0.2));
+    const threatDetection = Math.max(0, 10 - (highRiskThreats * 0.3));
+    const responseTime = Math.max(0, 10 - (totalEvents > 10 ? 2 : 0));
+    const preventionRate = Math.min(100, Math.max(0, 100 - (criticalEvents / totalEvents * 100)));
+    
+    const threatAnalysis = {
+      overview: {
+        highRiskThreats: highRiskThreats,
+        activeMonitoring: activeMonitoring,
+        threatsBlocked: threatsBlocked
+      },
+      threatAlerts: threatAlerts,
+      knownMaliciousIPs: knownMaliciousIPs,
+      securityScores: {
+        overallSecurity: Math.round(overallSecurity * 10) / 10,
+        threatDetection: Math.round(threatDetection * 10) / 10,
+        responseTime: Math.round(responseTime * 10) / 10,
+        preventionRate: Math.round(preventionRate)
+      }
+    };
+    
+    res.json(threatAnalysis);
+  } catch (error) {
+    console.error('Threat analysis error:', error);
+    res.status(500).json({ error: 'Failed to load threat analysis data' });
   }
 });
 
