@@ -75,7 +75,7 @@ const aiItems = [
   { title: "AI Knowledge Base", url: "/dashboard/ai/knowledge", icon: Database },
   { title: "Flow Builder", url: "/dashboard/flow-builder", icon: Target },
   { title: "Automation Center", url: "/dashboard/automation", icon: Target },
-  { title: "CRM Light", url: "/dashboard/crm", icon: Users },
+  { title: "CRM Light", url: "/dashboard/crm", icon: Database },
   { title: "Triggers", url: "/dashboard/triggers", icon: Target },
 ];
 
