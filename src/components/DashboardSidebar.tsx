@@ -75,6 +75,7 @@ const aiItems = [
   { title: "AI Knowledge Base", url: "/dashboard/ai/knowledge", icon: Database },
   { title: "Flow Builder", url: "/dashboard/flow-builder", icon: Target },
   { title: "Automation Center", url: "/dashboard/automation", icon: Target },
+  { title: "CRM Light", url: "/dashboard/crm", icon: Users },
   { title: "Triggers", url: "/dashboard/triggers", icon: Target },
 ];
 
@@ -83,10 +84,6 @@ const platformItems = [
   { title: "Platform Overview", url: "/dashboard/platforms", icon: Globe },
 ];
 
-// 👥 Customer Management
-const customerItems = [
-  { title: "CRM Light", url: "/dashboard/crm", icon: Users },
-];
 
 // 🌐 Channels & Integrations
 const channelItems = [
@@ -276,26 +273,6 @@ export default function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* 👥 Customer Management */}
-        <SidebarGroup className="mb-6">
-          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
-            👥 Customer Management
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
-              {customerItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="group">
-                    <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                      {!collapsed && <span className="font-medium">{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
 
         {/* 🌐 Channels & Integrations */}
         <SidebarGroup className="mb-6">
