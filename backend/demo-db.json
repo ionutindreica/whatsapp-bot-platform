@@ -1,14 +1,14 @@
 {
   "users": [
     {
-      "id": "superadmin-1758784305759",
-      "email": "superadmin@chatflow.ai",
-      "password": "$2a$12$v5W1vt9OOsycNe3F6uM.fOS40h8HtAb4LUOnAMvvWO6bpg1yxtMD2",
+      "id": "superadmin-1758785887325",
+      "email": "johnindreica@gmail.com",
+      "password": "$2a$12$peLF4CYEFzIrBUpTsD/Mc.aPDEZqw.gWKvofmoKok0Cb.hZcPuz.2",
       "name": "Super Admin",
       "role": "SUPER_ADMIN",
       "status": "ACTIVE",
       "emailVerified": true,
-      "createdAt": "2025-09-25T07:11:45.759Z"
+      "createdAt": "2025-09-25T07:38:07.325Z"
     }
   ],
   "settings": [

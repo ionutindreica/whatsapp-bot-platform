@@ -16,7 +16,7 @@ npm run create-superadmin
 ```
 
 ### **2. Credențiale default**
-- **Email**: `superadmin@chatflow.ai`
+- **Email**: `johnindreica@gmail.com`
 - **Password**: `SuperAdmin123!`
 - **Role**: `SUPER_ADMIN`
 

@@ -28,7 +28,7 @@ async function createSuperAdmin() {
     // SuperAdmin credentials
     const superAdminData = {
       id: 'superadmin-' + Date.now(),
-      email: 'superadmin@chatflow.ai',
+      email: 'johnindreica@gmail.com',
       password: 'SuperAdmin123!',
       name: 'Super Admin',
       role: 'SUPER_ADMIN',
