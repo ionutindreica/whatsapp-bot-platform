@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
@@ -174,11 +174,29 @@ const menuSections = [
     icon: CreditCard,
     items: [
       { title: "Subscription Plans", url: "/dashboard/subscription-tiers", icon: Crown },
-      { title: "Billing Overview", url: "/dashboard/billing", icon: CreditCard },
-      { title: "Super Admin Dashboard", url: "/dashboard/superadmin", icon: Shield },
-      { title: "Users Management", url: "/dashboard/admin/users", icon: Users },
-      { title: "Roles & Permissions", url: "/dashboard/admin/roles", icon: Shield },
-      { title: "Workspaces", url: "/dashboard/admin/workspaces", icon: Building2 }
+      { title: "Billing Overview", url: "/dashboard/billing", icon: CreditCard }
+    ]
+  },
+  {
+    id: "admin",
+    title: "Admin Panel",
+    icon: Shield,
+    items: [
+      { title: "Super Admin Dashboard", url: "/dashboard/superadmin", icon: Shield, requiredRole: "SUPER_ADMIN" },
+      { title: "Users Management", url: "/dashboard/admin/users", icon: Users, requiredRole: "SUPER_ADMIN" },
+      { title: "Roles & Permissions", url: "/dashboard/admin/roles", icon: Shield, requiredRole: "SUPER_ADMIN" },
+      { title: "Workspaces", url: "/dashboard/admin/workspaces", icon: Building2, requiredRole: "SUPER_ADMIN" }
+    ]
+  },
+  {
+    id: "root-admin",
+    title: "Root Admin",
+    icon: Crown,
+    items: [
+      { title: "System Overview", url: "/dashboard/root", icon: Crown, requiredRole: "ROOT_OWNER" },
+      { title: "Platform Settings", url: "/dashboard/admin/platform-settings", icon: Settings, requiredRole: "ROOT_OWNER" },
+      { title: "API Management", url: "/dashboard/admin/api", icon: Key, requiredRole: "ROOT_OWNER" },
+      { title: "System Analytics", url: "/dashboard/admin/analytics", icon: BarChart3, requiredRole: "ROOT_OWNER" }
     ]
   },
   {
@@ -197,7 +215,36 @@ export default function MaterialSidebar() {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const location = useLocation();
   const currentPath = location.pathname;
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+
+  // Filter menu sections based on user role
+  const filteredMenuSections = useMemo(() => {
+    if (!user) return menuSections;
+
+    return menuSections.map(section => ({
+      ...section,
+      items: section.items.filter(item => {
+        // If no required role, show to everyone
+        if (!item.requiredRole) return true;
+        
+        // Check if user has the required role or higher
+        const roleHierarchy = {
+          'ROOT_OWNER': 6,
+          'SUPER_ADMIN': 5,
+          'ADMIN': 4,
+          'OWNER': 4,
+          'MANAGER': 3,
+          'AGENT': 2,
+          'VIEWER': 1
+        };
+        
+        const userLevel = roleHierarchy[user.role as keyof typeof roleHierarchy] || 0;
+        const requiredLevel = roleHierarchy[item.requiredRole as keyof typeof roleHierarchy] || 0;
+        
+        return userLevel >= requiredLevel;
+      })
+    })).filter(section => section.items.length > 0); // Only show sections with visible items
+  }, [user]);
 
   const isActive = (path: string) => currentPath === path;
 
@@ -224,18 +271,31 @@ export default function MaterialSidebar() {
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
             <Zap className="w-5 h-5 text-white" />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-1">
             <span className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               ChatFlow AI
             </span>
             <span className="text-xs text-muted-foreground font-medium">Omnichannel Platform</span>
           </div>
+          {user && (
+            <div className="flex flex-col items-end space-y-1">
+              <span className="text-xs font-medium text-muted-foreground">{user.name}</span>
+              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                user.role === 'ROOT_OWNER' ? 'bg-red-100 text-red-800' :
+                user.role === 'SUPER_ADMIN' ? 'bg-purple-100 text-purple-800' :
+                user.role === 'ADMIN' ? 'bg-blue-100 text-blue-800' :
+                'bg-gray-100 text-gray-800'
+              }`}>
+                {user.role?.replace('_', ' ')}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        {menuSections.map((section) => (
+        {filteredMenuSections.map((section) => (
           <Card key={section.id} className="border-0 shadow-none bg-transparent">
             <Collapsible 
               open={isSectionExpanded(section.id)}
