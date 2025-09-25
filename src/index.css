@@ -11,37 +11,37 @@
     --whatsapp-dark: 221 83% 43%;
     --whatsapp-light: 221 50% 89%;
     
-    /* Background system */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Modern 2025 Design System - Airy & Clean */
+    --background: 248 250 252; /* #F8FAFC - Airy background */
+    --foreground: 15 23 42; /* #0F172A - Deep blue text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 255 255 255; /* Pure white cards */
+    --card-foreground: 15 23 42;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 255 255 255;
+    --popover-foreground: 15 23 42;
 
-    /* Primary using ChatFlow AI blue */
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary using modern blue */
+    --primary: 59 130 246; /* #3B82F6 - Vibrant blue */
+    --primary-foreground: 255 255 255;
 
-    --secondary: 221 20% 96%;
-    --secondary-foreground: 221 83% 20%;
+    --secondary: 241 245 249; /* #F1F5F9 - Light gray */
+    --secondary-foreground: 71 85 105; /* #475569 - Secondary text */
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 241 245 249; /* #F1F5F9 - Light gray */
+    --muted-foreground: 100 116 139; /* #64748B - Muted text */
 
-    --accent: 221 30% 94%;
-    --accent-foreground: 221 83% 20%;
+    --accent: 16 185 129; /* #10B981 - Success green */
+    --accent-foreground: 255 255 255;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 239 68 68; /* #EF4444 - Error red */
+    --destructive-foreground: 255 255 255;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
+    --border: 226 232 240; /* #E2E8F0 - Soft borders */
+    --input: 226 232 240;
+    --ring: 59 130 246; /* Modern blue ring */
 
-    --radius: 0.75rem;
+    --radius: 1rem; /* More rounded corners for modern look */
 
     /* Beautiful gradients */
     --gradient-whatsapp: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 90% 63%));
@@ -161,5 +161,62 @@
   /* Enhanced sidebar contrast */
   .dark .sidebar {
     @apply bg-gray-900 border-gray-800;
+  }
+}
+
+/* Modern 2025 Design Components */
+@layer components {
+  /* Airy & Clean Card Design */
+  .card-modern {
+    @apply rounded-2xl bg-white shadow-sm border border-gray-100 p-6;
+    @apply hover:shadow-md transition-all duration-200;
+  }
+  
+  /* KPI Card Styling */
+  .kpi-card {
+    @apply relative overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100;
+    @apply hover:shadow-md transition-all duration-200;
+  }
+  
+  /* Modern Button Variants */
+  .btn-modern {
+    @apply rounded-xl px-4 py-2 font-medium transition-all duration-200;
+    @apply hover:scale-105 active:scale-95;
+  }
+  
+  /* Gradient Backgrounds */
+  .bg-gradient-modern {
+    @apply bg-gradient-to-r from-blue-500 to-purple-500;
+  }
+  
+  .bg-gradient-success {
+    @apply bg-gradient-to-r from-green-500 to-emerald-500;
+  }
+  
+  /* Modern Shadows */
+  .shadow-modern {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  }
+  
+  .shadow-modern-lg {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+  
+  /* Modern Typography */
+  .text-modern {
+    @apply text-slate-800 leading-relaxed;
+  }
+  
+  .text-modern-muted {
+    @apply text-slate-600 leading-relaxed;
+  }
+  
+  /* Airy Spacing */
+  .space-modern > * + * {
+    @apply mt-6;
+  }
+  
+  .space-modern-sm > * + * {
+    @apply mt-4;
   }
 }

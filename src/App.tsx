@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import ModernDashboard from "./pages/ModernDashboard";
 import Pricing from "./pages/Pricing";
 import Docs from "./pages/Docs";
 import Support from "./pages/Support";
@@ -65,7 +66,7 @@ const App = () => (
             <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<ModernDashboard />} />
           <Route path="/bots" element={<Bots />} />
           <Route path="/conversations" element={<Conversations />} />
           <Route path="/broadcast" element={<BroadcastMessages />} />
