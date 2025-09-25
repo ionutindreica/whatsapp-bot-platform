@@ -102,49 +102,34 @@ const Dashboard = () => {
     }
   };
 
-  // Mock data for demo (will be replaced by real API calls)
-  const mockBots = [
-    {
-      id: 1,
-      name: "Omnichannel Support Bot",
-      channels: ["WhatsApp", "Instagram", "Website"],
-      status: "active",
-      messages: 1247,
-      users: 89,
-      uptime: "99.9%",
-      lastActive: "2 minutes ago"
-    },
-    {
-      id: 2,
-      name: "Multi-Platform Sales Assistant",
-      channels: ["Messenger", "WhatsApp", "Website"],
-      status: "paused",
-      messages: 856,
-      users: 67,
-      uptime: "98.2%",
-      lastActive: "1 hour ago"
-    },
-    {
-      id: 3,
-      name: "Cross-Channel Lead Qualifier",
-      channels: ["WhatsApp", "Instagram"],
-      status: "active",
-      messages: 423,
-      users: 34,
-      uptime: "100%",
-      lastActive: "5 minutes ago"
-    }
-  ]);
+  const handleBotToggle = async (botId: string) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        alert('Authentication required');
+        return;
+      }
 
-  const handleBotToggle = (botId: number) => {
-    console.log(`Toggling bot ${botId}`);
-    setBots(prevBots => 
-      prevBots.map(bot => 
-        bot.id === botId 
-          ? { ...bot, status: bot.status === 'active' ? 'paused' : 'active' }
-          : bot
-      )
-    );
+      const response = await fetch(`http://localhost:3001/api/bots/${botId}/toggle`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        // Reload data after successful toggle
+        await loadDashboardData();
+        alert('Bot status updated successfully');
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to toggle bot');
+      }
+    } catch (error) {
+      console.error('Error toggling bot:', error);
+      alert(`Error: ${error.message}`);
+    }
   };
 
   const handleUpgrade = () => {
@@ -232,7 +217,7 @@ const Dashboard = () => {
   };
 
 
-  const stats = [
+  const statsCards = [
     {
       title: "Total Messages",
       value: stats.totalMessages.toLocaleString(),
@@ -339,7 +324,7 @@ const Dashboard = () => {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat) => (
+              {statsCards.map((stat) => (
                 <Card key={stat.title}>
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
