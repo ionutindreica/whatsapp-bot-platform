@@ -294,7 +294,7 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="text-3xl font-bold">Dashboard</h1>
+                <h1 className="text-3xl font-bold">Dashboard</h1>
                   <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                     {currentPlan?.name} Plan
                   </Badge>
@@ -308,14 +308,14 @@ const Dashboard = () => {
                     Upgrade Plan
                   </Button>
                 )}
-                <Button 
+              <Button 
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                  onClick={handleCreateBot}
-                >
-                  <Bot className="mr-2 w-4 h-4" />
-                  Create New Bot
-                </Button>
-              </div>
+                onClick={handleCreateBot}
+              >
+                <Bot className="mr-2 w-4 h-4" />
+                Create New Bot
+              </Button>
+            </div>
             </div>
 
             {/* Usage Warning */}

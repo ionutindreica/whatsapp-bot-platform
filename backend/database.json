@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "johnindreica@gmail.com",
+      "password": "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj8J8K8K8K8K",
+      "name": "Super Admin",
+      "role": "SUPER_ADMIN",
+      "status": "ACTIVE",
+      "createdAt": "2025-09-25T09:08:11.154Z"
+    }
+  ],
+  "sessions": [
+    {
+      "userId": "1",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZW1haWwiOiJqb2huaW5kcmVpY2FAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzU4NzkxMjkyLCJleHAiOjE3NTkzOTYwOTJ9.lgBDdpEnGl6pAwNOD8VXC6GTm-dwfSP-BSa246kKqJM",
+      "createdAt": "2025-09-25T09:08:12.456Z"
+    },
+    {
+      "userId": "1",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZW1haWwiOiJqb2huaW5kcmVpY2FAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzU4NzkxMjkzLCJleHAiOjE3NTkzOTYwOTN9.ls_Lklo1aRNRCSYtmb8hQo8UNSv6eybu2lF-_OIivvQ",
+      "createdAt": "2025-09-25T09:08:13.001Z"
+    },
+    {
+      "userId": "1",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZW1haWwiOiJqb2huaW5kcmVpY2FAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzU4NzkxMzEyLCJleHAiOjE3NTkzOTYxMTJ9.wINaeO1rMeWPRtWYRjT-PHdfXc5lMJk3OQLsAnyl2ck",
+      "createdAt": "2025-09-25T09:08:32.619Z"
+    },
+    {
+      "userId": "1",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZW1haWwiOiJqb2huaW5kcmVpY2FAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzU4NzkxNTQzLCJleHAiOjE3NTkzOTYzNDN9.XtzTfoLCvzI14R8fSm1pXlZciQ4GBJGoy1jUpEy_KsA",
+      "createdAt": "2025-09-25T09:12:23.080Z"
+    },
+    {
+      "userId": "1",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZW1haWwiOiJqb2huaW5kcmVpY2FAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzU4NzkyNzE2LCJleHAiOjE3NTkzOTc1MTZ9.DIsFLXJ9urU0Q0RrlX5HqsbFWZ2d_uw7SBX_C6X_hVA",
+      "createdAt": "2025-09-25T09:31:56.842Z"
+    },
+    {
+      "userId": "1",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZW1haWwiOiJqb2huaW5kcmVpY2FAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzU4NzkzOTczLCJleHAiOjE3NTkzOTg3NzN9.Xmcv2E5lRlKjDKLy7Z9i4BCiKsnneFr571map_dfWzM",
+      "createdAt": "2025-09-25T09:52:53.251Z"
+    }
+  ],
+  "passwordResets": []
+}
