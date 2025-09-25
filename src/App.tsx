@@ -352,6 +352,11 @@ function App() {
                         <PlatformSettings />
                       </ProtectedRoute>
                     } />
+                    <Route path="admin/settings" element={
+                      <ProtectedRoute rbacRole="ROOT_OWNER">
+                        <PlatformSettings />
+                      </ProtectedRoute>
+                    } />
                     <Route path="admin/plans" element={
                       <ProtectedRoute rbacMinRole="ROOT_OWNER">
                         <PlansSubscriptions />
