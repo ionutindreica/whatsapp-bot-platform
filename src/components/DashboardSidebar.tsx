@@ -135,8 +135,8 @@ export default function DashboardSidebar() {
   const { logout } = useAuth();
 
   const isActive = (path: string) => currentPath === path;
-  const isMainExpanded = mainItems.some((item) => isActive(item.url));
-  const isSettingsExpanded = settingsItems.some((item) => isActive(item.url));
+  const isMainExpanded = dashboardItems.some((item) => isActive(item.url));
+  const isSettingsExpanded = accountSettingsItems.some((item) => isActive(item.url));
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
