@@ -23,7 +23,10 @@ import {
   AlertTriangle,
   CheckCircle,
   Crown,
-  Globe
+  Globe,
+  Clock,
+  Download,
+  Plus
 } from 'lucide-react';
 
 interface Workspace {
