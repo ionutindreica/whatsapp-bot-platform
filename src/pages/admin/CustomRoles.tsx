@@ -33,9 +33,9 @@ import {
   PlanTier,
   ROLE_PERMISSIONS,
   getRoleDisplayName,
-  getPlanDisplayName,
-  RBACMiddleware
+  getPlanDisplayName
 } from '@/types/rbac';
+import { RBACMiddleware } from '@/middleware/rbac';
 
 interface CustomRole {
   id: string;

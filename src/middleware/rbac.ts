@@ -259,13 +259,13 @@ export class RBACMiddleware {
 
 // Route protection decorators for React components
 export const withRBAC = (
-  Component: React.ComponentType<any>,
+  Component: any,
   options: RBACOptions = {}
 ) => {
   return (props: any) => {
     // This would be used in a React context where user is available
     // Implementation depends on your auth context
-    return <Component {...props} />;
+    return Component(props);
   };
 };
 

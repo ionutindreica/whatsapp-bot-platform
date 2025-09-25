@@ -39,7 +39,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initAuth = async () => {
+      console.log('🔍 Checking authentication...');
+      console.log('🔍 Token exists:', !!localStorage.getItem('authToken'));
+      console.log('🔍 Token value:', localStorage.getItem('authToken'));
+      
       if (isAuthenticated()) {
+        console.log('✅ User is authenticated, setting user object');
         // For now, just set a basic user object
         // TODO: Implement proper profile loading
         setUser({
@@ -49,6 +54,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           role: 'SUPER_ADMIN',
           status: 'ACTIVE'
         });
+      } else {
+        console.log('❌ User is not authenticated');
       }
       setLoading(false);
     };
@@ -58,9 +65,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('🔐 Attempting login for:', email);
       const response = await authApi.login({ email, password });
+      console.log('✅ Login response:', response);
+      console.log('🔑 Token stored:', !!localStorage.getItem('authToken'));
       setUser(response.user);
     } catch (error) {
+      console.error('❌ Login error:', error);
       throw error;
     }
   };

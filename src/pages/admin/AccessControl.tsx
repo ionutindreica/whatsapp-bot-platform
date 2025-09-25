@@ -32,9 +32,9 @@ import {
   ROLE_PERMISSIONS,
   TIER_FEATURES,
   getRoleDisplayName,
-  getPlanDisplayName,
-  RBACMiddleware
+  getPlanDisplayName
 } from '@/types/rbac';
+import { RBACMiddleware } from '@/middleware/rbac';
 
 const AccessControl: React.FC = () => {
   const { user } = useAuth();

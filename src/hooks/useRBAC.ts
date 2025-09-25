@@ -5,10 +5,9 @@ import {
   UserRole, 
   hasPermission, 
   hasFeature, 
-  ROLE_HIERARCHY,
-  RBACMiddleware 
+  ROLE_HIERARCHY
 } from '@/types/rbac';
-import { RBACContext } from '@/middleware/rbac';
+import { RBACContext, RBACMiddleware } from '@/middleware/rbac';
 
 export interface RBACOptions {
   requiredPermissions?: Permission[];
