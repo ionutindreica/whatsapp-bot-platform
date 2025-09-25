@@ -10,382 +10,190 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User Management
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  avatar    String?
-  role      UserRole @default(USER)
-  status    UserStatus @default(ACTIVE)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// ---------- MODELS DE BAZĂ ----------
 
-  // Relations
-  accounts     Account[]
-  sessions     Session[]
-  bots         Bot[]
-  conversations Conversation[]
-  teamMemberships TeamMember[]
-  billingInfo  BillingInfo?
-  usageStats   UsageStats[]
-  apiKeys      ApiKey[]
-  webhooks     Webhook[]
-  notifications Notification[]
-  knowledgeBase KnowledgeBase[]
-  // New relations
-  userTags     UserTag[]
-  broadcastRecipients BroadcastRecipient[]
-  pollResponses PollResponse[]
-  agent        Agent?
-  flowExecutions FlowExecution[]
-  profile      UserProfile?
-  adminActions AdminAction[]
-  targetActions AdminAction[]
+model User {
+  id             String      @id @default(cuid())
+  email          String      @unique
+  password       String
+  name           String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  roleId         String
+  role           Role        @relation(fields: [roleId], references: [id])
+  workspaces     WorkspaceMember[]
+  sessions       Session[]
+  auditLogs      AuditLog[]
 
   @@map("users")
 }
 
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  token       String   @unique
+  ip          String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
 
   @@map("sessions")
 }
 
-// Bot Management
-model Bot {
+// ---------- RBAC (Roles + Permissions) ----------
+
+model Role {
+  id          String        @id @default(cuid())
+  name        String        @unique   // root, superadmin, owner, manager, agent, viewer
+  description String?
+  level       Int           // 100 = root, 90 = superadmin, 80 = owner, etc.
+  permissions Permission[]  @relation("RolePermissions")
+  users       User[]
+  isSystem    Boolean       @default(false) // System roles cannot be deleted
+
+  @@map("roles")
+}
+
+model Permission {
   id          String   @id @default(cuid())
+  key         String   @unique  // ex: can_manage_users, can_edit_bots
   name        String
   description String?
-  status      BotStatus @default(INACTIVE)
-  phoneNumber String?
-  personality String?
-  welcomeMessage String?
-  settings    Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  category    String   // System Management, User Management, etc.
+  roles       Role[]   @relation("RolePermissions")
 
-  // Relations
-  userId        String
-  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("permissions")
+}
+
+// ---------- WORKSPACES & MEMBERS ----------
+
+model Workspace {
+  id          String             @id @default(cuid())
+  name        String
+  planId      String
+  plan        Plan               @relation(fields: [planId], references: [id])
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  members     WorkspaceMember[]
+  bots        Bot[]
   conversations Conversation[]
-  trainingData  TrainingData[]
-  integrations  BotIntegration[]
-  analytics     BotAnalytics[]
-  // New relations
-  broadcasts    Broadcast[]
-  tags          Tag[]
-  segments      Segment[]
-  polls         Poll[]
-  messageTemplates MessageTemplate[]
-  triggers      Trigger[]
-  flows         Flow[]
-  instagramAccounts InstagramAccount[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id           String     @id @default(cuid())
+  userId       String
+  workspaceId  String
+  role         WorkspaceRole @default(AGENT)
+  user         User       @relation(fields: [userId], references: [id])
+  workspace    Workspace  @relation(fields: [workspaceId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([userId, workspaceId])
+  @@map("workspace_members")
+}
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MANAGER
+  AGENT
+  VIEWER
+  GUEST
+}
+
+// ---------- PLANS / TIERS ----------
+
+model Plan {
+  id          String        @id @default(cuid())
+  name        String        @unique    // starter, pro, enterprise
+  displayName String
+  description String?
+  price       Int           // Price in cents
+  currency    String        @default("USD")
+  interval    String        @default("month") // month, year
+  features    Json          // JSON cu feature flags
+  limits      Json          // JSON cu limite (bots_limit, users_limit, etc.)
+  workspaces  Workspace[]
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("plans")
+}
+
+// ---------- BOTS / CANALE ----------
+
+model Bot {
+  id            String      @id @default(cuid())
+  name          String
+  platform      Platform
+  workspaceId   String
+  workspace     Workspace   @relation(fields: [workspaceId], references: [id])
+  config        Json        // parametri specifici platformei
+  status        BotStatus   @default(DRAFT)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  conversations Conversation[]
 
   @@map("bots")
 }
 
-// Conversation Management
-model Conversation {
-  id        String   @id @default(cuid())
-  botId     String
-  userId    String
-  status    ConversationStatus @default(ACTIVE)
-  startedAt DateTime @default(now())
-  endedAt   DateTime?
-  metadata  Json?
+enum Platform {
+  WHATSAPP
+  FACEBOOK_MESSENGER
+  INSTAGRAM
+  WEB_CHAT
+  TELEGRAM
+  EMAIL
+  SMS
+}
 
-  // Relations
-  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+enum BotStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+// ---------- CONVERSATIONS ----------
+
+model Conversation {
+  id          String   @id @default(cuid())
+  workspaceId String
+  botId       String?
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  bot         Bot?      @relation(fields: [botId], references: [id])
+  platform    Platform
+  status      ConversationStatus @default(ACTIVE)
+  metadata    Json?    // Additional platform-specific data
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   messages    Message[]
-  analytics   ConversationAnalytics?
-  agentTransfers AgentTransfer[]
 
   @@map("conversations")
 }
 
 model Message {
-  id             String      @id @default(cuid())
+  id             String   @id @default(cuid())
   conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
   content        String
   role           MessageRole
-  timestamp      DateTime    @default(now())
   metadata       Json?
-  isRead         Boolean     @default(false)
-
-  // Relations
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
 
   @@map("messages")
 }
 
-// AI Training & Knowledge
-model TrainingData {
-  id          String   @id @default(cuid())
-  botId       String
-  type        TrainingDataType
-  content     String
-  processed   Boolean  @default(false)
-  accuracy    Float?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  bot Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-
-  @@map("training_data")
-}
-
-model KnowledgeBase {
-  id          String   @id @default(cuid())
-  userId      String
-  title       String
-  type        KnowledgeType
-  content     String
-  status      KnowledgeStatus @default(ACTIVE)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("knowledge_base")
-}
-
-// Team Management
-model Team {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  members TeamMember[]
-
-  @@map("teams")
-}
-
-model TeamMember {
-  id       String   @id @default(cuid())
-  teamId   String
-  userId   String
-  role     TeamRole @default(MEMBER)
-  status   TeamMemberStatus @default(PENDING)
-  joinedAt DateTime @default(now())
-
-  // Relations
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([teamId, userId])
-  @@map("team_members")
-}
-
-// Billing & Subscription
-model BillingInfo {
-  id            String   @id @default(cuid())
-  userId        String   @unique
-  plan          String
-  status        BillingStatus @default(ACTIVE)
-  currentPeriod DateTime
-  nextBilling   DateTime
-  amount        Float
-  currency      String   @default("USD")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  invoices Invoice[]
-
-  @@map("billing_info")
-}
-
-model Invoice {
-  id            String   @id @default(cuid())
-  billingInfoId String
-  amount        Float
-  currency      String   @default("USD")
-  status        InvoiceStatus @default(PENDING)
-  dueDate       DateTime
-  paidAt        DateTime?
-  createdAt     DateTime @default(now())
-
-  // Relations
-  billingInfo BillingInfo @relation(fields: [billingInfoId], references: [id], onDelete: Cascade)
-
-  @@map("invoices")
-}
-
-model UsageStats {
-  id          String   @id @default(cuid())
-  userId      String
-  metric      String
-  value       Float
-  period      String
-  recordedAt  DateTime @default(now())
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("usage_stats")
-}
-
-// API & Integrations
-model ApiKey {
-  id          String   @id @default(cuid())
-  userId      String
-  name        String
-  key         String   @unique
-  permissions Json
-  lastUsed    DateTime?
-  expiresAt   DateTime?
-  createdAt   DateTime @default(now())
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("api_keys")
-}
-
-model Webhook {
-  id          String   @id @default(cuid())
-  userId      String
-  url         String
-  events      Json
-  secret      String
-  status      WebhookStatus @default(ACTIVE)
-  lastTriggered DateTime?
-  createdAt   DateTime @default(now())
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("webhooks")
-}
-
-model BotIntegration {
-  id          String   @id @default(cuid())
-  botId       String
-  type        IntegrationType
-  config      Json
-  status      IntegrationStatus @default(ACTIVE)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  bot Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-
-  @@map("bot_integrations")
-}
-
-// Analytics
-model BotAnalytics {
-  id          String   @id @default(cuid())
-  botId       String
-  metric      String
-  value       Float
-  period      String
-  recordedAt  DateTime @default(now())
-
-  // Relations
-  bot Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-
-  @@map("bot_analytics")
-}
-
-model ConversationAnalytics {
-  id             String   @id @default(cuid())
-  conversationId String   @unique
-  duration       Int?
-  messageCount   Int
-  satisfaction   Float?
-  resolution     Boolean?
-  recordedAt     DateTime @default(now())
-
-  // Relations
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-
-  @@map("conversation_analytics")
-}
-
-// Notifications
-model Notification {
-  id        String   @id @default(cuid())
-  userId    String
-  type      NotificationType
-  title     String
-  message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("notifications")
-}
-
-// Enums
-enum UserRole {
-  USER
-  ADMIN
-  SUPER_ADMIN
-}
-
-enum AdminAction {
-  USER_CREATED
-  USER_UPDATED
-  USER_DELETED
-  USER_SUSPENDED
-  USER_ACTIVATED
-  SUBSCRIPTION_CHANGED
-  PAYMENT_PROCESSED
-  SYSTEM_CONFIGURED
-}
-
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-  SUSPENDED
-}
-
-enum BotStatus {
-  ACTIVE
-  INACTIVE
-  PAUSED
-  TRAINING
-}
-
 enum ConversationStatus {
   ACTIVE
-  ENDED
   PAUSED
+  ENDED
+  ARCHIVED
 }
 
 enum MessageRole {
@@ -394,452 +202,122 @@ enum MessageRole {
   SYSTEM
 }
 
-enum TrainingDataType {
-  CONVERSATION
-  DOCUMENT
-  FAQ
-  KNOWLEDGE
+// ---------- AUDIT LOGS (extra recomandat) ----------
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id])
+  action      String    // CREATE_USER, DELETE_BOT, etc.
+  resource    String    // user, bot, workspace, etc.
+  resourceId  String?   // ID of the affected resource
+  metadata    Json?     // Additional context data
+  ip          String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+
+  @@map("audit_logs")
 }
 
-enum KnowledgeType {
-  FAQ
-  DOCUMENTATION
-  ARTICLE
-  MANUAL
+// ---------- FEATURE FLAGS ----------
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("feature_flags")
 }
 
-enum KnowledgeStatus {
-  ACTIVE
-  INACTIVE
-  PENDING
+// ---------- API KEYS ----------
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  name        String
+  key         String   @unique
+  workspaceId String?
+  permissions Json?    // Array of permissions
+  lastUsed    DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("api_keys")
 }
 
-enum TeamRole {
-  OWNER
-  ADMIN
-  MEMBER
-  VIEWER
+// ---------- WEBHOOKS ----------
+
+model Webhook {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  workspaceId String?
+  events      Json     // Array of events to listen for
+  secret      String?
+  isActive    Boolean  @default(true)
+  lastTriggered DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("webhooks")
 }
 
-enum TeamMemberStatus {
-  PENDING
-  ACTIVE
-  INACTIVE
-}
+// ---------- NOTIFICATIONS ----------
 
-enum BillingStatus {
-  ACTIVE
-  CANCELLED
-  PAST_DUE
-  UNPAID
-}
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String?
+  title     String
+  message   String
+  type      NotificationType
+  read      Boolean  @default(false)
+  metadata  Json?
+  createdAt DateTime @default(now())
 
-enum InvoiceStatus {
-  PENDING
-  PAID
-  FAILED
-  CANCELLED
-}
-
-enum WebhookStatus {
-  ACTIVE
-  INACTIVE
-  FAILED
-}
-
-enum IntegrationType {
-  WHATSAPP
-  WEBSITE
-  EMAIL
-  SMS
-  CRM
-  CALENDAR
-  INSTAGRAM
-  FACEBOOK
-  TELEGRAM
-}
-
-enum IntegrationStatus {
-  ACTIVE
-  INACTIVE
-  ERROR
+  @@map("notifications")
 }
 
 enum NotificationType {
-  SYSTEM
-  BILLING
-  BOT
-  TEAM
-  SECURITY
+  INFO
+  WARNING
+  ERROR
+  SUCCESS
 }
 
-// Broadcast & Messaging
+// ---------- KNOWLEDGE BASE ----------
+
+model KnowledgeBase {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  content     String
+  tags        Json?    // Array of tags
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("knowledge_base")
+}
+
+// ---------- BROADCASTS ----------
+
 model Broadcast {
   id          String   @id @default(cuid())
-  botId       String
-  title       String
+  name        String
   message     String
-  type        BroadcastType
+  workspaceId String?
   status      BroadcastStatus @default(DRAFT)
   scheduledAt DateTime?
   sentAt      DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relations
-  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-  recipients  BroadcastRecipient[]
-  analytics   BroadcastAnalytics?
-
   @@map("broadcasts")
-}
-
-model BroadcastRecipient {
-  id          String   @id @default(cuid())
-  broadcastId String
-  userId      String
-  status      RecipientStatus @default(PENDING)
-  sentAt      DateTime?
-  deliveredAt DateTime?
-  readAt      DateTime?
-
-  // Relations
-  broadcast   Broadcast @relation(fields: [broadcastId], references: [id], onDelete: Cascade)
-  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([broadcastId, userId])
-  @@map("broadcast_recipients")
-}
-
-model BroadcastAnalytics {
-  id          String   @id @default(cuid())
-  broadcastId String   @unique
-  totalSent   Int      @default(0)
-  delivered   Int      @default(0)
-  read        Int      @default(0)
-  clicked     Int      @default(0)
-  responded   Int      @default(0)
-  createdAt   DateTime @default(now())
-
-  // Relations
-  broadcast   Broadcast @relation(fields: [broadcastId], references: [id], onDelete: Cascade)
-
-  @@map("broadcast_analytics")
-}
-
-// Segmentation & Tags
-model Tag {
-  id          String   @id @default(cuid())
-  botId       String
-  name        String
-  color       String   @default("#3B82F6")
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-  userTags    UserTag[]
-
-  @@unique([botId, name])
-  @@map("tags")
-}
-
-model UserTag {
-  id        String   @id @default(cuid())
-  userId    String
-  tagId     String
-  addedAt   DateTime @default(now())
-  addedBy   String?  // Bot ID or User ID who added the tag
-
-  // Relations
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tag       Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, tagId])
-  @@map("user_tags")
-}
-
-model Segment {
-  id          String   @id @default(cuid())
-  botId       String
-  name        String
-  description String?
-  rules       Json     // Segment rules (conditions)
-  userCount   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-
-  @@unique([botId, name])
-  @@map("segments")
-}
-
-// Polls & Surveys
-model Poll {
-  id          String   @id @default(cuid())
-  botId       String
-  title       String
-  question    String
-  type        PollType
-  options     Json     // Poll options
-  status      PollStatus @default(ACTIVE)
-  expiresAt   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-  responses   PollResponse[]
-
-  @@map("polls")
-}
-
-model PollResponse {
-  id        String   @id @default(cuid())
-  pollId    String
-  userId    String
-  answer    Json     // Selected option(s)
-  answeredAt DateTime @default(now())
-
-  // Relations
-  poll      Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([pollId, userId])
-  @@map("poll_responses")
-}
-
-// Live Agent Transfer
-model Agent {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  name        String
-  status      AgentStatus @default(OFFLINE)
-  maxConcurrent Int    @default(5)
-  currentLoad  Int     @default(0)
-  specializations Json? // Agent specializations
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transfers   AgentTransfer[]
-
-  @@map("agents")
-}
-
-model AgentTransfer {
-  id          String   @id @default(cuid())
-  conversationId String
-  agentId     String
-  reason      String?
-  status      TransferStatus @default(PENDING)
-  requestedAt DateTime @default(now())
-  acceptedAt  DateTime?
-  completedAt DateTime?
-
-  // Relations
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  agent       Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
-
-  @@map("agent_transfers")
-}
-
-// Message Templates
-model MessageTemplate {
-  id          String   @id @default(cuid())
-  botId       String
-  name        String
-  content     String
-  variables   Json?    // Template variables
-  category    String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-
-  @@unique([botId, name])
-  @@map("message_templates")
-}
-
-// Trigger System & Flow Builder
-model Trigger {
-  id          String   @id @default(cuid())
-  botId       String
-  name        String
-  description String?
-  triggerType TriggerType
-  conditions  Json     // Trigger conditions (keywords, patterns, etc.)
-  isActive    Boolean  @default(true)
-  priority    Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-  actions     TriggerAction[]
-
-  @@map("triggers")
-}
-
-model TriggerAction {
-  id        String   @id @default(cuid())
-  triggerId String
-  actionType ActionType
-  config    Json     // Action configuration
-  order     Int      @default(0)
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-
-  // Relations
-  trigger    Trigger @relation(fields: [triggerId], references: [id], onDelete: Cascade)
-
-  @@map("trigger_actions")
-}
-
-model Flow {
-  id          String   @id @default(cuid())
-  botId       String
-  name        String
-  description String?
-  nodes       Json     // Flow nodes configuration
-  connections Json     // Node connections
-  isActive    Boolean  @default(true)
-  isTemplate  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  bot         Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-  executions  FlowExecution[]
-
-  @@map("flows")
-}
-
-model FlowExecution {
-  id          String   @id @default(cuid())
-  flowId      String
-  userId      String
-  currentNode String?
-  status      FlowStatus @default(ACTIVE)
-  context     Json?    // Execution context/variables
-  startedAt   DateTime @default(now())
-  completedAt DateTime?
-
-  // Relations
-  flow        Flow @relation(fields: [flowId], references: [id], onDelete: Cascade)
-  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("flow_executions")
-}
-
-// Instagram Integration
-model InstagramAccount {
-  id              String   @id @default(cuid())
-  botId           String
-  accountId       String   @unique
-  username        String
-  accessToken     String
-  refreshToken    String?
-  tokenExpiresAt  DateTime?
-  permissions     Json     // Instagram permissions
-  isActive        Boolean  @default(true)
-  lastSyncAt      DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  // Relations
-  bot             Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
-
-  @@map("instagram_accounts")
-}
-
-// SuperAdmin Management
-model AdminAction {
-  id          String     @id @default(cuid())
-  adminId     String
-  targetUserId String?
-  action      AdminAction
-  description String?
-  metadata    Json?
-  ipAddress   String?
-  userAgent   String?
-  createdAt   DateTime   @default(now())
-
-  admin       User       @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  targetUser  User?      @relation(fields: [targetUserId], references: [id], onDelete: SetNull)
-
-  @@map("admin_actions")
-}
-
-model SystemSettings {
-  id        String   @id @default(cuid())
-  key       String   @unique
-  value     Json
-  updatedBy String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("system_settings")
-}
-
-model AdminDashboard {
-  id        String   @id @default(cuid())
-  adminId   String
-  widgets   Json
-  layout    Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("admin_dashboards")
-}
-
-// Additional Enums for Triggers and Flows
-enum TriggerType {
-  KEYWORD
-  PHRASE
-  REGEX
-  INTENT
-  ENTITY
-  SENTIMENT
-  TIME_BASED
-  USER_ATTRIBUTE
-  CONVERSATION_STATE
-}
-
-enum ActionType {
-  SEND_MESSAGE
-  SEND_TEMPLATE
-  SET_VARIABLE
-  ADD_TAG
-  REMOVE_TAG
-  TRIGGER_FLOW
-  TRANSFER_AGENT
-  SCHEDULE_MESSAGE
-  WEBHOOK
-  CONDITION
-  DELAY
-  RANDOM
-}
-
-enum FlowStatus {
-  ACTIVE
-  PAUSED
-  COMPLETED
-  FAILED
-  CANCELLED
-}
-
-// Additional Enums
-enum BroadcastType {
-  IMMEDIATE
-  SCHEDULED
-  RECURRING
 }
 
 enum BroadcastStatus {
@@ -848,79 +326,154 @@ enum BroadcastStatus {
   SENDING
   SENT
   FAILED
+  CANCELLED
 }
 
-enum RecipientStatus {
-  PENDING
-  SENT
-  DELIVERED
-  READ
-  FAILED
+// ---------- POLLS & SURVEYS ----------
+
+model Poll {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  options     Json     // Array of poll options
+  type        PollType
+  status      PollStatus @default(DRAFT)
+  workspaceId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("polls")
 }
 
 enum PollType {
   SINGLE_CHOICE
   MULTIPLE_CHOICE
-  RATING
   TEXT
+  RATING
 }
 
 enum PollStatus {
+  DRAFT
   ACTIVE
-  INACTIVE
-  EXPIRED
-}
-
-enum AgentStatus {
-  ONLINE
-  OFFLINE
-  BUSY
-  AWAY
-}
-
-enum TransferStatus {
-  PENDING
-  ACCEPTED
-  IN_PROGRESS
+  PAUSED
   COMPLETED
-  REJECTED
+  ARCHIVED
 }
 
-// Email Verification Models
-model EmailVerification {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  token     String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  
-  @@map("email_verifications")
-}
+// ---------- AUTOMATION & TRIGGERS ----------
 
-model PasswordReset {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  token     String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  
-  @@map("password_resets")
-}
-
-model UserProfile {
+model Trigger {
   id          String   @id @default(cuid())
-  userId      String   @unique
-  firstName   String?
-  lastName    String?
-  company     String?
-  phone       String?
-  timezone    String   @default("UTC")
-  language    String   @default("en")
-  preferences Json?
+  name        String
+  type        TriggerType
+  conditions  Json     // Trigger conditions
+  actions     Json     // Actions to perform
+  isActive    Boolean  @default(true)
+  workspaceId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@map("user_profiles")
+
+  @@map("triggers")
+}
+
+enum TriggerType {
+  KEYWORD
+  INTENT
+  ENTITY
+  TIME
+  EVENT
+  WEBHOOK
+}
+
+// ---------- FLOWS ----------
+
+model Flow {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  nodes       Json     // Flow nodes configuration
+  edges       Json     // Flow edges configuration
+  status      FlowStatus @default(DRAFT)
+  workspaceId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("flows")
+}
+
+enum FlowStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+// ---------- INTEGRATIONS ----------
+
+model Integration {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // whatsapp, instagram, etc.
+  config      Json     // Integration-specific configuration
+  workspaceId String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("integrations")
+}
+
+// ---------- ANALYTICS ----------
+
+model Analytics {
+  id          String   @id @default(cuid())
+  workspaceId String?
+  metric      String   // conversations_count, messages_sent, etc.
+  value       Float
+  date        DateTime
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@map("analytics")
+}
+
+// ---------- BILLING ----------
+
+model BillingInfo {
+  id          String   @id @default(cuid())
+  workspaceId String   @unique
+  customerId  String?  // Stripe customer ID
+  subscriptionId String? // Stripe subscription ID
+  planId      String
+  status      BillingStatus @default(ACTIVE)
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("billing_info")
+}
+
+enum BillingStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  UNPAID
+  TRIALING
+}
+
+// ---------- TEAM MANAGEMENT ----------
+
+model TeamInvite {
+  id          String   @id @default(cuid())
+  email       String
+  workspaceId String
+  role        WorkspaceRole
+  token       String   @unique
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  @@unique([email, workspaceId])
+  @@map("team_invites")
 }
