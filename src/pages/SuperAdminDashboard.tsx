@@ -398,15 +398,117 @@ const SuperAdminDashboard = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <h3 className="font-semibold">User Growth</h3>
-                    <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
-                      <p className="text-muted-foreground">Chart placeholder</p>
+                    <h3 className="font-semibold">User Growth (Last 6 Months)</h3>
+                    <div className="h-64 bg-muted rounded-lg p-4">
+                      <div className="flex items-end justify-between h-full space-x-2">
+                        {[120, 180, 220, 280, 320, 450].map((height, index) => (
+                          <div key={index} className="flex flex-col items-center">
+                            <div 
+                              className="bg-gradient-to-t from-blue-500 to-blue-300 rounded-t w-8 mb-2"
+                              style={{ height: `${(height / 500) * 200}px` }}
+                            />
+                            <span className="text-xs text-muted-foreground">
+                              {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'][index]}
+                            </span>
+                            <span className="text-xs font-medium">{height}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <h3 className="font-semibold">Revenue Trends</h3>
-                    <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
-                      <p className="text-muted-foreground">Chart placeholder</p>
+                    <h3 className="font-semibold">Revenue Trends (Last 6 Months)</h3>
+                    <div className="h-64 bg-muted rounded-lg p-4">
+                      <div className="flex items-end justify-between h-full space-x-2">
+                        {[8500, 12000, 15000, 18000, 22000, 28000].map((height, index) => (
+                          <div key={index} className="flex flex-col items-center">
+                            <div 
+                              className="bg-gradient-to-t from-green-500 to-green-300 rounded-t w-8 mb-2"
+                              style={{ height: `${(height / 30000) * 200}px` }}
+                            />
+                            <span className="text-xs text-muted-foreground">
+                              {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'][index]}
+                            </span>
+                            <span className="text-xs font-medium">${(height/1000).toFixed(0)}k</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Additional Analytics */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                  <div className="space-y-4">
+                    <h3 className="font-semibold">Bot Usage Distribution</h3>
+                    <div className="h-48 bg-muted rounded-lg p-4">
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Customer Support', value: 45, color: 'bg-blue-500' },
+                          { label: 'Sales', value: 30, color: 'bg-green-500' },
+                          { label: 'Marketing', value: 15, color: 'bg-purple-500' },
+                          { label: 'Other', value: 10, color: 'bg-orange-500' }
+                        ].map((item, index) => (
+                          <div key={index} className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <div className={`w-3 h-3 rounded-full ${item.color}`} />
+                              <span className="text-sm">{item.label}</span>
+                            </div>
+                            <span className="text-sm font-medium">{item.value}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h3 className="font-semibold">Message Volume (Today)</h3>
+                    <div className="h-48 bg-muted rounded-lg p-4">
+                      <div className="space-y-3">
+                        {[
+                          { time: '00:00', messages: 120 },
+                          { time: '04:00', messages: 80 },
+                          { time: '08:00', messages: 450 },
+                          { time: '12:00', messages: 680 },
+                          { time: '16:00', messages: 520 },
+                          { time: '20:00', messages: 380 }
+                        ].map((item, index) => (
+                          <div key={index} className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">{item.time}</span>
+                            <div className="flex items-center space-x-2">
+                              <div className="w-20 bg-gray-200 rounded-full h-2">
+                                <div 
+                                  className="bg-blue-500 h-2 rounded-full"
+                                  style={{ width: `${(item.messages / 700) * 100}%` }}
+                                />
+                              </div>
+                              <span className="text-sm font-medium">{item.messages}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h3 className="font-semibold">Channel Performance</h3>
+                    <div className="h-48 bg-muted rounded-lg p-4">
+                      <div className="space-y-3">
+                        {[
+                          { channel: 'WhatsApp', users: 1250, growth: '+12%' },
+                          { channel: 'Instagram', users: 890, growth: '+8%' },
+                          { channel: 'Messenger', users: 680, growth: '+15%' },
+                          { channel: 'Website', users: 320, growth: '+5%' }
+                        ].map((item, index) => (
+                          <div key={index} className="flex items-center justify-between">
+                            <div>
+                              <span className="text-sm font-medium">{item.channel}</span>
+                              <div className="text-xs text-muted-foreground">{item.users} users</div>
+                            </div>
+                            <span className="text-sm font-medium text-green-600">{item.growth}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
