@@ -151,6 +151,7 @@ const menuSections = [
     items: [
       { title: "Team Members", url: "/dashboard/team/members", icon: Users },
       { title: "Team Roles", url: "/dashboard/team/roles", icon: Shield },
+      { title: "Access Control", url: "/dashboard/admin/access-control", icon: Shield },
       { title: "Collaboration", url: "/dashboard/team/collaboration", icon: Users }
     ]
   },
