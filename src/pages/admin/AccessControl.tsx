@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import AdminPageLayout from '@/components/AdminPageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -402,7 +403,7 @@ const AccessControl: React.FC = () => {
                 Custom Roles (Enterprise)
               </CardTitle>
               <CardDescription>
-                Create custom roles for Enterprise customers
+                Create and manage custom roles for Enterprise customers
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -413,10 +414,21 @@ const AccessControl: React.FC = () => {
                 </AlertDescription>
               </Alert>
               
-              <div className="text-center py-8 text-muted-foreground">
-                <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>Custom role creation will be available in a future update.</p>
-                <p className="text-sm">This feature allows Enterprise customers to create their own roles with specific permissions.</p>
+              <div className="text-center py-8">
+                <Settings className="w-12 h-12 mx-auto mb-4 text-primary" />
+                <h3 className="text-lg font-semibold mb-2">Custom Role Management</h3>
+                <p className="text-muted-foreground mb-4">
+                  Create custom roles with specific permissions for your organization.
+                </p>
+                <p className="text-sm text-muted-foreground mb-6">
+                  This feature allows Enterprise customers to create their own roles with granular permissions.
+                </p>
+                <Button asChild>
+                  <Link to="/dashboard/admin/custom-roles">
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Manage Custom Roles
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>

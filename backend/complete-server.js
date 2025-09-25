@@ -76,7 +76,8 @@ function initDatabase() {
       sessions: [],
       passwordResets: [],
       auditLogs: [],
-      blockedIPs: []
+      blockedIPs: [],
+      customRoles: []
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(defaultData, null, 2));
   }
@@ -2016,6 +2017,201 @@ app.get('/api/rbac/tier-features', authenticateToken, (req, res) => {
     ]
   };
   res.json(tierFeatures);
+});
+
+// Custom Roles Endpoints
+app.get('/api/admin/custom-roles', authenticateToken, (req, res) => {
+  try {
+    const db = readDatabase();
+    const customRoles = db.customRoles || [];
+    res.json(customRoles);
+  } catch (error) {
+    console.error('Error fetching custom roles:', error);
+    res.status(500).json({ error: 'Failed to fetch custom roles' });
+  }
+});
+
+app.post('/api/admin/custom-roles', authenticateToken, (req, res) => {
+  try {
+    const { name, description, permissions, isActive } = req.body;
+    
+    // Validate required fields
+    if (!name || !permissions || !Array.isArray(permissions)) {
+      return res.status(400).json({ error: 'Name and permissions are required' });
+    }
+
+    // Check if user has permission to create custom roles
+    const user = req.user;
+    if (user.role !== 'ROOT_OWNER' && user.role !== 'SUPER_ADMIN' && 
+        (user.role !== 'OWNER' || user.planTier !== 'ENTERPRISE')) {
+      return res.status(403).json({ error: 'Insufficient permissions to create custom roles' });
+    }
+
+    const db = readDatabase();
+    const newRole = {
+      id: Date.now().toString(),
+      name,
+      description: description || '',
+      permissions,
+      isActive: isActive !== false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      createdBy: user.email,
+      usageCount: 0
+    };
+
+    if (!db.customRoles) {
+      db.customRoles = [];
+    }
+    
+    db.customRoles.push(newRole);
+    writeDatabase(db);
+
+    // Log the action
+    const auditLog = {
+      id: Date.now().toString(),
+      userId: user.id,
+      action: 'CREATE_CUSTOM_ROLE',
+      resource: 'custom_role',
+      resourceId: newRole.id,
+      metadata: { roleName: name, permissions: permissions.length },
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      createdAt: new Date().toISOString()
+    };
+
+    if (!db.auditLogs) {
+      db.auditLogs = [];
+    }
+    db.auditLogs.push(auditLog);
+    writeDatabase(db);
+
+    res.status(201).json(newRole);
+  } catch (error) {
+    console.error('Error creating custom role:', error);
+    res.status(500).json({ error: 'Failed to create custom role' });
+  }
+});
+
+app.put('/api/admin/custom-roles/:id', authenticateToken, (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, permissions, isActive } = req.body;
+    
+    const user = req.user;
+    const db = readDatabase();
+    
+    if (!db.customRoles) {
+      return res.status(404).json({ error: 'Custom role not found' });
+    }
+
+    const roleIndex = db.customRoles.findIndex(role => role.id === id);
+    if (roleIndex === -1) {
+      return res.status(404).json({ error: 'Custom role not found' });
+    }
+
+    const role = db.customRoles[roleIndex];
+    
+    // Check permissions
+    if (user.role !== 'ROOT_OWNER' && user.role !== 'SUPER_ADMIN' && 
+        (user.role !== 'OWNER' || user.planTier !== 'ENTERPRISE' || role.createdBy !== user.email)) {
+      return res.status(403).json({ error: 'Insufficient permissions to update this role' });
+    }
+
+    // Update role
+    db.customRoles[roleIndex] = {
+      ...role,
+      name: name || role.name,
+      description: description !== undefined ? description : role.description,
+      permissions: permissions || role.permissions,
+      isActive: isActive !== undefined ? isActive : role.isActive,
+      updatedAt: new Date().toISOString()
+    };
+
+    writeDatabase(db);
+
+    // Log the action
+    const auditLog = {
+      id: Date.now().toString(),
+      userId: user.id,
+      action: 'UPDATE_CUSTOM_ROLE',
+      resource: 'custom_role',
+      resourceId: id,
+      metadata: { roleName: name, permissions: permissions?.length },
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      createdAt: new Date().toISOString()
+    };
+
+    if (!db.auditLogs) {
+      db.auditLogs = [];
+    }
+    db.auditLogs.push(auditLog);
+    writeDatabase(db);
+
+    res.json(db.customRoles[roleIndex]);
+  } catch (error) {
+    console.error('Error updating custom role:', error);
+    res.status(500).json({ error: 'Failed to update custom role' });
+  }
+});
+
+app.delete('/api/admin/custom-roles/:id', authenticateToken, (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+    const db = readDatabase();
+    
+    if (!db.customRoles) {
+      return res.status(404).json({ error: 'Custom role not found' });
+    }
+
+    const roleIndex = db.customRoles.findIndex(role => role.id === id);
+    if (roleIndex === -1) {
+      return res.status(404).json({ error: 'Custom role not found' });
+    }
+
+    const role = db.customRoles[roleIndex];
+    
+    // Check permissions
+    if (user.role !== 'ROOT_OWNER' && user.role !== 'SUPER_ADMIN' && 
+        (user.role !== 'OWNER' || user.planTier !== 'ENTERPRISE' || role.createdBy !== user.email)) {
+      return res.status(403).json({ error: 'Insufficient permissions to delete this role' });
+    }
+
+    // Check if role is in use
+    if (role.usageCount > 0) {
+      return res.status(400).json({ error: 'Cannot delete role that is currently in use' });
+    }
+
+    // Remove role
+    db.customRoles.splice(roleIndex, 1);
+    writeDatabase(db);
+
+    // Log the action
+    const auditLog = {
+      id: Date.now().toString(),
+      userId: user.id,
+      action: 'DELETE_CUSTOM_ROLE',
+      resource: 'custom_role',
+      resourceId: id,
+      metadata: { roleName: role.name },
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      createdAt: new Date().toISOString()
+    };
+
+    if (!db.auditLogs) {
+      db.auditLogs = [];
+    }
+    db.auditLogs.push(auditLog);
+    writeDatabase(db);
+
+    res.json({ message: 'Custom role deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting custom role:', error);
+    res.status(500).json({ error: 'Failed to delete custom role' });
+  }
 });
 
 app.listen(PORT, () => {

@@ -62,6 +62,7 @@ import SessionManagement from "./pages/admin/SessionManagement";
 import SecurityDashboard from "./pages/admin/SecurityDashboard";
 import GDPRTools from "./pages/admin/GDPRTools";
 import AccessControl from "./pages/admin/AccessControl";
+import CustomRoles from "./pages/admin/CustomRoles";
 import Platforms from "./pages/Platforms";
 import FlowBuilder from "./pages/FlowBuilder";
 import UnifiedInbox from "./pages/UnifiedInbox";
@@ -357,6 +358,11 @@ function App() {
                     <Route path="admin/access-control" element={
                       <ProtectedRoute requiredPermission={{ resource: 'roles', action: 'read' }}>
                         <AccessControl />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="admin/custom-roles" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'roles', action: 'create' }}>
+                        <CustomRoles />
                       </ProtectedRoute>
                     } />
                     
