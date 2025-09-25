@@ -52,56 +52,79 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 
-const mainItems = [
-  { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "My AI Agents", url: "/bots", icon: Bot },
-  { title: "Cross-Channel Conversations", url: "/conversations", icon: MessageSquare },
+// 🏠 Dashboard
+const dashboardItems = [
+  { title: "Overview", url: "/dashboard", icon: Home },
+];
+
+// 💬 Conversations
+const conversationItems = [
+  { title: "All Conversations", url: "/conversations", icon: MessageSquare },
+  { title: "Live Transfer", url: "/live-agent", icon: Headphones },
   { title: "Broadcast Messages", url: "/broadcast", icon: Megaphone },
   { title: "Polls & Surveys", url: "/polls", icon: TrendingUp },
-  { title: "Live Agent Transfer", url: "/live-agent", icon: Headphones },
-  { title: "Omnichannel Analytics", url: "/analytics", icon: BarChart3 },
+];
+
+// 🤖 AI & Automation
+const aiItems = [
+  { title: "My AI Agents", url: "/bots", icon: Bot },
+  { title: "AI Training", url: "/ai/training", icon: Zap },
+  { title: "AI Templates", url: "/ai/templates", icon: FileText },
+  { title: "AI Knowledge Base", url: "/ai/knowledge", icon: Database },
+  { title: "Flow Builder", url: "/flows", icon: Target },
+  { title: "Triggers", url: "/triggers", icon: Target },
+];
+
+// 🌐 Channels & Integrations
+const channelItems = [
+  { title: "WhatsApp", url: "/channels/whatsapp", icon: Phone },
+  { title: "Instagram", url: "/channels/instagram", icon: Instagram },
+  { title: "Messenger", url: "/channels/messenger", icon: Facebook },
+  { title: "Website Widget", url: "/channels/website", icon: Globe },
+  { title: "Mobile App", url: "/channels/mobile", icon: Smartphone },
+  { title: "Email", url: "/channels/email", icon: Mail },
 ];
 
 const integrationItems = [
   { title: "Website Integration", url: "/integrations/website", icon: Globe },
   { title: "Instagram Integration", url: "/integrations/instagram", icon: Instagram },
-  { title: "Messenger Integration", url: "/integrations/messenger", icon: Facebook },
   { title: "Widget Builder", url: "/integrations/widget", icon: Code },
   { title: "API Keys", url: "/integrations/api", icon: Key },
   { title: "Webhooks", url: "/integrations/webhooks", icon: Webhook },
-  { title: "Trigger System", url: "/triggers", icon: Target },
 ];
 
-const channelsItems = [
-  { title: "WhatsApp", url: "/channels/whatsapp", icon: MessageCircle },
-  { title: "Instagram", url: "/channels/instagram", icon: Instagram },
-  { title: "Messenger", url: "/channels/messenger", icon: Facebook },
-  { title: "Website Chat", url: "/channels/website", icon: Monitor },
-  { title: "Mobile App", url: "/channels/mobile", icon: Smartphone },
+// 📊 Analytics & Insights
+const analyticsItems = [
+  { title: "Omnichannel Analytics", url: "/analytics", icon: BarChart3 },
 ];
 
-const advancedItems = [
-  { title: "AI Training", url: "/ai/training", icon: Zap },
-  { title: "Templates", url: "/ai/templates", icon: FileText },
-  { title: "Customization", url: "/ai/customization", icon: Palette },
-  { title: "Knowledge Base", url: "/ai/knowledge", icon: Database },
-  { title: "Flow Builder", url: "/flows", icon: Target },
-];
-
+// 👥 Team & Settings
 const teamItems = [
   { title: "Team Members", url: "/team/members", icon: Users },
-  { title: "Roles & Permissions", url: "/team/roles", icon: Shield },
+  { title: "Team Roles", url: "/team/roles", icon: Shield },
   { title: "Collaboration", url: "/team/collaboration", icon: Users },
 ];
 
-const settingsItems = [
-  { title: "Phone Numbers", url: "/settings/phone", icon: Phone },
+const accountSettingsItems = [
+  { title: "Profile Settings", url: "/settings/profile", icon: User },
   { title: "Account Settings", url: "/settings/account", icon: Settings },
-  { title: "Profile", url: "/settings/profile", icon: User },
-  { title: "Billing & Invoicing", url: "/billing", icon: CreditCard },
-  { title: "Subscription Tiers", url: "/subscription-tiers", icon: Crown },
-  { title: "Security", url: "/settings/security", icon: Shield },
+  { title: "Phone Settings", url: "/settings/phone", icon: Phone },
+  { title: "Security Settings", url: "/settings/security", icon: Shield },
   { title: "Export Data", url: "/settings/export", icon: Download },
+];
+
+// 💳 Billing & Admin
+const billingItems = [
+  { title: "Subscription Plans", url: "/subscription-tiers", icon: Crown },
+  { title: "Billing Overview", url: "/billing", icon: CreditCard },
+  { title: "Super Admin Dashboard", url: "/superadmin", icon: Shield },
+];
+
+// 📚 Help & Resources
+const helpItems = [
+  { title: "Documentation", url: "/docs", icon: FileText },
+  { title: "Support", url: "/support", icon: Users },
+  { title: "Pricing", url: "/pricing", icon: CreditCard },
 ];
 
 export default function DashboardSidebar() {
@@ -138,11 +161,12 @@ export default function DashboardSidebar() {
         </div>
 
         {/* Main Navigation */}
+        {/* 🏠 Dashboard */}
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          <SidebarGroupLabel>🏠 Dashboard</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainItems.map((item) => (
+              {dashboardItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} className={getNavCls}>
@@ -156,11 +180,59 @@ export default function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Integration Navigation */}
+        {/* 💬 Conversations */}
         <SidebarGroup>
-          <SidebarGroupLabel>Integrations</SidebarGroupLabel>
+          <SidebarGroupLabel>💬 Conversations</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              {conversationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.url} className={getNavCls}>
+                      <item.icon className="h-4 w-4" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* 🤖 AI & Automation */}
+        <SidebarGroup>
+          <SidebarGroupLabel>🤖 AI & Automation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {aiItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.url} className={getNavCls}>
+                      <item.icon className="h-4 w-4" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* 🌐 Channels & Integrations */}
+        <SidebarGroup>
+          <SidebarGroupLabel>🌐 Channels & Integrations</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {channelItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.url} className={getNavCls}>
+                      <item.icon className="h-4 w-4" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
               {integrationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -175,12 +247,12 @@ export default function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Channels Navigation */}
+        {/* 📊 Analytics & Insights */}
         <SidebarGroup>
-          <SidebarGroupLabel>Omnichannel</SidebarGroupLabel>
+          <SidebarGroupLabel>📊 Analytics & Insights</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {channelsItems.map((item) => (
+              {analyticsItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} className={getNavCls}>
@@ -194,28 +266,9 @@ export default function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* AI & Advanced Navigation */}
+        {/* 👥 Team & Settings */}
         <SidebarGroup>
-          <SidebarGroupLabel>AI & Automation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {advancedItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Team Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Team</SidebarGroupLabel>
+          <SidebarGroupLabel>👥 Team & Settings</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {teamItems.map((item) => (
@@ -228,16 +281,45 @@ export default function DashboardSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {accountSettingsItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.url} className={getNavCls}>
+                      <item.icon className="h-4 w-4" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Settings Navigation */}
+        {/* 💳 Billing & Admin */}
         <SidebarGroup>
-          <SidebarGroupLabel>Settings</SidebarGroupLabel>
+          <SidebarGroupLabel>💳 Billing & Admin</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {settingsItems.map((item) => (
+              {billingItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.url} className={getNavCls}>
+                      <item.icon className="h-4 w-4" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* 📚 Help & Resources */}
+        <SidebarGroup>
+          <SidebarGroupLabel>📚 Help & Resources</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {helpItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} className={getNavCls}>
