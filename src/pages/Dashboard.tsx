@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 const Dashboard = () => {
   const { user } = useAuth();
   const { currentPlan, userSubscription, getUsagePercentage, isFeatureAvailable } = useSubscription();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalUsers: 0,
     activeUsers: 0,
@@ -53,6 +55,15 @@ const Dashboard = () => {
       if (!user) {
         setError('Authentication required');
         setLoading(false);
+        return;
+      }
+
+      // Check if user has valid token
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        setError('Authentication required');
+        setLoading(false);
+        navigate('/login');
         return;
       }
 
