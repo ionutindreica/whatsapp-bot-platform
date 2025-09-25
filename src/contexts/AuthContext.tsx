@@ -74,6 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     authApi.logout();
     setUser(null);
+    // Redirect to login page
+    window.location.href = '/login';
   };
 
   const updateProfile = async (data: any) => {

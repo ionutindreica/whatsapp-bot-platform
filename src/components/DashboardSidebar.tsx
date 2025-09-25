@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Home, 
   Bot, 
@@ -108,6 +109,7 @@ export default function DashboardSidebar() {
   const collapsed = state === "collapsed";
   const location = useLocation();
   const currentPath = location.pathname;
+  const { logout } = useAuth();
 
   const isActive = (path: string) => currentPath === path;
   const isMainExpanded = mainItems.some((item) => isActive(item.url));
@@ -256,7 +258,11 @@ export default function DashboardSidebar() {
               <span className="text-sm text-muted-foreground">Theme</span>
               <ThemeToggle />
             </div>
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-destructive">
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-muted-foreground hover:text-destructive"
+              onClick={logout}
+            >
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
             </Button>
