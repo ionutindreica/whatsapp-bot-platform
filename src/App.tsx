@@ -11,7 +11,6 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import ModernDashboard from "./pages/ModernDashboard";
 import Layout from "./components/Layout";
-import TestSidebar from "./components/TestSidebar";
 import Pricing from "./pages/Pricing";
 import Docs from "./pages/Docs";
 import Support from "./pages/Support";
