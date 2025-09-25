@@ -141,9 +141,9 @@ const SettingsExport = () => {
       case "failed":
         return "bg-red-100 text-red-800";
       case "processing":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-blue-100 text-blue-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -154,7 +154,7 @@ const SettingsExport = () => {
       case "failed":
         return <XCircle className="w-4 h-4 text-red-600" />;
       case "processing":
-        return <RefreshCw className="w-4 h-4 text-yellow-600" />;
+        return <RefreshCw className="w-4 h-4 text-blue-600" />;
       default:
         return <AlertTriangle className="w-4 h-4 text-gray-600" />;
     }

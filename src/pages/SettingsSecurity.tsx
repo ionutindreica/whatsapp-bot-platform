@@ -142,7 +142,7 @@ const SettingsSecurity = () => {
       case "failed":
         return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -276,7 +276,7 @@ const SettingsSecurity = () => {
                       <h4 className="font-medium">SMS Authentication</h4>
                       <p className="text-sm text-muted-foreground">Receive codes via SMS</p>
                     </div>
-                    <Badge className={twoFactorEnabled ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                    <Badge className={twoFactorEnabled ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"}>
                       {twoFactorEnabled ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
@@ -312,7 +312,7 @@ const SettingsSecurity = () => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Login Alerts</span>
-                      <Badge className={loginAlerts ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                      <Badge className={loginAlerts ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"}>
                         {loginAlerts ? "Enabled" : "Disabled"}
                       </Badge>
                     </div>

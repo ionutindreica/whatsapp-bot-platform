@@ -388,11 +388,11 @@ const SettingsProfile = () => {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Show email address</span>
-                      <Badge variant="outline" className="bg-gray-100 text-gray-800">Disabled</Badge>
+                      <Badge variant="outline" className="bg-muted text-muted-foreground">Disabled</Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Show phone number</span>
-                      <Badge variant="outline" className="bg-gray-100 text-gray-800">Disabled</Badge>
+                      <Badge variant="outline" className="bg-muted text-muted-foreground">Disabled</Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Show social links</span>

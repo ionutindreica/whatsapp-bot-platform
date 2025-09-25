@@ -25,11 +25,10 @@ import {
   Headphones,
   BarChart3
 } from "lucide-react";
-import DashboardSidebar from "@/components/DashboardSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import Layout from "@/components/Layout";
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { currentPlan, userSubscription, getUsagePercentage, isFeatureAvailable } = useSubscription();
   const navigate = useNavigate();
   const [stats, setStats] = useState({
@@ -45,19 +44,16 @@ const Dashboard = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    loadDashboardData();
-  }, []);
+    // Wait for auth to load before checking authentication
+    if (!authLoading) {
+      loadDashboardData();
+    }
+  }, [authLoading, user]);
 
   const loadDashboardData = async () => {
     try {
       setError('');
       
-      if (!user) {
-        setError('Authentication required');
-        setLoading(false);
-        return;
-      }
-
       // Check if user has valid token
       const token = localStorage.getItem('authToken');
       if (!token) {
@@ -67,8 +63,13 @@ const Dashboard = () => {
         return;
       }
 
+      // If auth is still loading, wait for it
+      if (authLoading) {
+        return;
+      }
+
       // Load user stats
-      const statsResponse = await fetch('http://localhost:3001/api/user/usage', {
+      const statsResponse = await fetch('http://localhost:5000/api/user/usage', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
@@ -81,7 +82,7 @@ const Dashboard = () => {
       }
 
       // Load user's bots
-      const botsResponse = await fetch('http://localhost:3001/api/bots', {
+      const botsResponse = await fetch('http://localhost:5000/api/bots', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
@@ -120,7 +121,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:3001/api/bots/${botId}/toggle`, {
+      const response = await fetch(`http://localhost:5000/api/bots/${botId}/toggle`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -258,48 +259,41 @@ const Dashboard = () => {
     }
   ];
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
-      <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-background">
-          <DashboardSidebar />
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading Dashboard...</p>
-            </div>
+      <Layout>
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-muted-foreground">
+              {authLoading ? 'Loading authentication...' : 'Loading Dashboard...'}
+            </p>
           </div>
         </div>
-      </SidebarProvider>
+      </Layout>
     );
   }
 
   if (error) {
     return (
-      <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-background">
-          <DashboardSidebar />
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-red-500 text-xl mb-4">⚠️</div>
-              <h2 className="text-2xl font-bold text-red-600 mb-2">Error</h2>
-              <p className="text-muted-foreground mb-4">{error}</p>
-              <Button onClick={loadDashboardData}>
-                Retry
-              </Button>
-            </div>
+      <Layout>
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="text-red-500 text-xl mb-4">⚠️</div>
+            <h2 className="text-2xl font-bold text-red-600 mb-2">Error</h2>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button onClick={loadDashboardData}>
+              Retry
+            </Button>
           </div>
         </div>
-      </SidebarProvider>
+      </Layout>
     );
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <DashboardSidebar />
-        
-        <main className="flex-1 p-6 overflow-auto">
+    <Layout>
+      <main className="p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
@@ -602,9 +596,8 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </div>
-        </main>
-      </div>
-    </SidebarProvider>
+      </main>
+    </Layout>
   );
 };
 

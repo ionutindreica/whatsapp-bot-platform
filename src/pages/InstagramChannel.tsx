@@ -100,9 +100,9 @@ const InstagramChannel = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "CONNECTED": return "bg-green-100 text-green-800";
-      case "DISCONNECTED": return "bg-gray-100 text-gray-800";
+      case "DISCONNECTED": return "bg-muted text-muted-foreground";
       case "ERROR": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      default: return "bg-muted text-muted-foreground";
     }
   };
 
@@ -116,13 +116,13 @@ const InstagramChannel = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <BackToDashboard />
           <div className="flex items-center justify-between mt-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
                 <Instagram className="w-8 h-8 text-pink-600" />
                 Instagram Integration
               </h1>
@@ -135,7 +135,7 @@ const InstagramChannel = () => {
                 <BarChart3 className="mr-2 w-4 h-4" />
                 Analytics
               </Button>
-              <Button>
+              <Button variant="default">
                 <Plus className="mr-2 w-4 h-4" />
                 Connect Account
               </Button>
@@ -175,9 +175,9 @@ const InstagramChannel = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <h4 className="font-medium text-blue-900 mb-2">Requirements:</h4>
-                    <ul className="text-sm text-blue-800 space-y-1">
+                  <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Requirements:</h4>
+                    <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
                       <li>• Instagram Business or Creator account</li>
                       <li>• Connected Facebook Page</li>
                       <li>• Instagram Basic Display API access</li>
@@ -217,6 +217,7 @@ const InstagramChannel = () => {
                     onClick={handleConnectInstagram}
                     disabled={isConnecting}
                     className="w-full"
+                    variant="default"
                   >
                     {isConnecting ? (
                       <>
@@ -281,17 +282,17 @@ const InstagramChannel = () => {
                       </div>
 
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" className="flex-1">
+                        <Button size="sm" variant="default" className="flex-1">
                           <RefreshCw className="mr-1 w-3 h-3" />
                           Sync
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="default">
                           <Settings className="w-3 h-3" />
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="default">
                           <Edit className="w-3 h-3" />
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="destructive">
                           <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
@@ -315,10 +316,10 @@ const InstagramChannel = () => {
                         <CardDescription>Manage incoming Instagram messages and comments</CardDescription>
                       </div>
                       <div className="flex gap-2">
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                        <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-200">
                           {recentMessages.filter(m => m.status === "UNREAD").length} Unread
                         </Badge>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="default">
                           <RefreshCw className="mr-1 w-3 h-3" />
                           Refresh
                         </Button>
@@ -328,7 +329,7 @@ const InstagramChannel = () => {
                   <CardContent>
                     <div className="space-y-4">
                       {recentMessages.map((message) => (
-                        <div key={message.id} className={`border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors ${
+                        <div key={message.id} className={`border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
                           message.status === "UNREAD" ? "bg-blue-50 border-blue-200" : ""
                         }`}>
                           <div className="flex items-center justify-between mb-2">
@@ -348,11 +349,11 @@ const InstagramChannel = () => {
                           </div>
                           <p className="text-sm text-gray-700 mb-3">{message.message}</p>
                           <div className="flex gap-2">
-                            <Button size="sm" variant="outline">
+                            <Button size="sm" variant="default">
                               <MessageCircle className="mr-1 w-3 h-3" />
                               Reply
                             </Button>
-                            <Button size="sm" variant="outline">
+                            <Button size="sm" variant="default">
                               <Eye className="w-3 h-3" />
                             </Button>
                           </div>
@@ -371,19 +372,19 @@ const InstagramChannel = () => {
                     <CardDescription>Common Instagram management tasks</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="default" className="w-full justify-start">
                       <MessageSquare className="mr-2 w-4 h-4" />
                       Send Direct Message
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="default" className="w-full justify-start">
                       <Camera className="mr-2 w-4 h-4" />
                       Post Story Reply
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="default" className="w-full justify-start">
                       <Heart className="mr-2 w-4 h-4" />
                       Like & Comment
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="default" className="w-full justify-start">
                       <Users className="mr-2 w-4 h-4" />
                       Follow Back
                     </Button>
@@ -428,7 +429,7 @@ const InstagramChannel = () => {
                     <CardTitle>Instagram Automation Rules</CardTitle>
                     <CardDescription>Set up automated responses and actions for Instagram interactions</CardDescription>
                   </div>
-                  <Button>
+                  <Button variant="default">
                     <Plus className="mr-2 w-4 h-4" />
                     New Rule
                   </Button>
@@ -484,7 +485,7 @@ const InstagramChannel = () => {
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-base">{rule.name}</CardTitle>
-                          <Badge className={rule.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                          <Badge className={rule.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"}>
                             {rule.status}
                           </Badge>
                         </div>
@@ -503,11 +504,11 @@ const InstagramChannel = () => {
                             <span className="font-medium">{rule.responses}</span>
                           </div>
                           <div className="flex gap-2">
-                            <Button size="sm" variant="outline" className="flex-1">
+                            <Button size="sm" variant="default" className="flex-1">
                               <Edit className="mr-1 w-3 h-3" />
                               Edit
                             </Button>
-                            <Button size="sm" variant="outline">
+                            <Button size="sm" variant="default">
                               <Eye className="w-3 h-3" />
                             </Button>
                           </div>
@@ -582,31 +583,31 @@ const InstagramChannel = () => {
                   <CardDescription>Manage Instagram data and permissions</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <h4 className="font-medium text-yellow-900 mb-2">Data Usage</h4>
-                    <p className="text-sm text-yellow-800">
+                  <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Data Usage</h4>
+                    <p className="text-sm text-blue-800 dark:text-blue-200">
                       We only access messages and comments for automation purposes. 
                       Your Instagram data is encrypted and never shared with third parties.
                     </p>
                   </div>
 
                   <div className="space-y-3">
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="default" className="w-full justify-start">
                       <Key className="mr-2 w-4 h-4" />
                       Manage API Permissions
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="default" className="w-full justify-start">
                       <Shield className="mr-2 w-4 h-4" />
                       Data Export
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="destructive" className="w-full justify-start">
                       <Trash2 className="mr-2 w-4 h-4" />
                       Delete All Data
                     </Button>
                   </div>
 
                   <div className="pt-4 border-t">
-                    <Button className="w-full">
+                    <Button className="w-full" variant="default">
                       <Shield className="mr-2 w-4 h-4" />
                       Save Security Settings
                     </Button>

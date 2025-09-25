@@ -104,13 +104,13 @@ const Conversations = () => {
       case "active":
         return "bg-green-100 text-green-800";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-blue-100 text-blue-800";
       case "resolved":
         return "bg-blue-100 text-blue-800";
       case "closed":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -119,7 +119,7 @@ const Conversations = () => {
       case "active":
         return <CheckCircle className="w-4 h-4 text-green-600" />;
       case "pending":
-        return <Clock className="w-4 h-4 text-yellow-600" />;
+        return <Clock className="w-4 h-4 text-blue-600" />;
       case "resolved":
         return <CheckCircle className="w-4 h-4 text-blue-600" />;
       case "closed":

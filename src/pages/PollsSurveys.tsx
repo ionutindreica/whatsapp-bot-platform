@@ -165,13 +165,13 @@ const PollsSurveys = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <BackToDashboard />
           <div className="flex items-center justify-between mt-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
                 <BarChart3 className="w-8 h-8 text-purple-600" />
                 Polls & Surveys
               </h1>
@@ -338,7 +338,7 @@ const PollsSurveys = () => {
                     <CardDescription>How your poll will appear to users</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="border rounded-lg p-4 bg-white">
+                    <div className="border rounded-lg p-4 bg-card">
                       <h3 className="font-medium mb-2">{newPoll.title || "Poll Title"}</h3>
                       <p className="text-sm text-gray-600 mb-4">
                         {newPoll.question || "Your question will appear here..."}
@@ -447,7 +447,7 @@ const PollsSurveys = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Total Polls</p>
-                      <p className="text-2xl font-bold text-gray-900">12</p>
+                      <p className="text-2xl font-bold text-foreground">12</p>
                     </div>
                   </div>
                 </CardContent>
@@ -461,7 +461,7 @@ const PollsSurveys = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Total Responses</p>
-                      <p className="text-2xl font-bold text-gray-900">1,234</p>
+                      <p className="text-2xl font-bold text-foreground">1,234</p>
                     </div>
                   </div>
                 </CardContent>
@@ -475,7 +475,7 @@ const PollsSurveys = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Avg. Response Rate</p>
-                      <p className="text-2xl font-bold text-gray-900">68%</p>
+                      <p className="text-2xl font-bold text-foreground">68%</p>
                     </div>
                   </div>
                 </CardContent>
@@ -489,7 +489,7 @@ const PollsSurveys = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Active Polls</p>
-                      <p className="text-2xl font-bold text-gray-900">5</p>
+                      <p className="text-2xl font-bold text-foreground">5</p>
                     </div>
                   </div>
                 </CardContent>

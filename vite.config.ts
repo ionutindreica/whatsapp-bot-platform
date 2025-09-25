@@ -6,9 +6,9 @@ import path from "path";
 export default defineConfig(() => ({
   server: {
     host: "localhost",
-    port: 8080,
+    port: 3000,
     hmr: {
-      port: 8080,
+      host: "localhost",
     },
   },
   plugins: [react()],

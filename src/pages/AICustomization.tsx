@@ -29,7 +29,7 @@ const AICustomization = () => {
   });
 
   const themes = [
-    { name: "Light", value: "light", preview: "bg-white border" },
+    { name: "Light", value: "light", preview: "bg-card border" },
     { name: "Dark", value: "dark", preview: "bg-gray-900 border-gray-700" },
     { name: "WhatsApp", value: "whatsapp", preview: "bg-green-50 border-green-200" },
     { name: "Custom", value: "custom", preview: "bg-gradient-to-r from-blue-500 to-purple-600" }
@@ -300,7 +300,7 @@ const AICustomization = () => {
                 <div className="bg-gray-100 p-6 rounded-lg">
                   <div className="max-w-md mx-auto">
                     <div 
-                      className="bg-white rounded-lg shadow-lg p-4"
+                      className="bg-card rounded-lg shadow-lg p-4"
                       style={{
                         fontFamily: customization.fontFamily,
                         fontSize: customization.fontSize,

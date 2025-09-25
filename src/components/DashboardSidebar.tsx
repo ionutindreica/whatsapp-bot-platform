@@ -59,72 +59,72 @@ const dashboardItems = [
 
 // 💬 Conversations
 const conversationItems = [
-  { title: "All Conversations", url: "/conversations", icon: MessageSquare },
-  { title: "Live Transfer", url: "/live-agent", icon: Headphones },
-  { title: "Broadcast Messages", url: "/broadcast", icon: Megaphone },
-  { title: "Polls & Surveys", url: "/polls", icon: TrendingUp },
+  { title: "All Conversations", url: "/dashboard/conversations", icon: MessageSquare },
+  { title: "Live Transfer", url: "/dashboard/live-agent", icon: Headphones },
+  { title: "Broadcast Messages", url: "/dashboard/broadcast", icon: Megaphone },
+  { title: "Polls & Surveys", url: "/dashboard/polls", icon: TrendingUp },
 ];
 
 // 🤖 AI & Automation
 const aiItems = [
-  { title: "My AI Agents", url: "/bots", icon: Bot },
-  { title: "AI Training", url: "/ai/training", icon: Zap },
-  { title: "AI Templates", url: "/ai/templates", icon: FileText },
-  { title: "AI Knowledge Base", url: "/ai/knowledge", icon: Database },
-  { title: "Flow Builder", url: "/flows", icon: Target },
-  { title: "Triggers", url: "/triggers", icon: Target },
+  { title: "My AI Agents", url: "/dashboard/bots", icon: Bot },
+  { title: "AI Training", url: "/dashboard/ai/training", icon: Zap },
+  { title: "AI Templates", url: "/dashboard/ai/templates", icon: FileText },
+  { title: "AI Knowledge Base", url: "/dashboard/ai/knowledge", icon: Database },
+  { title: "Flow Builder", url: "/dashboard/flows", icon: Target },
+  { title: "Triggers", url: "/dashboard/triggers", icon: Target },
 ];
 
 // 🌐 Channels & Integrations
 const channelItems = [
-  { title: "WhatsApp", url: "/channels/whatsapp", icon: Phone },
-  { title: "Instagram", url: "/channels/instagram", icon: Instagram },
-  { title: "Messenger", url: "/channels/messenger", icon: Facebook },
-  { title: "Website Widget", url: "/channels/website", icon: Globe },
-  { title: "Mobile App", url: "/channels/mobile", icon: Smartphone },
-  { title: "Email", url: "/channels/email", icon: Mail },
+  { title: "WhatsApp", url: "/dashboard/channels/whatsapp", icon: Phone },
+  { title: "Instagram", url: "/dashboard/channels/instagram", icon: Instagram },
+  { title: "Messenger", url: "/dashboard/channels/messenger", icon: Facebook },
+  { title: "Website Widget", url: "/dashboard/channels/website", icon: Globe },
+  { title: "Mobile App", url: "/dashboard/channels/mobile", icon: Smartphone },
+  { title: "Email", url: "/dashboard/channels/email", icon: Mail },
 ];
 
 const integrationItems = [
-  { title: "Website Integration", url: "/integrations/website", icon: Globe },
-  { title: "Instagram Integration", url: "/integrations/instagram", icon: Instagram },
-  { title: "Widget Builder", url: "/integrations/widget", icon: Code },
-  { title: "API Keys", url: "/integrations/api", icon: Key },
-  { title: "Webhooks", url: "/integrations/webhooks", icon: Webhook },
+  { title: "Website Integration", url: "/dashboard/integrations/website", icon: Globe },
+  { title: "Instagram Integration", url: "/dashboard/integrations/instagram", icon: Instagram },
+  { title: "Widget Builder", url: "/dashboard/integrations/widget", icon: Code },
+  { title: "API Keys", url: "/dashboard/integrations/api", icon: Key },
+  { title: "Webhooks", url: "/dashboard/integrations/webhooks", icon: Webhook },
 ];
 
 // 📊 Analytics & Insights
 const analyticsItems = [
-  { title: "Omnichannel Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Omnichannel Analytics", url: "/dashboard/analytics", icon: BarChart3 },
 ];
 
 // 👥 Team & Settings
 const teamItems = [
-  { title: "Team Members", url: "/team/members", icon: Users },
-  { title: "Team Roles", url: "/team/roles", icon: Shield },
-  { title: "Collaboration", url: "/team/collaboration", icon: Users },
+  { title: "Team Members", url: "/dashboard/team/members", icon: Users },
+  { title: "Team Roles", url: "/dashboard/team/roles", icon: Shield },
+  { title: "Collaboration", url: "/dashboard/team/collaboration", icon: Users },
 ];
 
 const accountSettingsItems = [
-  { title: "Profile Settings", url: "/settings/profile", icon: User },
-  { title: "Account Settings", url: "/settings/account", icon: Settings },
-  { title: "Phone Settings", url: "/settings/phone", icon: Phone },
-  { title: "Security Settings", url: "/settings/security", icon: Shield },
-  { title: "Export Data", url: "/settings/export", icon: Download },
+  { title: "Profile Settings", url: "/dashboard/settings/profile", icon: User },
+  { title: "Account Settings", url: "/dashboard/settings/account", icon: Settings },
+  { title: "Phone Settings", url: "/dashboard/settings/phone", icon: Phone },
+  { title: "Security Settings", url: "/dashboard/settings/security", icon: Shield },
+  { title: "Export Data", url: "/dashboard/settings/export", icon: Download },
 ];
 
 // 💳 Billing & Admin
 const billingItems = [
-  { title: "Subscription Plans", url: "/subscription-tiers", icon: Crown },
-  { title: "Billing Overview", url: "/billing", icon: CreditCard },
-  { title: "Super Admin Dashboard", url: "/superadmin", icon: Shield },
+  { title: "Subscription Plans", url: "/dashboard/subscription-tiers", icon: Crown },
+  { title: "Billing Overview", url: "/dashboard/billing", icon: CreditCard },
+  { title: "Super Admin Dashboard", url: "/dashboard/superadmin", icon: Shield },
 ];
 
 // 📚 Help & Resources
 const helpItems = [
-  { title: "Documentation", url: "/docs", icon: FileText },
-  { title: "Support", url: "/support", icon: Users },
-  { title: "Pricing", url: "/pricing", icon: CreditCard },
+  { title: "Documentation", url: "/dashboard/docs", icon: FileText },
+  { title: "Support", url: "/dashboard/support", icon: Users },
+  { title: "Pricing", url: "/dashboard/pricing", icon: CreditCard },
 ];
 
 export default function DashboardSidebar() {

@@ -358,7 +358,7 @@ const AITraining = () => {
                           <div
                             key={i}
                             className={`w-4 h-4 ${
-                              i < Math.floor(template.rating) ? "text-yellow-400" : "text-gray-300"
+                              i < Math.floor(template.rating) ? "text-blue-400" : "text-gray-300"
                             }`}
                           >
                             ★

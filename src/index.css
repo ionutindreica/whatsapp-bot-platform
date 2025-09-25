@@ -2,116 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ChatFlow AI Platform Design System - All colors MUST be HSL */
-
 @layer base {
   :root {
-    /* Core ChatFlow AI palette */
-    --whatsapp: 221 83% 53%;
-    --whatsapp-dark: 221 83% 43%;
-    --whatsapp-light: 221 50% 89%;
+    /* Light Theme - Standard Shadcn/UI Colors */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
     
-    /* Modern 2025 Design System - High Contrast */
-    --background: 255 255 255; /* Pure white background */
-    --foreground: 15 23 42; /* #0F172A - Dark text */
-
-    --card: 255 255 255; /* Pure white cards */
-    --card-foreground: 15 23 42;
-
-    --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
-
-    /* Primary using vibrant blue */
-    --primary: 59 130 246; /* #3B82F6 - Vibrant blue */
-    --primary-foreground: 255 255 255;
-
-    --secondary: 248 250 252; /* #F8FAFC - Very light gray */
-    --secondary-foreground: 30 41 59; /* #1E293B - Dark gray text */
-
-    --muted: 248 250 252; /* #F8FAFC - Very light gray */
-    --muted-foreground: 71 85 105; /* #475569 - Medium gray text */
-
-    --accent: 16 185 129; /* #10B981 - Success green */
-    --accent-foreground: 255 255 255;
-
-    --destructive: 239 68 68; /* #EF4444 - Error red */
-    --destructive-foreground: 255 255 255;
-
-    --border: 226 232 240; /* #E2E8F0 - Light borders */
-    --input: 248 250 252; /* #F8FAFC - Light input background */
-    --ring: 59 130 246; /* Modern blue ring */
-
-    --radius: 1rem; /* More rounded corners for modern look */
-
-    /* Beautiful gradients */
-    --gradient-whatsapp: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 90% 63%));
-    --gradient-subtle: linear-gradient(180deg, hsl(221 10% 98%), hsl(221 15% 96%));
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
     
-    /* Elegant shadows */
-    --shadow-elegant: 0 10px 30px -10px hsl(221 83% 53% / 0.3);
-    --shadow-glow: 0 0 40px hsl(221 83% 53% / 0.2);
-
-    /* Smooth transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Sidebar colors */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 142 70% 49%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 142 20% 96%;
-    --sidebar-accent-foreground: 142 70% 20%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 142 70% 49%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    
+    --radius: 0.5rem;
   }
 
   .dark {
-    /* High contrast dark mode */
-    --background: 15 23 42; /* #0F172A - Dark blue background */
-    --foreground: 248 250 252; /* #F8FAFC - Light text */
-
-    --card: 30 41 59; /* #1E293B - Dark card background */
-    --card-foreground: 248 250 252; /* #F8FAFC - Light text */
-
-    --popover: 30 41 59; /* #1E293B - Dark popover */
-    --popover-foreground: 248 250 252; /* #F8FAFC - Light text */
-
-    --primary: 96 165 250; /* #60A5FA - Lighter blue for dark mode */
-    --primary-foreground: 15 23 42; /* Dark text on light blue */
-
-    --secondary: 51 65 85; /* #334155 - Darker secondary */
-    --secondary-foreground: 203 213 225; /* #CBD5E1 - Light secondary text */
-
-    --muted: 51 65 85; /* #334155 - Darker muted */
-    --muted-foreground: 148 163 184; /* #94A3B8 - Light muted text */
-
-    --accent: 52 211 153; /* #34D399 - Lighter green for dark mode */
-    --accent-foreground: 15 23 42; /* Dark text on light green */
-
-    --destructive: 248 113 113; /* #F87171 - Lighter red for dark mode */
-    --destructive-foreground: 15 23 42; /* Dark text on light red */
-
-    --border: 71 85 105; /* #475569 - Medium gray borders */
-    --input: 51 65 85; /* #334155 - Dark input background */
-    --ring: 96 165 250; /* Lighter blue ring for dark mode */
-
-    /* Dark mode gradients */
-    --gradient-whatsapp: linear-gradient(135deg, hsl(221 83% 60%), hsl(221 90% 70%));
-    --gradient-subtle: linear-gradient(180deg, hsl(222.2 84% 8%), hsl(217.2 32.6% 18%));
+    /* Dark Theme - Standard Shadcn/UI Colors */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
     
-    /* Dark shadows */
-    --shadow-elegant: 0 10px 30px -10px hsl(221 83% 40% / 0.5);
-    --shadow-glow: 0 0 40px hsl(221 83% 50% / 0.4);
-
-    /* Sidebar dark colors */
-    --sidebar-background: 240 5.9% 8%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 221 83% 65%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 18%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 20%;
-    --sidebar-ring: 221 83% 65%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
   }
 }
 
@@ -119,104 +72,7 @@
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-@layer components {
-  /* Enhanced contrast for dark mode */
-  .dark .text-primary {
-    @apply text-blue-400;
-  }
-  
-  .dark .bg-primary {
-    @apply bg-blue-600;
-  }
-  
-  .dark .border-primary {
-    @apply border-blue-500;
-  }
-  
-  .dark .ring-primary {
-    @apply ring-blue-500;
-  }
-  
-  /* Better button contrast in dark mode */
-  .dark .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white;
-  }
-  
-  /* Enhanced card contrast */
-  .dark .card {
-    @apply bg-gray-800 border-gray-700;
-  }
-  
-  /* Better input contrast */
-  .dark .input {
-    @apply bg-gray-800 border-gray-600 text-white;
-  }
-  
-  /* Enhanced sidebar contrast */
-  .dark .sidebar {
-    @apply bg-gray-900 border-gray-800;
-  }
-}
-
-/* Modern 2025 Design Components */
-@layer components {
-  /* Airy & Clean Card Design */
-  .card-modern {
-    @apply rounded-2xl bg-white shadow-sm border border-gray-100 p-6;
-    @apply hover:shadow-md transition-all duration-200;
-  }
-  
-  /* KPI Card Styling */
-  .kpi-card {
-    @apply relative overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100;
-    @apply hover:shadow-md transition-all duration-200;
-  }
-  
-  /* Modern Button Variants */
-  .btn-modern {
-    @apply rounded-xl px-4 py-2 font-medium transition-all duration-200;
-    @apply hover:scale-105 active:scale-95;
-  }
-  
-  /* Gradient Backgrounds */
-  .bg-gradient-modern {
-    @apply bg-gradient-to-r from-blue-500 to-purple-500;
-  }
-  
-  .bg-gradient-success {
-    @apply bg-gradient-to-r from-green-500 to-emerald-500;
-  }
-  
-  /* Modern Shadows */
-  .shadow-modern {
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  }
-  
-  .shadow-modern-lg {
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  }
-  
-  /* Modern Typography */
-  .text-modern {
-    @apply text-slate-800 leading-relaxed;
-  }
-  
-  .text-modern-muted {
-    @apply text-slate-600 leading-relaxed;
-  }
-  
-  /* Airy Spacing */
-  .space-modern > * + * {
-    @apply mt-6;
-  }
-  
-  .space-modern-sm > * + * {
-    @apply mt-4;
   }
 }

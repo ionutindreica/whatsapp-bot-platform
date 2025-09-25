@@ -1,15 +1,13 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import CompactSidebar from './CompactSidebar';
+import MaterialSidebar from './MaterialSidebar';
 import Topbar from './Topbar';
-import { SidebarProvider } from './ui/sidebar';
 
 export default function Layout() {
   return (
-    <SidebarProvider>
-      <div className="flex h-screen w-full bg-background">
-        {/* Sidebar */}
-        <CompactSidebar />
+    <div className="flex h-screen w-full bg-background">
+      {/* Sidebar */}
+      <MaterialSidebar />
         
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
@@ -22,6 +20,5 @@ export default function Layout() {
           </main>
         </div>
       </div>
-    </SidebarProvider>
   );
 }

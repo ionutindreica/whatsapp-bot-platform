@@ -6,10 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import DashboardSidebar from '@/components/DashboardSidebar';
-import Topbar from '@/components/Topbar';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import { SidebarProvider } from '@/components/ui/sidebar';
 import { 
   MessageSquare, 
   Bot, 
@@ -65,7 +61,7 @@ const ModernDashboard = () => {
       }
 
       // Load user stats
-      const statsResponse = await fetch('http://localhost:3001/api/user/usage', {
+      const statsResponse = await fetch('http://localhost:5000/api/user/usage', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
@@ -83,7 +79,7 @@ const ModernDashboard = () => {
       }
 
       // Load user's bots
-      const botsResponse = await fetch('http://localhost:3001/api/bots', {
+      const botsResponse = await fetch('http://localhost:5000/api/bots', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
@@ -112,7 +108,7 @@ const ModernDashboard = () => {
 
   const handleBotToggle = async (botId: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/bots/${botId}/toggle`, {
+      const response = await fetch(`http://localhost:5000/api/bots/${botId}/toggle`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -135,36 +131,20 @@ const ModernDashboard = () => {
 
   if (loading) {
     return (
-      <SidebarProvider>
-        <div className="flex h-screen w-full">
-          <DashboardSidebar />
-          <div className="flex-1 flex flex-col">
-            <Topbar />
-            <div className="flex-1 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            </div>
-          </div>
-        </div>
-      </SidebarProvider>
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <SidebarProvider>
-        <div className="flex h-screen w-full">
-          <DashboardSidebar />
-          <div className="flex-1 flex flex-col">
-            <Topbar />
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-red-600 mb-4">{error}</p>
-                <Button onClick={() => navigate('/login')}>Go to Login</Button>
-              </div>
-            </div>
-          </div>
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={() => navigate('/login')}>Go to Login</Button>
         </div>
-      </SidebarProvider>
+      </div>
     );
   }
 
@@ -212,18 +192,7 @@ const ModernDashboard = () => {
   ];
 
   return (
-    <SidebarProvider>
-      <div className="flex h-screen w-full bg-background">
-        <DashboardSidebar />
-        
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <Topbar />
-          
-          <main className="flex-1 overflow-auto">
-            <div className="container mx-auto p-6 space-y-6">
-              {/* Breadcrumbs */}
-              <Breadcrumbs />
-              
+    <div className="container mx-auto p-6 space-y-6">
               {/* Page Header */}
               <div className="flex items-center justify-between">
                 <div>
@@ -393,11 +362,7 @@ const ModernDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+    </div>
   );
 };
 

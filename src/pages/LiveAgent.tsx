@@ -124,7 +124,7 @@ const LiveAgent = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "ONLINE": return "bg-green-100 text-green-800";
-      case "BUSY": return "bg-yellow-100 text-yellow-800";
+      case "BUSY": return "bg-blue-100 text-blue-800";
       case "AWAY": return "bg-orange-100 text-orange-800";
       case "OFFLINE": return "bg-gray-100 text-gray-800";
       default: return "bg-gray-100 text-gray-800";
@@ -134,7 +134,7 @@ const LiveAgent = () => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "HIGH": return "bg-red-100 text-red-800";
-      case "MEDIUM": return "bg-yellow-100 text-yellow-800";
+      case "MEDIUM": return "bg-blue-100 text-blue-800";
       case "LOW": return "bg-green-100 text-green-800";
       default: return "bg-gray-100 text-gray-800";
     }
@@ -142,7 +142,7 @@ const LiveAgent = () => {
 
   const getTransferStatusColor = (status: string) => {
     switch (status) {
-      case "PENDING": return "bg-yellow-100 text-yellow-800";
+      case "PENDING": return "bg-blue-100 text-blue-800";
       case "IN_PROGRESS": return "bg-blue-100 text-blue-800";
       case "COMPLETED": return "bg-green-100 text-green-800";
       case "REJECTED": return "bg-red-100 text-red-800";
@@ -151,13 +151,13 @@ const LiveAgent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <BackToDashboard />
           <div className="flex items-center justify-between mt-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
                 <Headphones className="w-8 h-8 text-green-600" />
                 Live Agent Management
               </h1>
@@ -361,7 +361,7 @@ const LiveAgent = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">In Queue</p>
-                      <p className="text-2xl font-bold text-gray-900">8</p>
+                      <p className="text-2xl font-bold text-foreground">8</p>
                     </div>
                   </div>
                 </CardContent>
@@ -375,7 +375,7 @@ const LiveAgent = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Active Chats</p>
-                      <p className="text-2xl font-bold text-gray-900">12</p>
+                      <p className="text-2xl font-bold text-foreground">12</p>
                     </div>
                   </div>
                 </CardContent>
@@ -384,12 +384,12 @@ const LiveAgent = () => {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="p-2 bg-yellow-100 rounded-lg">
-                      <Users className="w-5 h-5 text-yellow-600" />
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Users className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Available Agents</p>
-                      <p className="text-2xl font-bold text-gray-900">3</p>
+                      <p className="text-2xl font-bold text-foreground">3</p>
                     </div>
                   </div>
                 </CardContent>
@@ -403,7 +403,7 @@ const LiveAgent = () => {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Avg Wait Time</p>
-                      <p className="text-2xl font-bold text-gray-900">2m 30s</p>
+                      <p className="text-2xl font-bold text-foreground">2m 30s</p>
                     </div>
                   </div>
                 </CardContent>

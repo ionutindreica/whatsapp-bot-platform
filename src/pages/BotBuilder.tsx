@@ -441,27 +441,28 @@ const BotBuilder = () => {
                     </div>
                     <div>
                       <label className="text-sm font-medium">Language</label>
-                      <select
-                        value={botConfig.language}
-                        onChange={(e) => handleConfigChange('language', e.target.value)}
-                        className="w-full p-2 border rounded-md mt-1"
-                      >
-                        <option value="English">English</option>
-                        <option value="Romanian">Romanian</option>
-                        <option value="Spanish">Spanish</option>
-                        <option value="French">French</option>
-                        <option value="German">German</option>
-                        <option value="Italian">Italian</option>
-                        <option value="Portuguese">Portuguese</option>
-                        <option value="Dutch">Dutch</option>
-                        <option value="Polish">Polish</option>
-                        <option value="Russian">Russian</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Japanese">Japanese</option>
-                        <option value="Korean">Korean</option>
-                        <option value="Arabic">Arabic</option>
-                        <option value="Hindi">Hindi</option>
-                      </select>
+                      <Select value={botConfig.language} onValueChange={(value) => handleConfigChange('language', value)}>
+                        <SelectTrigger className="w-full mt-1">
+                          <SelectValue placeholder="Select language" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="English">English</SelectItem>
+                          <SelectItem value="Romanian">Romanian</SelectItem>
+                          <SelectItem value="Spanish">Spanish</SelectItem>
+                          <SelectItem value="French">French</SelectItem>
+                          <SelectItem value="German">German</SelectItem>
+                          <SelectItem value="Italian">Italian</SelectItem>
+                          <SelectItem value="Portuguese">Portuguese</SelectItem>
+                          <SelectItem value="Dutch">Dutch</SelectItem>
+                          <SelectItem value="Polish">Polish</SelectItem>
+                          <SelectItem value="Russian">Russian</SelectItem>
+                          <SelectItem value="Chinese">Chinese</SelectItem>
+                          <SelectItem value="Japanese">Japanese</SelectItem>
+                          <SelectItem value="Korean">Korean</SelectItem>
+                          <SelectItem value="Arabic">Arabic</SelectItem>
+                          <SelectItem value="Hindi">Hindi</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </CardContent>
                 </Card>
@@ -501,9 +502,9 @@ const BotBuilder = () => {
                         <label className="text-sm font-medium">Phone Number</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                          <div className="absolute left-8 top-0 w-80 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                          <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
                             <div className="space-y-3">
-                              <h4 className="font-medium text-gray-900">Phone Number Requirements:</h4>
+                              <h4 className="font-medium text-foreground">Phone Number Requirements:</h4>
                               <ul className="text-sm text-gray-700 space-y-1">
                                 <li>• Must be a real business phone number</li>
                                 <li>• Must be able to receive SMS for verification</li>
@@ -531,9 +532,9 @@ const BotBuilder = () => {
                         <label className="text-sm font-medium">WhatsApp Business ID</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                          <div className="absolute left-8 top-0 w-80 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                          <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
                             <div className="space-y-3">
-                              <h4 className="font-medium text-gray-900">How to get your WhatsApp Business ID:</h4>
+                              <h4 className="font-medium text-foreground">How to get your WhatsApp Business ID:</h4>
                               <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
                                 <li>Go to <a href="https://business.whatsapp.com" target="_blank" className="text-blue-600 underline">business.whatsapp.com</a></li>
                                 <li>Create a WhatsApp Business account</li>
@@ -577,9 +578,9 @@ const BotBuilder = () => {
                         <label className="text-sm font-medium">Webhook URL</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                          <div className="absolute left-8 top-0 w-80 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                          <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
                             <div className="space-y-3">
-                              <h4 className="font-medium text-gray-900">What is a webhook URL?</h4>
+                              <h4 className="font-medium text-foreground">What is a webhook URL?</h4>
                               <p className="text-sm text-gray-700">A webhook URL is where WhatsApp sends message events (new messages, delivery status, etc.)</p>
                               <div className="space-y-2">
                                 <p className="font-medium text-sm">Requirements:</p>
@@ -637,7 +638,7 @@ const BotBuilder = () => {
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                         Facebook Messenger Setup Instructions
                       </h4>
-                      <div className="space-y-2 text-sm text-blue-800">
+                      <div className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
                         <p><strong>Step 1:</strong> Create a Facebook Business account</p>
                         <p><strong>Step 2:</strong> Go to Facebook Developers and create an App</p>
                         <p><strong>Step 3:</strong> Add Messenger product to your App</p>
@@ -651,9 +652,9 @@ const BotBuilder = () => {
                         <label className="text-sm font-medium">Facebook App ID</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                          <div className="absolute left-8 top-0 w-80 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                          <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
                             <div className="space-y-3">
-                              <h4 className="font-medium text-gray-900">Facebook App ID:</h4>
+                              <h4 className="font-medium text-foreground">Facebook App ID:</h4>
                               <p className="text-sm text-gray-700">Found in your Facebook App settings under "App ID"</p>
                               <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
                                 Example: 1234567890123456
@@ -673,9 +674,9 @@ const BotBuilder = () => {
                         <label className="text-sm font-medium">Page Access Token</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                          <div className="absolute left-8 top-0 w-80 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                          <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
                             <div className="space-y-3">
-                              <h4 className="font-medium text-gray-900">Page Access Token:</h4>
+                              <h4 className="font-medium text-foreground">Page Access Token:</h4>
                               <p className="text-sm text-gray-700">Get this from your Facebook Page settings under "Messenger"</p>
                               <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
                                 Example: EAAxxxxxxxxxxxxxxxxxxxxx
@@ -735,9 +736,9 @@ const BotBuilder = () => {
                         <label className="text-sm font-medium">Telegram Bot Token</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                          <div className="absolute left-8 top-0 w-80 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                          <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
                             <div className="space-y-3">
-                              <h4 className="font-medium text-gray-900">Bot Token:</h4>
+                              <h4 className="font-medium text-foreground">Bot Token:</h4>
                               <p className="text-sm text-gray-700">Get this from @BotFather after creating your bot</p>
                               <div className="text-xs text-cyan-600 bg-cyan-50 p-2 rounded">
                                 Example: 123456789:ABCdefGHIjklMNOpqrsTUVwxyz
@@ -798,9 +799,9 @@ const BotBuilder = () => {
                         <label className="text-sm font-medium">Website Domain</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                          <div className="absolute left-8 top-0 w-80 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                          <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
                             <div className="space-y-3">
-                              <h4 className="font-medium text-gray-900">Website Domain:</h4>
+                              <h4 className="font-medium text-foreground">Website Domain:</h4>
                               <p className="text-sm text-gray-700">Enter your website domain where the widget will be embedded</p>
                               <div className="text-xs text-purple-600 bg-purple-50 p-2 rounded">
                                 Examples: yourcompany.com, www.yourcompany.com, subdomain.yourcompany.com
@@ -829,7 +830,7 @@ const BotBuilder = () => {
 
                     {/* Generated Code Preview */}
                     <div className="p-4 bg-gray-50 rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">Generated Widget Code:</h4>
+                      <h4 className="text-sm font-medium text-foreground mb-2">Generated Widget Code:</h4>
                       <div className="bg-gray-900 text-green-400 p-3 rounded text-xs font-mono">
                         &lt;script src="https://your-domain.com/widget.js"&gt;&lt;/script&gt;
                       </div>
@@ -873,7 +874,7 @@ const BotBuilder = () => {
                               </div>
                             </div>
                           </div>
-                          <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
+                          <Badge className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">Pending</Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -886,7 +887,7 @@ const BotBuilder = () => {
                               </div>
                             </div>
                           </div>
-                          <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
+                          <Badge className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">Pending</Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -931,9 +932,9 @@ const BotBuilder = () => {
                         <label className="text-sm font-medium">Website Scraping</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                          <div className="absolute left-8 top-0 w-80 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                          <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
                             <div className="space-y-3">
-                              <h4 className="font-medium text-gray-900">Website Content Scraping</h4>
+                              <h4 className="font-medium text-foreground">Website Content Scraping</h4>
                               <p className="text-sm text-gray-700">AI will automatically scrape and structure content from websites</p>
                               <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
                                 <li>Extracts text, headings, and structure</li>
@@ -1049,7 +1050,7 @@ const BotBuilder = () => {
                               {item.structured && (
                                 <div className="mt-2 flex gap-1">
                                   <Badge className="bg-green-100 text-green-800 text-xs">Structured</Badge>
-                                  <Badge className="bg-blue-100 text-blue-800 text-xs">AI Processed</Badge>
+                                  <Badge className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs">AI Processed</Badge>
                                 </div>
                               )}
                             </div>
@@ -1484,11 +1485,11 @@ const BotBuilder = () => {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Human handoff</span>
-                      <Badge className="bg-blue-100 text-blue-800">Available</Badge>
+                      <Badge className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">Available</Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Learning mode</span>
-                      <Badge className="bg-yellow-100 text-yellow-800">Active</Badge>
+                      <Badge className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">Active</Badge>
                     </div>
                     <div>
                       <label className="text-sm font-medium">Response Timeout (seconds)</label>
@@ -1670,7 +1671,7 @@ const BotBuilder = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <div className="bg-white p-3 rounded-lg shadow-sm">
+                    <div className="bg-card p-3 rounded-lg shadow-sm">
                       <p className="text-sm">{botConfig.welcomeMessage}</p>
                     </div>
                     
@@ -1680,7 +1681,7 @@ const BotBuilder = () => {
                       </div>
                     </div>
                     
-                    <div className="bg-white p-3 rounded-lg shadow-sm">
+                    <div className="bg-card p-3 rounded-lg shadow-sm">
                       <p className="text-sm">I'd be happy to help you with your order. Can you provide me with your order number?</p>
                     </div>
                   </div>

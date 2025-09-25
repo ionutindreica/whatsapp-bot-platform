@@ -245,7 +245,7 @@ const SettingsAccount = () => {
                         <p className="text-xs text-muted-foreground">Receive updates via email</p>
                       </div>
                     </div>
-                    <Badge className={notifications.email ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                    <Badge className={notifications.email ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"}>
                       {notifications.email ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
@@ -257,7 +257,7 @@ const SettingsAccount = () => {
                         <p className="text-xs text-muted-foreground">Receive push notifications</p>
                       </div>
                     </div>
-                    <Badge className={notifications.push ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                    <Badge className={notifications.push ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"}>
                       {notifications.push ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
@@ -269,7 +269,7 @@ const SettingsAccount = () => {
                         <p className="text-xs text-muted-foreground">Receive SMS alerts</p>
                       </div>
                     </div>
-                    <Badge className={notifications.sms ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                    <Badge className={notifications.sms ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"}>
                       {notifications.sms ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
@@ -281,7 +281,7 @@ const SettingsAccount = () => {
                         <p className="text-xs text-muted-foreground">Important security notifications</p>
                       </div>
                     </div>
-                    <Badge className={notifications.security ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                    <Badge className={notifications.security ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"}>
                       {notifications.security ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
@@ -310,7 +310,7 @@ const SettingsAccount = () => {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Login Alerts</span>
-                      <Badge className={security.loginAlerts ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                      <Badge className={security.loginAlerts ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"}>
                         {security.loginAlerts ? "Enabled" : "Disabled"}
                       </Badge>
                     </div>

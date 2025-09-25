@@ -89,11 +89,11 @@ const AITemplates = () => {
       case "active":
         return "bg-green-100 text-green-800";
       case "draft":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-blue-100 text-blue-800";
       case "archived":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -174,7 +174,7 @@ const AITemplates = () => {
                           {template.status}
                         </Badge>
                         <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 text-yellow-500" />
+                          <Star className="w-4 h-4 text-blue-500" />
                           <span className="text-sm">{template.rating}</span>
                         </div>
                       </div>
@@ -296,7 +296,7 @@ const AITemplates = () => {
                       <p className="text-2xl font-bold">4.6</p>
                       <p className="text-sm text-green-600">+0.2 this month</p>
                     </div>
-                    <Star className="w-8 h-8 text-yellow-600" />
+                    <Star className="w-8 h-8 text-blue-600" />
                   </div>
                 </CardContent>
               </Card>

@@ -96,13 +96,13 @@ const Billing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <BackToDashboard />
           <div className="flex items-center justify-between mt-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
                 <CreditCard className="w-8 h-8 text-blue-600" />
                 Billing & Invoicing
               </h1>
@@ -192,7 +192,7 @@ const Billing = () => {
                       </div>
                       <div className="ml-4">
                         <p className="text-sm font-medium text-gray-600">Total Spent</p>
-                        <p className="text-2xl font-bold text-gray-900">$87.00</p>
+                        <p className="text-2xl font-bold text-foreground">$87.00</p>
                       </div>
                     </div>
                   </CardContent>
@@ -206,7 +206,7 @@ const Billing = () => {
                       </div>
                       <div className="ml-4">
                         <p className="text-sm font-medium text-gray-600">Member Since</p>
-                        <p className="text-2xl font-bold text-gray-900">Nov 2023</p>
+                        <p className="text-2xl font-bold text-foreground">Nov 2023</p>
                       </div>
                     </div>
                   </CardContent>
@@ -220,7 +220,7 @@ const Billing = () => {
                       </div>
                       <div className="ml-4">
                         <p className="text-sm font-medium text-gray-600">Invoices</p>
-                        <p className="text-2xl font-bold text-gray-900">3</p>
+                        <p className="text-2xl font-bold text-foreground">3</p>
                       </div>
                     </div>
                   </CardContent>
@@ -364,7 +364,7 @@ const Billing = () => {
                           currentPlan.usage.messages / currentPlan.usage.limit > 0.8 
                             ? 'bg-red-500' 
                             : currentPlan.usage.messages / currentPlan.usage.limit > 0.6
-                            ? 'bg-yellow-500'
+                            ? 'bg-blue-500'
                             : 'bg-blue-500'
                         }`}
                         style={{ 

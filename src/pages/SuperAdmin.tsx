@@ -119,7 +119,7 @@ const SuperAdmin = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Crown className="w-8 h-8 text-yellow-500" />
+              <Crown className="w-8 h-8 text-blue-500" />
               Super Admin Panel
             </h1>
             <p className="text-muted-foreground">Manage the entire platform and all users</p>
@@ -365,7 +365,7 @@ const SuperAdmin = () => {
                       <div key={alert.id} className="flex items-start gap-3 p-3 border rounded-lg">
                         <div className={`w-2 h-2 rounded-full mt-2 ${
                           alert.severity === 'high' ? 'bg-red-500' : 
-                          alert.severity === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
+                          alert.severity === 'medium' ? 'bg-blue-500' : 'bg-blue-500'
                         }`} />
                         <div className="flex-1">
                           <p className="text-sm font-medium">{alert.message}</p>

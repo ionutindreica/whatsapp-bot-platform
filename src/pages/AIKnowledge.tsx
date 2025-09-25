@@ -84,7 +84,7 @@ const AIKnowledge = () => {
   ];
 
   const categories = [
-    { name: "All", count: 5, color: "bg-gray-100 text-gray-800" },
+    { name: "All", count: 5, color: "bg-muted text-muted-foreground" },
     { name: "Products", count: 1, color: "bg-blue-100 text-blue-800" },
     { name: "Support", count: 1, color: "bg-green-100 text-green-800" },
     { name: "Legal", count: 1, color: "bg-red-100 text-red-800" },
@@ -114,13 +114,13 @@ const AIKnowledge = () => {
       case "active":
         return "bg-green-100 text-green-800";
       case "processing":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-blue-100 text-blue-800";
       case "error":
         return "bg-red-100 text-red-800";
       case "archived":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -129,7 +129,7 @@ const AIKnowledge = () => {
       case "active":
         return <CheckCircle className="w-4 h-4 text-green-600" />;
       case "processing":
-        return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
+        return <AlertTriangle className="w-4 h-4 text-blue-600" />;
       case "error":
         return <XCircle className="w-4 h-4 text-red-600" />;
       case "archived":

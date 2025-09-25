@@ -19,7 +19,7 @@ const SubscriptionTiers = () => {
       description: 'Perfect for getting started',
       icon: Zap,
       color: 'border-gray-200',
-      bgColor: 'bg-gray-50',
+      bgColor: 'bg-muted',
       textColor: 'text-gray-700',
       features: [
         { name: '1 AI Bot', available: true },

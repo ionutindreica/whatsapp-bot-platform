@@ -20,7 +20,7 @@ const WebsiteIntegration = () => {
 
         {/* Content */}
         <div className="grid lg:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-card p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4">Integration Code</h2>
             <p className="text-muted-foreground mb-4">
               Copy and paste this code into your website's HTML
@@ -39,7 +39,7 @@ const WebsiteIntegration = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-card p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4">Quick Setup Guide</h2>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
@@ -83,7 +83,7 @@ const WebsiteIntegration = () => {
         </div>
 
         {/* API Documentation */}
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-card p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-4">API Documentation</h2>
           <p className="text-muted-foreground mb-4">Advanced integration options and API endpoints</p>
           <div className="grid md:grid-cols-3 gap-4">
