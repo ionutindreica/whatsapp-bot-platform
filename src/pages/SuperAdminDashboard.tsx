@@ -176,11 +176,8 @@ const SuperAdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{
-      background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 25%, #8b5cf6 50%, #ec4899 75%, #f59e0b 100%)',
-      minHeight: '100vh'
-    }}>
-      <div className="container mx-auto px-4 py-8 bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl my-4">
+    <div className="min-h-screen flex w-full bg-background">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
