@@ -433,6 +433,23 @@ const SuperAdminDashboard = () => {
                     </CardContent>
                   </Card>
                 </Link>
+
+                {/* Access Control */}
+                <Link to="/dashboard/admin/access-control">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-cyan-500">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-cyan-100 rounded-lg">
+                          <Shield className="w-5 h-5 text-cyan-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Access Control</h3>
+                          <p className="text-sm text-muted-foreground">RBAC system and permissions matrix</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               </div>
             </CardContent>
           </Card>
