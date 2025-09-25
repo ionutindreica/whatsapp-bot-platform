@@ -24,6 +24,9 @@ export function useAuthorization(): UseAuthorizationReturn {
   const hasPermission = (resource: Resource, action: Action): boolean => {
     if (!user) return false;
     
+    // Root Owner has all permissions
+    if (user.role === 'ROOT_OWNER') return true;
+    
     // Super Admin has all permissions
     if (user.role === 'SUPER_ADMIN') return true;
     

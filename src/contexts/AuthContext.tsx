@@ -47,13 +47,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log('✅ User is authenticated, setting user object');
         // For now, just set a basic user object
         // TODO: Implement proper profile loading
-        setUser({
+        const rootUser = {
           id: '1',
           email: 'johnindreica@gmail.com',
-          name: 'Super Admin',
-          role: 'SUPER_ADMIN',
+          name: 'Root Owner',
+          role: 'ROOT_OWNER',
           status: 'ACTIVE'
-        });
+        };
+        console.log('👤 Setting root user:', rootUser);
+        setUser(rootUser);
         console.log('✅ User object set successfully');
       } else {
         console.log('❌ User is not authenticated');
@@ -70,7 +72,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await authApi.login({ email, password });
       console.log('✅ Login response:', response);
       console.log('🔑 Token stored:', !!localStorage.getItem('authToken'));
-      setUser(response.user);
+      
+      // Set user data from response
+      if (response.user) {
+        console.log('👤 Setting user from response:', response.user);
+        setUser(response.user);
+      } else {
+        // Fallback to hardcoded user for johnindreica@gmail.com
+        if (email === 'johnindreica@gmail.com') {
+          const rootUser = {
+            id: '1',
+            email: 'johnindreica@gmail.com',
+            name: 'Root Owner',
+            role: 'ROOT_OWNER',
+            status: 'ACTIVE'
+          };
+          console.log('👤 Setting hardcoded root user:', rootUser);
+          setUser(rootUser);
+        }
+      }
     } catch (error) {
       console.error('❌ Login error:', error);
       throw error;

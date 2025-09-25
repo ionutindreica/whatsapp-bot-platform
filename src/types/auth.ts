@@ -40,6 +40,7 @@ export interface UserPreferences {
 }
 
 export type UserRole = 
+  | 'ROOT_OWNER'
   | 'SUPER_ADMIN'
   | 'ADMIN' 
   | 'MANAGER'
@@ -149,6 +150,11 @@ export interface AuditLog {
 
 // Role Definitions
 export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
+  ROOT_OWNER: [
+    // All permissions - highest level
+    { id: 'all', name: 'All Permissions', resource: 'all' as any, action: 'manage' as any }
+  ],
+  
   SUPER_ADMIN: [
     // All permissions
     { id: 'all', name: 'All Permissions', resource: 'all' as any, action: 'manage' as any }
@@ -263,6 +269,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
 };
 
 export const ROLE_HIERARCHY: Record<UserRole, number> = {
+  ROOT_OWNER: 110,
   SUPER_ADMIN: 100,
   ADMIN: 80,
   MANAGER: 60,
