@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,7 +30,14 @@ import {
   CreditCard,
   Mail,
   Phone,
-  Calendar
+  Calendar,
+  FileText,
+  Monitor,
+  Lock,
+  Download,
+  AlertCircle,
+  Globe,
+  Archive
 } from 'lucide-react';
 
 const SuperAdminDashboard = () => {
@@ -57,8 +65,6 @@ const SuperAdminDashboard = () => {
       setError('');
       
       // Check if user is super admin
-      console.log('🔍 User object:', user);
-      console.log('🔍 User role:', user?.role);
       if (!user || user.role !== 'SUPER_ADMIN') {
         setError('Access denied. Super admin privileges required.');
         setLoading(false);
@@ -66,7 +72,7 @@ const SuperAdminDashboard = () => {
       }
 
       // Load dashboard stats from API
-      const statsResponse = await fetch('http://localhost:3001/api/admin/dashboard', {
+      const statsResponse = await fetch('http://localhost:5000/api/admin/dashboard', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
@@ -81,7 +87,7 @@ const SuperAdminDashboard = () => {
       setStats(statsData.stats);
 
       // Load users from API
-      const usersResponse = await fetch('http://localhost:3001/api/admin/users', {
+      const usersResponse = await fetch('http://localhost:5000/api/admin/users', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
@@ -116,8 +122,6 @@ const SuperAdminDashboard = () => {
 
   const handleUserAction = async (userId: string, action: string) => {
     try {
-      console.log(`Performing ${action} on user ${userId}`);
-      
       const token = localStorage.getItem('authToken');
       if (!token) {
         alert('Authentication required');
@@ -127,7 +131,7 @@ const SuperAdminDashboard = () => {
       let response;
       
       if (action === 'suspend') {
-        response = await fetch(`http://localhost:3001/api/admin/users/${userId}/suspend`, {
+        response = await fetch(`http://localhost:5000/api/admin/users/${userId}/suspend`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -136,7 +140,7 @@ const SuperAdminDashboard = () => {
           body: JSON.stringify({ reason: 'Suspended by SuperAdmin' })
         });
       } else if (action === 'activate') {
-        response = await fetch(`http://localhost:3001/api/admin/users/${userId}/activate`, {
+        response = await fetch(`http://localhost:5000/api/admin/users/${userId}/activate`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -147,7 +151,7 @@ const SuperAdminDashboard = () => {
         const user = users.find(u => u.id === userId);
         const newName = prompt('Enter new name:', user?.name || '');
         if (newName) {
-          response = await fetch(`http://localhost:3001/api/admin/users/${userId}`, {
+          response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
             method: 'PUT',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -158,7 +162,7 @@ const SuperAdminDashboard = () => {
         }
       } else if (action === 'delete') {
         if (confirm(`Are you sure you want to delete user ${userId}?`)) {
-          response = await fetch(`http://localhost:3001/api/admin/users/${userId}`, {
+          response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
             method: 'DELETE',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -310,6 +314,126 @@ const SuperAdminDashboard = () => {
               <p className="text-xs text-muted-foreground">
                 All time
               </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Admin Management Quick Links */}
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Shield className="w-5 h-5 mr-2 text-purple-600" />
+                Admin Management Tools
+              </CardTitle>
+              <CardDescription>
+                Quick access to all administrative functions and system management tools
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* User Management */}
+                <Link to="/dashboard/admin/users">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                          <Users className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">User Management</h3>
+                          <p className="text-sm text-muted-foreground">Manage users, roles, and permissions</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Audit Logs */}
+                <Link to="/dashboard/admin/audit-logs">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-green-500">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-green-100 rounded-lg">
+                          <FileText className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Audit Logs</h3>
+                          <p className="text-sm text-muted-foreground">Monitor system activities and events</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Role Management */}
+                <Link to="/dashboard/admin/roles">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-purple-100 rounded-lg">
+                          <Shield className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Role Management</h3>
+                          <p className="text-sm text-muted-foreground">Configure roles and permissions</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Session Management */}
+                <Link to="/dashboard/admin/sessions">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-orange-500">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-orange-100 rounded-lg">
+                          <Monitor className="w-5 h-5 text-orange-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Session Management</h3>
+                          <p className="text-sm text-muted-foreground">Monitor active sessions and devices</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Security Dashboard */}
+                <Link to="/dashboard/admin/security">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-red-500">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-red-100 rounded-lg">
+                          <Lock className="w-5 h-5 text-red-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Security Dashboard</h3>
+                          <p className="text-sm text-muted-foreground">Monitor security events and threats</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* GDPR Tools */}
+                <Link to="/dashboard/admin/gdpr">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-indigo-500">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-indigo-100 rounded-lg">
+                          <Archive className="w-5 h-5 text-indigo-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">GDPR Tools</h3>
+                          <p className="text-sm text-muted-foreground">Data export, deletion, and compliance</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>

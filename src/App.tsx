@@ -53,6 +53,14 @@ import PollsSurveys from "./pages/PollsSurveys";
 import LiveAgent from "./pages/LiveAgent";
 import Analytics from "./pages/Analytics";
 import IntegrationsIndex from "./pages/IntegrationsIndex";
+import Unauthorized from "./pages/Unauthorized";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import UserManagement from "./pages/admin/UserManagement";
+import AuditLogs from "./pages/admin/AuditLogs";
+import RoleManagement from "./pages/admin/RoleManagement";
+import SessionManagement from "./pages/admin/SessionManagement";
+import SecurityDashboard from "./pages/admin/SecurityDashboard";
+import GDPRTools from "./pages/admin/GDPRTools";
 
 const queryClient = new QueryClient();
 
@@ -73,45 +81,234 @@ function App() {
                   <Route path="/register" element={<Register />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/unauthorized" element={<Unauthorized />} />
                   
                   {/* Protected routes with Layout */}
                   <Route path="/dashboard" element={<Layout />}>
                     <Route index element={<ModernDashboard />} />
-                    <Route path="bots" element={<Bots />} />
-                    <Route path="conversations" element={<Conversations />} />
-                    <Route path="broadcast" element={<BroadcastMessages />} />
-                    <Route path="polls" element={<PollsSurveys />} />
-                    <Route path="live-agent" element={<LiveAgent />} />
-                    <Route path="analytics" element={<Analytics />} />
-                    <Route path="integrations" element={<IntegrationsIndex />} />
-                    <Route path="integrations/website" element={<WebsiteIntegration />} />
-                    <Route path="integrations/instagram" element={<InstagramChannel />} />
-                    <Route path="integrations/widget" element={<WidgetBuilder />} />
-                    <Route path="integrations/api" element={<ApiKeys />} />
-                    <Route path="integrations/webhooks" element={<Webhooks />} />
-                    <Route path="triggers" element={<TriggerSystem />} />
-                    <Route path="channels" element={<Channels />} />
-                    <Route path="channels/whatsapp" element={<WhatsAppChannel />} />
-                    <Route path="channels/instagram" element={<InstagramChannel />} />
-                    <Route path="channels/website" element={<WebsiteChannel />} />
-                    <Route path="channels/mobile" element={<MobileChannel />} />
-                    <Route path="channels/email" element={<EmailChannel />} />
-                    <Route path="ai/training" element={<AITraining />} />
-                    <Route path="ai/templates" element={<AITemplates />} />
-                    <Route path="ai/customization" element={<AICustomization />} />
-                    <Route path="ai/knowledge" element={<AIKnowledge />} />
-                    <Route path="flows" element={<BotBuilder />} />
-                    <Route path="team/members" element={<TeamManagement />} />
-                    <Route path="team/roles" element={<TeamRoles />} />
-                    <Route path="team/collaboration" element={<TeamCollaboration />} />
+                    
+                    {/* Bot Management - Manager+ */}
+                    <Route path="bots" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'bots', action: 'read' }}>
+                        <Bots />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Conversations - Agent+ */}
+                    <Route path="conversations" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'conversations', action: 'read' }}>
+                        <Conversations />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Broadcast - Manager+ */}
+                    <Route path="broadcast" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'broadcasts', action: 'read' }}>
+                        <BroadcastMessages />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Polls - Manager+ */}
+                    <Route path="polls" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'polls', action: 'read' }}>
+                        <PollsSurveys />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Live Agent - Agent+ */}
+                    <Route path="live-agent" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'conversations', action: 'update' }}>
+                        <LiveAgent />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Analytics - Manager+ */}
+                    <Route path="analytics" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'analytics', action: 'read' }}>
+                        <Analytics />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Integrations - Manager+ */}
+                    <Route path="integrations" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'integrations', action: 'read' }}>
+                        <IntegrationsIndex />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="integrations/website" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'integrations', action: 'manage' }}>
+                        <WebsiteIntegration />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="integrations/instagram" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'integrations', action: 'manage' }}>
+                        <InstagramChannel />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="integrations/widget" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'integrations', action: 'manage' }}>
+                        <WidgetBuilder />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="integrations/api" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'api_keys', action: 'manage' }}>
+                        <ApiKeys />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="integrations/webhooks" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'webhooks', action: 'manage' }}>
+                        <Webhooks />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Triggers - Manager+ */}
+                    <Route path="triggers" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'flows', action: 'read' }}>
+                        <TriggerSystem />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Channels - Manager+ */}
+                    <Route path="channels" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'channels', action: 'read' }}>
+                        <Channels />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="channels/whatsapp" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'channels', action: 'manage' }}>
+                        <WhatsAppChannel />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="channels/instagram" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'channels', action: 'manage' }}>
+                        <InstagramChannel />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="channels/website" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'channels', action: 'manage' }}>
+                        <WebsiteChannel />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="channels/mobile" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'channels', action: 'manage' }}>
+                        <MobileChannel />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="channels/email" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'channels', action: 'manage' }}>
+                        <EmailChannel />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* AI Features - Manager+ */}
+                    <Route path="ai/training" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'bots', action: 'update' }}>
+                        <AITraining />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="ai/templates" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'templates', action: 'read' }}>
+                        <AITemplates />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="ai/customization" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'bots', action: 'update' }}>
+                        <AICustomization />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="ai/knowledge" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'bots', action: 'update' }}>
+                        <AIKnowledge />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Flows - Manager+ */}
+                    <Route path="flows" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'flows', action: 'read' }}>
+                        <BotBuilder />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Team Management - Admin+ */}
+                    <Route path="team/members" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'team', action: 'read' }}>
+                        <TeamManagement />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="team/roles" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'roles', action: 'read' }}>
+                        <TeamRoles />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="team/collaboration" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'team', action: 'read' }}>
+                        <TeamCollaboration />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Settings - All authenticated users */}
                     <Route path="settings/phone" element={<SettingsPhone />} />
                     <Route path="settings/account" element={<SettingsAccount />} />
                     <Route path="settings/profile" element={<SettingsProfile />} />
                     <Route path="settings/security" element={<SettingsSecurity />} />
-                    <Route path="settings/export" element={<SettingsExport />} />
-                    <Route path="billing" element={<Billing />} />
-                    <Route path="subscription-tiers" element={<SubscriptionTiers />} />
-                    <Route path="superadmin" element={<SuperAdminDashboard />} />
+                    <Route path="settings/export" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'analytics', action: 'export' }}>
+                        <SettingsExport />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Billing - All authenticated users */}
+                    <Route path="billing" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'billing', action: 'read' }}>
+                        <Billing />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="subscription-tiers" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'billing', action: 'read' }}>
+                        <SubscriptionTiers />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Admin Management - Admin+ */}
+                    <Route path="admin/users" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'users', action: 'read' }}>
+                        <UserManagement />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="admin/audit-logs" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'audit_logs', action: 'read' }}>
+                        <AuditLogs />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="admin/roles" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'roles', action: 'read' }}>
+                        <RoleManagement />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="admin/sessions" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'users', action: 'read' }}>
+                        <SessionManagement />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="admin/security" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'security', action: 'read' }}>
+                        <SecurityDashboard />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="admin/gdpr" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'users', action: 'delete' }}>
+                        <GDPRTools />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Super Admin Only */}
+                    <Route path="superadmin" element={
+                      <ProtectedRoute requiredRole="SUPER_ADMIN">
+                        <SuperAdminDashboard />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Public pages */}
                     <Route path="docs" element={<Docs />} />
                     <Route path="support" element={<Support />} />
                     <Route path="pricing" element={<Pricing />} />

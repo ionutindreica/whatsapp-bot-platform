@@ -113,6 +113,16 @@ const accountSettingsItems = [
   { title: "Export Data", url: "/dashboard/settings/export", icon: Download },
 ];
 
+// 👑 Admin Management
+const adminItems = [
+  { title: "User Management", url: "/dashboard/admin/users", icon: Users },
+  { title: "Audit Logs", url: "/dashboard/admin/audit-logs", icon: FileText },
+  { title: "Role Management", url: "/dashboard/admin/roles", icon: Shield },
+  { title: "Session Management", url: "/dashboard/admin/sessions", icon: Monitor },
+  { title: "Security Dashboard", url: "/dashboard/admin/security", icon: Shield },
+  { title: "GDPR Tools", url: "/dashboard/admin/gdpr", icon: Shield },
+];
+
 // 💳 Billing & Admin
 const billingItems = [
   { title: "Subscription Plans", url: "/dashboard/subscription-tiers", icon: Crown },
@@ -302,6 +312,27 @@ export default function DashboardSidebar() {
                 </SidebarMenuItem>
               ))}
               {accountSettingsItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild className="group">
+                    <NavLink to={item.url} className={getNavCls}>
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* 👑 Admin Management */}
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
+            👑 Admin Management
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {adminItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>

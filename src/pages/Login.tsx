@@ -6,9 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Zap, Eye, EyeOff, Mail, Lock, Github, Chrome } from 'lucide-react';
+import { Zap, Eye, EyeOff, Mail, Lock, Github, Chrome, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { ApiError } from '@/services/api';
+import { ApiError, authApi } from '@/services/api';
+import SocialLogin from '@/components/auth/SocialLogin';
+import TwoFactorLogin from '@/components/auth/TwoFactorLogin';
+import MagicLinkLogin from '@/components/auth/MagicLinkLogin';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,6 +19,9 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [loginMode, setLoginMode] = useState<'email' | 'magic-link' | '2fa'>('email');
+  const [requires2FA, setRequires2FA] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -28,8 +34,18 @@ const Login = () => {
     setError('');
 
     try {
-      await login(formData.email, formData.password);
-      navigate('/dashboard');
+      const data = await authApi.login({
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (data.requires2FA) {
+        setUserEmail(formData.email);
+        setRequires2FA(true);
+      } else {
+        localStorage.setItem('authToken', data.token);
+        navigate('/dashboard');
+      }
     } catch (error) {
       if (error instanceof ApiError) {
         setError(error.message);
@@ -43,6 +59,30 @@ const Login = () => {
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSocialLoginSuccess = (user: any) => {
+    navigate('/dashboard');
+  };
+
+  const handleSocialLoginError = (error: string) => {
+    setError(error);
+  };
+
+  const handle2FASuccess = () => {
+    navigate('/dashboard');
+  };
+
+  const handle2FABack = () => {
+    setRequires2FA(false);
+  };
+
+  const handleMagicLinkSuccess = () => {
+    navigate('/dashboard');
+  };
+
+  const handleMagicLinkBack = () => {
+    setLoginMode('email');
   };
 
   return (
@@ -77,7 +117,30 @@ const Login = () => {
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
-            <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Show different login modes */}
+            {loginMode === 'magic-link' ? (
+              <MagicLinkLogin 
+                onSuccess={handleMagicLinkSuccess}
+                onBack={handleMagicLinkBack}
+              />
+            ) : requires2FA ? (
+              <TwoFactorLogin
+                email={userEmail}
+                onSuccess={handle2FASuccess}
+                onBack={handle2FABack}
+                onUseBackupCode={() => {}}
+              />
+            ) : (
+              <>
+                {/* Social Login */}
+                <SocialLogin 
+                  onSuccess={handleSocialLoginSuccess}
+                  onError={handleSocialLoginError}
+                />
+
+                {/* Email/Password Form */}
+                <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email Field */}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
@@ -146,27 +209,19 @@ const Login = () => {
               </Button>
             </form>
 
-            {/* Divider */}
-            <div className="relative">
-              <Separator />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="bg-background px-2 text-xs text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            {/* Social Login */}
-            <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" className="w-full">
-                <Github className="w-4 h-4 mr-2" />
-                GitHub
-              </Button>
-              <Button variant="outline" className="w-full">
-                <Chrome className="w-4 h-4 mr-2" />
-                Google
-              </Button>
-            </div>
+                {/* Magic Link Option */}
+                <div className="text-center">
+                  <Button 
+                    variant="link" 
+                    onClick={() => setLoginMode('magic-link')}
+                    className="text-sm"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Sign in with Magic Link (no password)
+                  </Button>
+                </div>
+              </>
+            )}
 
             {/* Sign Up Link */}
             <div className="text-center text-sm">
