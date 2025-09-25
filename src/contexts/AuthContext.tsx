@@ -54,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           role: 'SUPER_ADMIN',
           status: 'ACTIVE'
         });
+        console.log('✅ User object set successfully');
       } else {
         console.log('❌ User is not authenticated');
       }

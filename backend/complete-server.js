@@ -159,6 +159,10 @@ app.post('/api/auth/login', async (req, res) => {
     }
     
     // For demo, accept the password directly
+    console.log('🔍 Received password:', password);
+    console.log('🔍 Expected password: SuperAdmin123!');
+    console.log('🔍 Passwords match:', password === 'SuperAdmin123!');
+    
     if (password === 'SuperAdmin123!') {
       const token = jwt.sign(
         { userId: user.id, email: user.email, role: user.role },

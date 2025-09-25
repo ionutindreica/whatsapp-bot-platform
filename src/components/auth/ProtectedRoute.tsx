@@ -59,8 +59,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Redirect to login if not authenticated
   if (!user) {
+    console.log('🔒 ProtectedRoute: User not authenticated, redirecting to login');
+    console.log('🔒 Current location:', location.pathname);
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
+  
+  console.log('✅ ProtectedRoute: User authenticated:', user.email, 'Role:', user.role);
 
   // Use new RBAC system if requested or if RBAC props are provided
   if (useRBAC || rbacPermissions || rbacFeatures || rbacRole || rbacMinRole) {

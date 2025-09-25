@@ -47,16 +47,27 @@ export const authApi = {
     email: string;
     password: string;
   }) => {
+    console.log('🌐 API: Sending login request to:', `${API_BASE_URL}/auth/login`);
+    console.log('🌐 API: Request data:', data);
+    
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
+    
+    console.log('🌐 API: Response status:', response.status);
+    console.log('🌐 API: Response ok:', response.ok);
+    
     const result = await handleResponse(response);
+    console.log('🌐 API: Response result:', result);
     
     // Store token
     if (result.token) {
+      console.log('🔑 API: Storing token in localStorage');
       localStorage.setItem('authToken', result.token);
+    } else {
+      console.log('❌ API: No token in response');
     }
     
     return result;
