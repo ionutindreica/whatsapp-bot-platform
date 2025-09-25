@@ -182,8 +182,8 @@ const SuperAdminDashboard = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">SuperAdmin Dashboard</h1>
-              <p className="text-gray-600 mt-2">Complete system oversight and user management</p>
+              <h1 className="text-3xl font-bold">SuperAdmin Dashboard</h1>
+              <p className="text-muted-foreground mt-2">Complete system oversight and user management</p>
             </div>
             <div className="flex items-center space-x-4">
               <Badge className="bg-red-100 text-red-800">
@@ -307,7 +307,7 @@ const SuperAdminDashboard = () => {
                           </div>
                           <div>
                             <h3 className="font-semibold">{user.name}</h3>
-                            <p className="text-sm text-gray-600">{user.email}</p>
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
                             <div className="flex items-center space-x-2 mt-1">
                               <Badge className={getRoleColor(user.role)}>
                                 {user.role}
@@ -322,10 +322,10 @@ const SuperAdminDashboard = () => {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             {user.bots} bots • {user.messages} messages
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             Last login: {user.lastLogin}
                           </p>
                         </div>
@@ -399,14 +399,14 @@ const SuperAdminDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <h3 className="font-semibold">User Growth</h3>
-                    <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <p className="text-gray-500">Chart placeholder</p>
+                    <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+                      <p className="text-muted-foreground">Chart placeholder</p>
                     </div>
                   </div>
                   <div className="space-y-4">
                     <h3 className="font-semibold">Revenue Trends</h3>
-                    <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <p className="text-gray-500">Chart placeholder</p>
+                    <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+                      <p className="text-muted-foreground">Chart placeholder</p>
                     </div>
                   </div>
                 </div>
