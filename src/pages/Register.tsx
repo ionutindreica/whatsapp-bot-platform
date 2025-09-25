@@ -7,11 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Zap, Eye, EyeOff, Mail, Lock, User, Github, Chrome } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { ApiError } from '@/services/api';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,14 +27,35 @@ const Register = () => {
     subscribeNewsletter: false
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+      setError('Passwords do not match');
+      setLoading(false);
       return;
     }
-    // Mock registration - redirect to dashboard
-    navigate('/dashboard');
+
+    if (!formData.agreeToTerms) {
+      setError('You must agree to the Terms of Service and Privacy Policy');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await register(formData.email, formData.password, formData.name);
+      setSuccess(true);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setError(error.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -62,7 +89,24 @@ const Register = () => {
           </CardHeader>
           
           <CardContent className="space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            {success ? (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
+                <h3 className="text-lg font-semibold text-green-800 mb-2">Registration Successful!</h3>
+                <p className="text-green-700 mb-4">
+                  Please check your email for a verification link to activate your account.
+                </p>
+                <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+                  Go to Login
+                </Link>
+              </div>
+            ) : (
+              <>
+                {error && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-600">{error}</p>
+                  </div>
+                )}
+                <form onSubmit={handleSubmit} className="space-y-4">
               {/* Name Field */}
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
@@ -180,14 +224,14 @@ const Register = () => {
               {/* Submit Button */}
               <Button 
                 type="submit" 
+                disabled={loading || !formData.agreeToTerms}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                disabled={!formData.agreeToTerms}
               >
-                Create Account
+                {loading ? 'Creating Account...' : 'Create Account'}
               </Button>
-            </form>
+                </form>
 
-            {/* Divider */}
+                {/* Divider */}
             <div className="relative">
               <Separator />
               <div className="absolute inset-0 flex items-center justify-center">
@@ -216,6 +260,8 @@ const Register = () => {
                 Sign in
               </Link>
             </div>
+              </>
+            )}
           </CardContent>
         </Card>
 
