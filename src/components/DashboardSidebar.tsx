@@ -206,19 +206,15 @@ export default function DashboardSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              {/* TEST: Hardcoded CRM Light */}
+              {/* CRM Light - Direct link */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild className="group">
                   <NavLink to="/dashboard/crm" className={getNavCls}>
                     <Database className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                    {!collapsed && <span className="font-medium">CRM Light (TEST)</span>}
+                    {!collapsed && <span className="font-medium">CRM Light</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {/* TEST: Simple div */}
-              <div className="p-2 bg-red-500 text-white">
-                TEST DIV - Dacă vezi asta, sidebar-ul se renderizează
-              </div>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

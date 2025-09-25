@@ -107,6 +107,7 @@ const menuSections = [
       { title: "AI Templates", url: "/dashboard/ai/templates", icon: FileText },
       { title: "AI Knowledge Base", url: "/dashboard/ai/knowledge", icon: Database },
       { title: "Flow Builder", url: "/dashboard/flows", icon: Target },
+      { title: "CRM Light", url: "/dashboard/crm", icon: Users },
       { title: "Triggers", url: "/dashboard/triggers", icon: Target }
     ]
   },
