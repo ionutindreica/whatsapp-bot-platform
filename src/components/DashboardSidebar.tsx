@@ -140,38 +140,48 @@ export default function DashboardSidebar() {
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
-      ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium border-r-2 border-blue-500 dark:border-blue-400" 
-      : "hover:bg-gray-100 dark:hover:bg-gray-800/50 text-foreground hover:text-blue-600 dark:hover:text-blue-400";
+      ? "bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 font-semibold rounded-xl border border-blue-200/50 shadow-sm" 
+      : "hover:bg-slate-50 text-slate-700 hover:text-blue-600 hover:shadow-sm rounded-xl transition-all duration-200";
 
   return (
-    <Sidebar className={collapsed ? "w-14" : "w-64"} collapsible="icon">
-      <SidebarTrigger className="m-2 self-end" />
+    <Sidebar className={`${collapsed ? "w-16" : "w-72"} border-r border-slate-200/60 bg-white/95 backdrop-blur-sm shadow-sm`} collapsible="icon">
+      <SidebarTrigger className="m-3 self-end hover:bg-slate-100 rounded-lg transition-colors" />
       
-      <SidebarContent className="px-2">
-        {/* Logo/Brand */}
-        <div className="mb-6 p-4">
+      <SidebarContent className="px-3 py-2">
+        {/* Modern Logo/Brand */}
+        <div className="mb-8 p-4">
           {!collapsed && (
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg flex items-center justify-center">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">ChatFlow AI</span>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">ChatFlow AI</span>
+                <span className="text-xs text-slate-500 font-medium">Omnichannel Platform</span>
+              </div>
+            </div>
+          )}
+          {collapsed && (
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg mx-auto">
+              <Zap className="w-5 h-5 text-white" />
             </div>
           )}
         </div>
 
-        {/* Main Navigation */}
+        {/* Modern Navigation */}
         {/* 🏠 Dashboard */}
-        <SidebarGroup>
-          <SidebarGroupLabel>🏠 Dashboard</SidebarGroupLabel>
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+            🏠 Dashboard
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {dashboardItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -181,16 +191,18 @@ export default function DashboardSidebar() {
         </SidebarGroup>
 
         {/* 💬 Conversations */}
-        <SidebarGroup>
-          <SidebarGroupLabel>💬 Conversations</SidebarGroupLabel>
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+            💬 Conversations
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {conversationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -200,16 +212,18 @@ export default function DashboardSidebar() {
         </SidebarGroup>
 
         {/* 🤖 AI & Automation */}
-        <SidebarGroup>
-          <SidebarGroupLabel>🤖 AI & Automation</SidebarGroupLabel>
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+            🤖 AI & Automation
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {aiItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -219,26 +233,28 @@ export default function DashboardSidebar() {
         </SidebarGroup>
 
         {/* 🌐 Channels & Integrations */}
-        <SidebarGroup>
-          <SidebarGroupLabel>🌐 Channels & Integrations</SidebarGroupLabel>
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+            🌐 Channels & Integrations
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {channelItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
               {integrationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -248,16 +264,18 @@ export default function DashboardSidebar() {
         </SidebarGroup>
 
         {/* 📊 Analytics & Insights */}
-        <SidebarGroup>
-          <SidebarGroupLabel>📊 Analytics & Insights</SidebarGroupLabel>
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+            📊 Analytics & Insights
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {analyticsItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -267,26 +285,28 @@ export default function DashboardSidebar() {
         </SidebarGroup>
 
         {/* 👥 Team & Settings */}
-        <SidebarGroup>
-          <SidebarGroupLabel>👥 Team & Settings</SidebarGroupLabel>
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+            👥 Team & Settings
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {teamItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
               {accountSettingsItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -296,16 +316,18 @@ export default function DashboardSidebar() {
         </SidebarGroup>
 
         {/* 💳 Billing & Admin */}
-        <SidebarGroup>
-          <SidebarGroupLabel>💳 Billing & Admin</SidebarGroupLabel>
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+            💳 Billing & Admin
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {billingItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -315,16 +337,18 @@ export default function DashboardSidebar() {
         </SidebarGroup>
 
         {/* 📚 Help & Resources */}
-        <SidebarGroup>
-          <SidebarGroupLabel>📚 Help & Resources</SidebarGroupLabel>
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+            📚 Help & Resources
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {helpItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -333,20 +357,34 @@ export default function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Theme Toggle and Logout */}
+        {/* Modern Footer */}
         {!collapsed && (
-          <div className="mt-auto p-4 border-t border-border space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Theme</span>
+          <div className="mt-auto p-4 border-t border-slate-200/60 space-y-4">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50/50">
+              <span className="text-sm font-medium text-slate-600">Theme</span>
               <ThemeToggle />
             </div>
             <Button 
               variant="ghost" 
-              className="w-full justify-start text-muted-foreground hover:text-destructive"
+              className="w-full justify-start text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors group"
               onClick={logout}
             >
-              <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
+              <LogOut className="h-4 w-4 mr-3 group-hover:scale-110 transition-transform" />
+              <span className="font-medium">Sign Out</span>
+            </Button>
+          </div>
+        )}
+        
+        {/* Collapsed footer */}
+        {collapsed && (
+          <div className="mt-auto p-4 border-t border-slate-200/60">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="w-full text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              onClick={logout}
+            >
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         )}
