@@ -295,6 +295,89 @@ app.get('/api/user/profile', authenticateToken, (req, res) => {
   }
 });
 
+app.get('/api/user/usage', authenticateToken, (req, res) => {
+  try {
+    console.log('📊 User usage request from:', req.user.email);
+    
+    const db = readDatabase();
+    const user = db.users.find(u => u.id === req.user.userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Mock usage data based on user role
+    const usageData = {
+      totalUsers: user.role === 'SUPER_ADMIN' ? db.users.length : 1,
+      activeUsers: user.role === 'SUPER_ADMIN' ? db.users.filter(u => u.status === 'ACTIVE').length : 1,
+      totalRevenue: user.role === 'SUPER_ADMIN' ? 12500 : 0,
+      monthlyRevenue: user.role === 'SUPER_ADMIN' ? 2500 : 0,
+      totalBots: user.role === 'SUPER_ADMIN' ? 15 : 3,
+      totalMessages: user.role === 'SUPER_ADMIN' ? 1250 : 45
+    };
+    
+    res.json(usageData);
+  } catch (error) {
+    console.error('❌ Usage error:', error);
+    res.status(500).json({ error: 'Failed to get usage data' });
+  }
+});
+
+app.get('/api/bots', authenticateToken, (req, res) => {
+  try {
+    console.log('🤖 Bots request from:', req.user.email);
+    
+    // Mock bots data
+    const bots = [
+      {
+        id: '1',
+        name: 'Customer Support Bot',
+        status: 'ACTIVE',
+        channels: ['whatsapp', 'instagram'],
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: '2',
+        name: 'Sales Assistant',
+        status: 'ACTIVE',
+        channels: ['whatsapp', 'messenger'],
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: '3',
+        name: 'Lead Generation Bot',
+        status: 'PAUSED',
+        channels: ['website', 'instagram'],
+        createdAt: new Date().toISOString()
+      }
+    ];
+    
+    res.json({
+      success: true,
+      bots: bots
+    });
+  } catch (error) {
+    console.error('❌ Bots error:', error);
+    res.status(500).json({ error: 'Failed to get bots' });
+  }
+});
+
+app.post('/api/bots/:id/toggle', authenticateToken, (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('🔄 Toggle bot request for:', id);
+    
+    // Mock toggle response
+    res.json({
+      success: true,
+      message: 'Bot status updated successfully'
+    });
+  } catch (error) {
+    console.error('❌ Toggle bot error:', error);
+    res.status(500).json({ error: 'Failed to toggle bot' });
+  }
+});
+
 // Admin routes
 app.get('/api/admin/dashboard', authenticateToken, (req, res) => {
   try {
