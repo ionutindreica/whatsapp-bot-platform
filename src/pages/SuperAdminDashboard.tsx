@@ -243,13 +243,13 @@ const SuperAdminDashboard = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Super Admin Dashboard</h1>
+              <h1 className="text-3xl font-bold">Root Owner Dashboard</h1>
               <p className="text-muted-foreground mt-2">Complete system oversight and user management</p>
             </div>
             <div className="flex items-center space-x-4">
               <Badge className="bg-red-100 text-red-800">
-                <Shield className="w-4 h-4 mr-1" />
-                Super Admin Access
+                <Crown className="w-4 h-4 mr-1" />
+                Root Owner Access
               </Badge>
               <Button 
                 variant="outline"

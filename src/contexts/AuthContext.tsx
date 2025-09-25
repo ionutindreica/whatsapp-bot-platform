@@ -50,8 +50,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const rootUser = {
           id: '1',
           email: 'johnindreica@gmail.com',
-          name: 'Super Admin',
-          role: 'SUPER_ADMIN',
+          name: 'Root Owner',
+          role: 'ROOT_OWNER',
           status: 'ACTIVE'
         };
         console.log('👤 Setting super admin user:', rootUser);
@@ -80,15 +80,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         // Fallback to hardcoded user for johnindreica@gmail.com
         if (email === 'johnindreica@gmail.com') {
-          const superAdminUser = {
+          const rootOwnerUser = {
             id: '1',
             email: 'johnindreica@gmail.com',
-            name: 'Super Admin',
-            role: 'SUPER_ADMIN',
+            name: 'Root Owner',
+            role: 'ROOT_OWNER',
             status: 'ACTIVE'
           };
-          console.log('👤 Setting hardcoded super admin user:', superAdminUser);
-          setUser(superAdminUser);
+          console.log('👤 Setting hardcoded root owner user:', rootOwnerUser);
+          setUser(rootOwnerUser);
         }
       }
     } catch (error) {

@@ -328,17 +328,17 @@ function App() {
                     
                     {/* Admin Management - Admin+ */}
                     <Route path="admin/users" element={
-                      <ProtectedRoute rbacMinRole="SUPER_ADMIN">
+                      <ProtectedRoute rbacMinRole="ROOT_OWNER">
                         <UsersManagement />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/roles" element={
-                      <ProtectedRoute rbacMinRole="SUPER_ADMIN">
+                      <ProtectedRoute rbacMinRole="ROOT_OWNER">
                         <RolesPermissions />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/workspaces" element={
-                      <ProtectedRoute rbacMinRole="SUPER_ADMIN">
+                      <ProtectedRoute rbacMinRole="ROOT_OWNER">
                         <WorkspacesManagement />
                       </ProtectedRoute>
                     } />

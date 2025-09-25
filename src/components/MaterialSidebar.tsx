@@ -182,7 +182,7 @@ const menuSections = [
     title: "Admin Panel",
     icon: Shield,
     items: [
-      { title: "Super Admin Dashboard", url: "/dashboard/superadmin", icon: Shield, requiredRole: "SUPER_ADMIN" },
+      { title: "Root Owner Dashboard", url: "/dashboard/superadmin", icon: Crown, requiredRole: "ROOT_OWNER" },
       { title: "Users Management", url: "/dashboard/admin/users", icon: Users, requiredRole: "SUPER_ADMIN" },
       { title: "Roles & Permissions", url: "/dashboard/admin/roles", icon: Shield, requiredRole: "SUPER_ADMIN" },
       { title: "Workspaces", url: "/dashboard/admin/workspaces", icon: Building2, requiredRole: "SUPER_ADMIN" }
