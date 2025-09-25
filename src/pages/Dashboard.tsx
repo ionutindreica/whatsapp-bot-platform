@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { useSubscription } from "@/contexts/SubscriptionContext";
 
 const Dashboard = () => {
   const { user } = useAuth();
