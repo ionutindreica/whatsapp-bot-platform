@@ -326,49 +326,49 @@ function App() {
                     
                     {/* Admin Management - Admin+ */}
                     <Route path="admin/users" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'users', action: 'read' }}>
+                      <ProtectedRoute rbacPermissions={['USER_VIEW_DETAILS']}>
                         <UserManagement />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/audit-logs" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'audit_logs', action: 'read' }}>
+                      <ProtectedRoute rbacPermissions={['SYSTEM_VIEW_LOGS']}>
                         <AuditLogs />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/roles" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'roles', action: 'read' }}>
+                      <ProtectedRoute rbacPermissions={['USER_MANAGE_ALL']}>
                         <RoleManagement />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/sessions" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'users', action: 'read' }}>
+                      <ProtectedRoute rbacPermissions={['USER_VIEW_DETAILS']}>
                         <SessionManagement />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/security" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'security', action: 'read' }}>
+                      <ProtectedRoute rbacPermissions={['SYSTEM_VIEW_LOGS']}>
                         <SecurityDashboard />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/gdpr" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'users', action: 'delete' }}>
+                      <ProtectedRoute rbacPermissions={['USER_DELETE']}>
                         <GDPRTools />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/access-control" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'roles', action: 'read' }}>
+                      <ProtectedRoute rbacPermissions={['USER_MANAGE_ALL']}>
                         <AccessControl />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/custom-roles" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'roles', action: 'create' }}>
+                      <ProtectedRoute rbacFeatures={['CUSTOM_ROLES']}>
                         <CustomRoles />
                       </ProtectedRoute>
                     } />
                     
                     {/* Super Admin Only */}
                     <Route path="superadmin" element={
-                      <ProtectedRoute requiredRole="SUPER_ADMIN">
+                      <ProtectedRoute rbacRole="SUPER_ADMIN">
                         <SuperAdminDashboard />
                       </ProtectedRoute>
                     } />

@@ -3,9 +3,12 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAuthorization } from '@/hooks/useAuthorization';
 import { UserRole, Resource, Action } from '@/types/auth';
+import RBACRoute from './RBACRoute';
+import { Permission, FeatureFlag } from '@/types/rbac';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  // Legacy props for backward compatibility
   requiredRole?: UserRole;
   requiredRoles?: UserRole[];
   requiredPermission?: {
@@ -16,21 +19,33 @@ interface ProtectedRouteProps {
     resource: Resource;
     action: Action;
   }>;
+  // New RBAC props
+  rbacPermissions?: Permission[];
+  rbacFeatures?: FeatureFlag[];
+  rbacRole?: UserRole;
+  rbacMinRole?: UserRole;
   fallback?: React.ReactNode;
   redirectTo?: string;
+  useRBAC?: boolean;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
+  // Legacy props
   requiredRole,
   requiredRoles,
   requiredPermission,
   requiredPermissions,
+  // New RBAC props
+  rbacPermissions,
+  rbacFeatures,
+  rbacRole,
+  rbacMinRole,
   fallback,
-  redirectTo = '/login'
+  redirectTo = '/login',
+  useRBAC = false
 }) => {
   const { user, loading } = useAuth();
-  const { hasRole, hasAnyRole, hasPermission, hasHigherRole } = useAuthorization();
   const location = useLocation();
 
   // Show loading while auth is being checked
@@ -46,6 +61,25 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   if (!user) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
+
+  // Use new RBAC system if requested or if RBAC props are provided
+  if (useRBAC || rbacPermissions || rbacFeatures || rbacRole || rbacMinRole) {
+    return (
+      <RBACRoute
+        requiredPermissions={rbacPermissions}
+        requiredFeatures={rbacFeatures}
+        requiredRole={rbacRole}
+        minRoleLevel={rbacMinRole}
+        fallbackPath={redirectTo}
+        showAccessDenied={true}
+      >
+        {children}
+      </RBACRoute>
+    );
+  }
+
+  // Legacy authorization system
+  const { hasRole, hasAnyRole, hasPermission } = useAuthorization();
 
   // Check role requirements
   if (requiredRole && !hasRole(requiredRole)) {
