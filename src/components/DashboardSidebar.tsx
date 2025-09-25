@@ -59,6 +59,7 @@ const dashboardItems = [
 
 // 💬 Conversations
 const conversationItems = [
+  { title: "Unified Inbox", url: "/dashboard/inbox", icon: MessageSquare },
   { title: "All Conversations", url: "/dashboard/conversations", icon: MessageSquare },
   { title: "Live Transfer", url: "/dashboard/live-agent", icon: Headphones },
   { title: "Broadcast Messages", url: "/dashboard/broadcast", icon: Megaphone },
@@ -71,8 +72,13 @@ const aiItems = [
   { title: "AI Training", url: "/dashboard/ai/training", icon: Zap },
   { title: "AI Templates", url: "/dashboard/ai/templates", icon: FileText },
   { title: "AI Knowledge Base", url: "/dashboard/ai/knowledge", icon: Database },
-  { title: "Flow Builder", url: "/dashboard/flows", icon: Target },
+  { title: "Flow Builder", url: "/dashboard/flow-builder", icon: Target },
   { title: "Triggers", url: "/dashboard/triggers", icon: Target },
+];
+
+// 🌐 Platform Management
+const platformItems = [
+  { title: "Platform Overview", url: "/dashboard/platforms", icon: Globe },
 ];
 
 // 🌐 Channels & Integrations
@@ -229,6 +235,27 @@ export default function DashboardSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               {aiItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild className="group">
+                    <NavLink to={item.url} className={getNavCls}>
+                      <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* 🌐 Platform Management */}
+        <SidebarGroup className="mb-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
+            🌐 Platform Management
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {platformItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild className="group">
                     <NavLink to={item.url} className={getNavCls}>

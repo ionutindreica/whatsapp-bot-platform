@@ -1,237 +1,357 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Check, Zap, Crown, Rocket } from "lucide-react";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
+import { 
+  Check, 
+  X, 
+  Star, 
+  Zap, 
+  Shield, 
+  Users, 
+  MessageSquare, 
+  BarChart3,
+  Globe,
+  Smartphone,
+  Instagram,
+  Send,
+  Crown,
+  Rocket,
+  CheckCircle2
+} from 'lucide-react';
+import { PLANS, FEATURE_MATRIX, PlanType } from '@/types/pricing';
+import AdminPageLayout from '@/components/AdminPageLayout';
 
-const Pricing = () => {
-  const handlePlanSelection = (planName: string) => {
-    console.log(`Selected plan: ${planName}`);
-    if (planName === "Enterprise") {
-      console.log("Opening contact sales form...");
-      // Here you would typically open contact sales modal or navigate to contact page
-    } else {
-      console.log(`Starting ${planName} trial...`);
-      // Here you would typically navigate to signup or checkout
+const Pricing: React.FC = () => {
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>('pro');
+
+  const getPlanIcon = (planId: PlanType) => {
+    switch (planId) {
+      case 'starter':
+        return <Zap className="w-6 h-6" />;
+      case 'pro':
+        return <Crown className="w-6 h-6" />;
+      case 'enterprise':
+        return <Rocket className="w-6 h-6" />;
+      default:
+        return <Star className="w-6 h-6" />;
     }
   };
 
-  const plans = [
-    {
-      id: "free",
-      name: "Free",
-      price: "$0",
-      period: "/month",
-      description: "Perfect for testing and small projects",
-      icon: Zap,
-      features: [
-        "1 AI Bot",
-        "500 messages/month",
-        "Basic AI responses",
-        "Community support",
-        "Basic dashboard",
-        "1 channel integration",
-        "Basic analytics",
-        "7-day message history"
-      ],
-      limitations: [
-        "Limited to 500 messages/month",
-        "Basic support only",
-        "No advanced features"
-      ],
-      color: "border-gray-200",
-      buttonVariant: "outline" as const,
-      popular: false,
-      stripePriceId: null
-    },
-    {
-      id: "pro",
-      name: "Pro",
-      price: "$29",
-      period: "/month",
-      description: "Ideal for growing businesses",
-      icon: Crown,
-      features: [
-        "5 AI Bots",
-        "10,000 messages/month",
-        "Advanced AI with personality",
-        "Priority support",
-        "Advanced analytics & reporting",
-        "All channel integrations (WhatsApp, Instagram, Messenger, Website)",
-        "Broadcast messages",
-        "Trigger system & automation",
-        "Live agent transfer",
-        "Polls & surveys",
-        "90-day message history",
-        "Custom branding"
-      ],
-      limitations: [
-        "Limited to 10,000 messages/month",
-        "Standard support response time"
-      ],
-      color: "border-blue-500",
-      buttonVariant: "default" as const,
-      popular: true,
-      stripePriceId: "price_pro_monthly"
-    },
-    {
-      id: "enterprise",
-      name: "Enterprise",
-      price: "$99",
-      period: "/month",
-      description: "For large organizations and agencies",
-      icon: Rocket,
-      features: [
-        "Unlimited AI Bots",
-        "100,000 messages/month",
-        "Custom AI training",
-        "Dedicated account manager",
-        "White-label solution",
-        "Full API access",
-        "Advanced security & compliance",
-        "SLA guarantee (99.9%)",
-        "Custom integrations",
-        "Unlimited message history",
-        "Advanced team collaboration",
-        "Custom onboarding",
-        "Priority feature requests"
-      ],
-      limitations: [
-        "Contact sales for custom limits",
-        "Minimum 12-month commitment"
-      ],
-      color: "border-purple-500",
-      buttonVariant: "outline" as const,
-      popular: false,
-      stripePriceId: "price_enterprise_monthly"
+  const getPlanColor = (planId: PlanType) => {
+    switch (planId) {
+      case 'starter':
+        return 'bg-blue-500';
+      case 'pro':
+        return 'bg-purple-500';
+      case 'enterprise':
+        return 'bg-gradient-to-r from-purple-600 to-pink-600';
+      default:
+        return 'bg-gray-500';
     }
-  ];
+  };
+
+  const getPlatformIcon = (platform: string) => {
+    switch (platform) {
+      case 'WhatsApp':
+        return <Smartphone className="w-4 h-4" />;
+      case 'Messenger':
+        return <MessageSquare className="w-4 h-4" />;
+      case 'Instagram':
+        return <Instagram className="w-4 h-4" />;
+      case 'Website':
+        return <Globe className="w-4 h-4" />;
+      case 'Telegram':
+        return <Send className="w-4 h-4" />;
+      default:
+        return <Globe className="w-4 h-4" />;
+    }
+  };
+
+  const formatPrice = (price: number) => {
+    if (billingCycle === 'yearly') {
+      return Math.round(price * 12 * 0.8); // 20% discount for yearly
+    }
+    return price;
+  };
+
+  const formatBillingPeriod = () => {
+    return billingCycle === 'yearly' ? '/year' : '/month';
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <main className="pt-20">
-        {/* Header */}
-        <section className="py-24 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="text-5xl font-bold mb-6">
-              Choose Your{" "}
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Perfect Plan
-              </span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-              Start with our free trial, then choose a plan that grows with your business. 
-              All plans include our core omnichannel AI features and 24/7 support.
-            </p>
-            
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 px-4 py-2 rounded-full text-sm font-medium mb-12">
-              <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-pulse" />
-              30-day free trial • No credit card required
-            </div>
-          </div>
-        </section>
+    <AdminPageLayout 
+      title="Pricing & Plans"
+      description="Choose the perfect plan for your business needs"
+    >
+      <Tabs value="pricing" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="pricing">Plans & Pricing</TabsTrigger>
+          <TabsTrigger value="features">Feature Comparison</TabsTrigger>
+        </TabsList>
 
-        {/* Pricing Cards */}
-        <section className="pb-24">
-          <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {plans.map((plan) => (
-                <Card 
-                  key={plan.name} 
-                  className={`relative ${plan.color} ${plan.popular ? 'ring-2 ring-blue-500 shadow-elegant' : ''}`}
-                >
-                  {plan.popular && (
-                    <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500">
+        <TabsContent value="pricing" className="space-y-8">
+          {/* Billing Toggle */}
+          <div className="flex items-center justify-center space-x-4">
+            <span className={billingCycle === 'monthly' ? 'font-medium' : 'text-muted-foreground'}>
+              Monthly
+            </span>
+            <Switch
+              checked={billingCycle === 'yearly'}
+              onCheckedChange={(checked) => setBillingCycle(checked ? 'yearly' : 'monthly')}
+            />
+            <span className={billingCycle === 'yearly' ? 'font-medium' : 'text-muted-foreground'}>
+              Yearly
+            </span>
+            {billingCycle === 'yearly' && (
+              <Badge variant="default" className="bg-green-500">
+                Save 20%
+              </Badge>
+            )}
+          </div>
+
+          {/* Pricing Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {PLANS.map((plan) => (
+              <Card 
+                key={plan.id} 
+                className={`relative ${plan.popular ? 'ring-2 ring-purple-500 shadow-xl scale-105' : ''}`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-purple-500 text-white px-4 py-1">
+                      <Star className="w-3 h-3 mr-1" />
                       Most Popular
                     </Badge>
-                  )}
-                  
-                  <CardHeader className="text-center pb-8">
-                    <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
-                      <plan.icon className="w-6 h-6 text-white" />
+                  </div>
+                )}
+                
+                <CardHeader className="text-center pb-4">
+                  <div className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${getPlanColor(plan.id)} text-white mb-4 mx-auto`}>
+                    {getPlanIcon(plan.id)}
+                  </div>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <CardDescription className="text-base">
+                    {plan.id === 'starter' && 'Perfect for small businesses getting started'}
+                    {plan.id === 'pro' && 'Ideal for growing businesses with teams'}
+                    {plan.id === 'enterprise' && 'Advanced features for large organizations'}
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-6">
+                  {/* Price */}
+                  <div className="text-center">
+                    <div className="text-4xl font-bold">
+                      ${formatPrice(plan.price)}
+                      <span className="text-lg font-normal text-muted-foreground">
+                        {formatBillingPeriod()}
+                      </span>
                     </div>
-                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                    <CardDescription className="text-base">{plan.description}</CardDescription>
-                    <div className="mt-4">
-                      <span className="text-4xl font-bold">{plan.price}</span>
-                      <span className="text-muted-foreground">{plan.period}</span>
+                    {billingCycle === 'yearly' && (
+                      <div className="text-sm text-muted-foreground mt-1">
+                        Billed annually (${plan.price}/month)
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Limits */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Users</span>
+                      <span className="font-medium">
+                        {plan.limits.users === -1 ? 'Unlimited' : plan.limits.users}
+                      </span>
                     </div>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-6">
-                    <Button 
-                      className="w-full" 
-                      variant={plan.buttonVariant}
-                      size="lg"
-                      onClick={() => handlePlanSelection(plan.name)}
-                    >
-                      {plan.name === "Enterprise" ? "Contact Sales" : "Start Free Trial"}
-                    </Button>
-                    
-                    <div className="space-y-3">
-                      <h4 className="font-semibold">Everything included:</h4>
-                      <ul className="space-y-2">
-                        {plan.features.map((feature) => (
-                          <li key={feature} className="flex items-center gap-3">
-                            <Check className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                            <span className="text-sm">{feature}</span>
-                          </li>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Messages/month</span>
+                      <span className="font-medium">
+                        {plan.limits.messages === -1 ? 'Unlimited' : plan.limits.messages.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Flows</span>
+                      <span className="font-medium">
+                        {plan.limits.flows === -1 ? 'Unlimited' : plan.limits.flows}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Platforms</span>
+                      <span className="font-medium">
+                        {plan.limits.platforms === -1 ? 'All' : plan.limits.platforms}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Integrations</span>
+                      <span className="font-medium">
+                        {plan.limits.integrations === -1 ? 'Unlimited' : plan.limits.integrations}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* CTA Button */}
+                  <Button 
+                    className={`w-full ${plan.id === 'pro' ? 'bg-purple-600 hover:bg-purple-700' : ''}`}
+                    variant={plan.id === 'pro' ? 'default' : 'outline'}
+                    onClick={() => setSelectedPlan(plan.id)}
+                  >
+                    {plan.id === 'enterprise' ? 'Contact Sales' : 'Get Started'}
+                  </Button>
+
+                  {/* Key Features */}
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">Key Features:</h4>
+                    <div className="space-y-1">
+                      {plan.features.slice(0, 5).map((feature, index) => (
+                        <div key={index} className="flex items-center text-sm">
+                          <Check className="w-3 h-3 text-green-500 mr-2 flex-shrink-0" />
+                          <span>{feature.name}</span>
+                        </div>
+                      ))}
+                      {plan.features.length > 5 && (
+                        <div className="text-xs text-muted-foreground">
+                          +{plan.features.length - 5} more features
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Additional Info */}
+          <div className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              All plans include 14-day free trial. No credit card required.
+            </p>
+            <div className="flex items-center justify-center space-x-6 text-sm">
+              <div className="flex items-center">
+                <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                <span>14-day free trial</span>
+              </div>
+              <div className="flex items-center">
+                <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                <span>Cancel anytime</span>
+              </div>
+              <div className="flex items-center">
+                <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                <span>No setup fees</span>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="features" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Feature Comparison</CardTitle>
+              <CardDescription>
+                Compare features across all plans
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-medium">Features</th>
+                      <th className="text-center py-3 px-4">
+                        <div className="flex items-center justify-center space-x-2">
+                          <Zap className="w-4 h-4 text-blue-500" />
+                          <span>Starter</span>
+                        </div>
+                      </th>
+                      <th className="text-center py-3 px-4">
+                        <div className="flex items-center justify-center space-x-2">
+                          <Crown className="w-4 h-4 text-purple-500" />
+                          <span>Pro</span>
+                        </div>
+                      </th>
+                      <th className="text-center py-3 px-4">
+                        <div className="flex items-center justify-center space-x-2">
+                          <Rocket className="w-4 h-4 text-purple-600" />
+                          <span>Enterprise</span>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(FEATURE_MATRIX).map(([category, features]) => (
+                      <React.Fragment key={category}>
+                        <tr className="bg-muted/50">
+                          <td colSpan={4} className="py-2 px-4 font-medium">
+                            {category}
+                          </td>
+                        </tr>
+                        {Object.entries(features).map(([featureName, availability]) => (
+                          <tr key={featureName} className="border-b">
+                            <td className="py-3 px-4 text-sm">{featureName}</td>
+                            <td className="text-center py-3 px-4">
+                              {availability.starter ? (
+                                <Check className="w-4 h-4 text-green-500 mx-auto" />
+                              ) : (
+                                <X className="w-4 h-4 text-red-500 mx-auto" />
+                              )}
+                            </td>
+                            <td className="text-center py-3 px-4">
+                              {availability.pro ? (
+                                <Check className="w-4 h-4 text-green-500 mx-auto" />
+                              ) : (
+                                <X className="w-4 h-4 text-red-500 mx-auto" />
+                              )}
+                            </td>
+                            <td className="text-center py-3 px-4">
+                              {availability.enterprise ? (
+                                <Check className="w-4 h-4 text-green-500 mx-auto" />
+                              ) : (
+                                <X className="w-4 h-4 text-red-500 mx-auto" />
+                              )}
+                            </td>
+                          </tr>
                         ))}
-                      </ul>
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Platform-specific Features */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Platform-Specific Features</CardTitle>
+              <CardDescription>
+                Features available for each communication platform
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { name: 'WhatsApp Business', icon: <Smartphone className="w-6 h-6" />, color: 'text-green-500' },
+                  { name: 'Facebook Messenger', icon: <MessageSquare className="w-6 h-6" />, color: 'text-blue-500' },
+                  { name: 'Instagram DM', icon: <Instagram className="w-6 h-6" />, color: 'text-pink-500' },
+                  { name: 'Website Chat', icon: <Globe className="w-6 h-6" />, color: 'text-purple-500' }
+                ].map((platform) => (
+                  <div key={platform.name} className="text-center p-4 border rounded-lg">
+                    <div className={`${platform.color} mb-2 flex justify-center`}>
+                      {platform.icon}
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-24 bg-muted/20">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
-              <p className="text-muted-foreground">
-                Everything you need to know about our pricing and plans
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {[
-                {
-                  question: "Can I change plans anytime?",
-                  answer: "Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately."
-                },
-                {
-                  question: "What happens if I exceed my message limit?",
-                  answer: "We'll notify you when you're near your limit. You can upgrade or purchase additional messages."
-                },
-                {
-                  question: "Is there a setup fee?",
-                  answer: "No setup fees! All plans include free onboarding and bot configuration assistance."
-                },
-                {
-                  question: "Do you offer custom enterprise solutions?",
-                  answer: "Yes! Our Enterprise plan includes custom features, dedicated support, and white-label options."
-                }
-              ].map((faq) => (
-                <Card key={faq.question}>
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold mb-2">{faq.question}</h3>
-                    <p className="text-muted-foreground">{faq.answer}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
+                    <h3 className="font-medium mb-2">{platform.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Full feature set available on all plans
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </AdminPageLayout>
   );
 };
 

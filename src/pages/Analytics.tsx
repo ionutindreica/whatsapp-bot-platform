@@ -1,414 +1,545 @@
-import React, { useState } from "react";
-import BackToDashboard from "@/components/BackToDashboard";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   BarChart3, 
   TrendingUp, 
-  TrendingDown,
-  Users,
-  MessageSquare,
-  Clock,
+  TrendingDown, 
+  Users, 
+  MessageSquare, 
+  Clock, 
   CheckCircle,
+  AlertCircle,
   XCircle,
-  AlertTriangle,
-  Activity,
-  Bot,
-  Globe,
+  Download,
+  Filter,
+  Calendar,
   Smartphone,
-  Mail,
-  Phone
-} from "lucide-react";
+  Facebook,
+  Instagram,
+  Globe,
+  Send,
+  Eye,
+  MousePointer,
+  Heart,
+  Share2,
+  Bot,
+  UserCheck,
+  Timer,
+  Zap
+} from 'lucide-react';
+import AdminPageLayout from '@/components/AdminPageLayout';
 
-const Analytics = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState("7d");
-  
-  const handleExportData = () => {
-    console.log("Exporting analytics data...");
-    // Create and download CSV file
-    const csvData = "Date,Metric,Value\n2024-01-01,Conversations,100\n2024-01-02,Conversations,150";
-    const blob = new Blob([csvData], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'analytics-data.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
+interface MetricCard {
+  title: string;
+  value: string;
+  change: number;
+  changeType: 'increase' | 'decrease';
+  icon: React.ReactNode;
+  description: string;
+}
 
-  const handleGenerateReport = () => {
-    console.log("Generating analytics report...");
-    // Generate and download PDF report
-    const reportData = `
-      Analytics Report
-      Generated: ${new Date().toLocaleDateString()}
-      
-      Total Conversations: 2,847
-      Active Users: 1,234
-      Response Time: 2.3s
-      Success Rate: 94.2%
-    `;
-    const blob = new Blob([reportData], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'analytics-report.txt';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-  
-  const metrics = [
+interface PlatformStats {
+  platform: string;
+  icon: React.ReactNode;
+  conversations: number;
+  messages: number;
+  responseTime: string;
+  satisfaction: number;
+  trend: 'up' | 'down' | 'stable';
+}
+
+const Analytics: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [timeRange, setTimeRange] = useState('7d');
+  const [selectedPlatform, setSelectedPlatform] = useState('all');
+
+  const metricCards: MetricCard[] = [
     {
-      title: "Total Conversations",
-      value: "2,847",
-      change: "+12.5%",
-      trend: "up",
-      icon: MessageSquare,
-      color: "text-blue-600"
+      title: 'Total Conversations',
+      value: '2,847',
+      change: 12.5,
+      changeType: 'increase',
+      icon: <MessageSquare className="w-5 h-5" />,
+      description: 'Active conversations across all platforms'
     },
     {
-      title: "Active Users",
-      value: "1,234",
-      change: "+8.2%",
-      trend: "up",
-      icon: Users,
-      color: "text-green-600"
+      title: 'Messages Sent',
+      value: '15,432',
+      change: 8.3,
+      changeType: 'increase',
+      icon: <Send className="w-5 h-5" />,
+      description: 'Total messages sent this period'
     },
     {
-      title: "Messages Sent",
-      value: "15,678",
-      change: "+15.3%",
-      trend: "up",
-      icon: MessageSquare,
-      color: "text-whatsapp"
+      title: 'Response Rate',
+      value: '94.2%',
+      change: 2.1,
+      changeType: 'increase',
+      icon: <CheckCircle className="w-5 h-5" />,
+      description: 'Average response rate across platforms'
     },
     {
-      title: "Response Time",
-      value: "2.3s",
-      change: "-0.5s",
-      trend: "down",
-      icon: Clock,
-      color: "text-purple-600"
+      title: 'Avg Response Time',
+      value: '2.3 min',
+      change: 15.2,
+      changeType: 'decrease',
+      icon: <Clock className="w-5 h-5" />,
+      description: 'Average time to first response'
+    },
+    {
+      title: 'Customer Satisfaction',
+      value: '4.8/5',
+      change: 0.3,
+      changeType: 'increase',
+      icon: <Heart className="w-5 h-5" />,
+      description: 'Average customer satisfaction score'
+    },
+    {
+      title: 'Active Users',
+      value: '1,234',
+      change: 18.7,
+      changeType: 'increase',
+      icon: <Users className="w-5 h-5" />,
+      description: 'Unique users engaged this period'
     }
   ];
 
-  const channelStats = [
+  const platformStats: PlatformStats[] = [
     {
-      channel: "WhatsApp",
-      icon: Phone,
+      platform: 'WhatsApp',
+      icon: <Smartphone className="w-5 h-5 text-green-500" />,
       conversations: 1247,
-      messages: 8943,
-      users: 892,
-      satisfaction: 98.5,
-      color: "text-green-600"
+      messages: 8923,
+      responseTime: '1.8 min',
+      satisfaction: 4.9,
+      trend: 'up'
     },
     {
-      channel: "Website Chat",
-      icon: Globe,
+      platform: 'Facebook Messenger',
+      icon: <Facebook className="w-5 h-5 text-blue-500" />,
       conversations: 892,
       messages: 3456,
-      users: 456,
-      satisfaction: 95.2,
-      color: "text-blue-600"
+      responseTime: '2.1 min',
+      satisfaction: 4.7,
+      trend: 'up'
     },
     {
-      channel: "Email",
-      icon: Mail,
+      platform: 'Instagram DM',
+      icon: <Instagram className="w-5 h-5 text-pink-500" />,
       conversations: 456,
-      messages: 1234,
-      users: 234,
-      satisfaction: 92.8,
-      color: "text-orange-600"
+      messages: 1890,
+      responseTime: '3.2 min',
+      satisfaction: 4.6,
+      trend: 'stable'
     },
     {
-      channel: "Mobile App",
-      icon: Smartphone,
-      conversations: 234,
-      messages: 567,
-      users: 123,
-      satisfaction: 89.1,
-      color: "text-purple-600"
+      platform: 'Website Chat',
+      icon: <Globe className="w-5 h-5 text-purple-500" />,
+      conversations: 252,
+      messages: 1163,
+      responseTime: '2.8 min',
+      satisfaction: 4.8,
+      trend: 'up'
     }
   ];
 
-  const botPerformance = [
-    {
-      bot: "Customer Support Bot",
-      conversations: 1247,
-      satisfaction: 98.5,
-      responseTime: "1.2s",
-      uptime: "99.9%",
-      status: "excellent"
-    },
-    {
-      bot: "Sales Assistant",
-      conversations: 892,
-      satisfaction: 95.2,
-      responseTime: "2.1s",
-      uptime: "99.7%",
-      status: "good"
-    },
-    {
-      bot: "Lead Generator",
-      conversations: 456,
-      satisfaction: 92.8,
-      responseTime: "3.4s",
-      uptime: "98.9%",
-      status: "good"
-    }
-  ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "excellent":
-        return "bg-green-100 text-green-800";
-      case "good":
-        return "bg-blue-100 text-blue-800";
-      case "fair":
-        return "bg-blue-100 text-blue-800";
-      case "poor":
-        return "bg-red-100 text-red-800";
+  const getTrendIcon = (trend: string) => {
+    switch (trend) {
+      case 'up':
+        return <TrendingUp className="w-4 h-4 text-green-500" />;
+      case 'down':
+        return <TrendingDown className="w-4 h-4 text-red-500" />;
       default:
-        return "bg-muted text-muted-foreground";
+        return <BarChart3 className="w-4 h-4 text-gray-500" />;
     }
+  };
+
+  const getChangeColor = (changeType: string) => {
+    return changeType === 'increase' ? 'text-green-500' : 'text-red-500';
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Back to Dashboard */}
-        <BackToDashboard title="Back to Dashboard" />
-        
-        {/* Header */}
+    <AdminPageLayout 
+      title="Analytics Dashboard"
+      description="Monitor performance and insights across all platforms"
+    >
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        {/* Header Controls */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <BarChart3 className="w-8 h-8 text-whatsapp" />
-              Analytics
-            </h1>
-            <p className="text-muted-foreground">Monitor your bot performance and user engagement</p>
+          <div className="flex items-center space-x-4">
+            <Select value={timeRange} onValueChange={setTimeRange}>
+              <SelectTrigger className="w-32">
+                <Calendar className="w-4 h-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="24h">Last 24h</SelectItem>
+                <SelectItem value="7d">Last 7 days</SelectItem>
+                <SelectItem value="30d">Last 30 days</SelectItem>
+                <SelectItem value="90d">Last 90 days</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
+              <SelectTrigger className="w-40">
+                <Filter className="w-4 h-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Platforms</SelectItem>
+                <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                <SelectItem value="messenger">Messenger</SelectItem>
+                <SelectItem value="instagram">Instagram</SelectItem>
+                <SelectItem value="website">Website</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleExportData}>
-              <Activity className="mr-2 w-4 h-4" />
-              Export Data
-            </Button>
-            <Button className="bg-whatsapp hover:bg-whatsapp/90" onClick={handleGenerateReport}>
-              <BarChart3 className="mr-2 w-4 h-4" />
-              Generate Report
-            </Button>
-          </div>
+          
+          <Button variant="outline">
+            <Download className="w-4 h-4 mr-2" />
+            Export Report
+          </Button>
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="channels">Channels</TabsTrigger>
-            <TabsTrigger value="bots">Bots</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
-          </TabsList>
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="conversations">Conversations</TabsTrigger>
+          <TabsTrigger value="performance">Performance</TabsTrigger>
+          <TabsTrigger value="platforms">Platforms</TabsTrigger>
+          <TabsTrigger value="insights">Insights</TabsTrigger>
+        </TabsList>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid md:grid-cols-4 gap-6">
-              {metrics.map((metric, index) => (
-                <Card key={index}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">{metric.title}</p>
-                        <p className="text-2xl font-bold">{metric.value}</p>
-                        <div className="flex items-center gap-1 mt-1">
-                          {metric.trend === "up" ? (
-                            <TrendingUp className="w-4 h-4 text-green-600" />
-                          ) : (
-                            <TrendingDown className="w-4 h-4 text-red-600" />
-                          )}
-                          <span className={`text-sm ${metric.trend === "up" ? "text-green-600" : "text-red-600"}`}>
-                            {metric.change}
-                          </span>
-                        </div>
-                      </div>
-                      <metric.icon className={`w-8 h-8 ${metric.color}`} />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Channel Performance</CardTitle>
-                  <CardDescription>Compare performance across channels</CardDescription>
+        <TabsContent value="overview" className="space-y-6">
+          {/* Key Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {metricCards.map((metric, index) => (
+              <Card key={index}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    {metric.title}
+                  </CardTitle>
+                  {metric.icon}
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {channelStats.map((channel, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <channel.icon className={`w-5 h-5 ${channel.color}`} />
-                          <span className="font-medium">{channel.channel}</span>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm font-medium">{channel.conversations} conversations</div>
-                          <div className="text-xs text-muted-foreground">{channel.messages} messages</div>
-                        </div>
+                  <div className="text-2xl font-bold">{metric.value}</div>
+                  <div className="flex items-center space-x-2">
+                    <span className={`text-xs ${getChangeColor(metric.changeType)}`}>
+                      {metric.changeType === 'increase' ? '+' : '-'}{metric.change}%
+                    </span>
+                    <span className="text-xs text-muted-foreground">from last period</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {metric.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Charts Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Conversation Volume</CardTitle>
+                <CardDescription>
+                  Daily conversation trends over time
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+                  <div className="text-center">
+                    <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">Chart visualization would go here</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Response Time Trends</CardTitle>
+                <CardDescription>
+                  Average response time by platform
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+                  <div className="text-center">
+                    <Clock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">Chart visualization would go here</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="conversations" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Conversation Status</CardTitle>
+                <CardDescription>
+                  Distribution of conversation statuses
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <span className="text-sm">Resolved</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium">1,847</span>
+                      <Badge variant="secondary">65%</Badge>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <AlertCircle className="w-4 h-4 text-yellow-500" />
+                      <span className="text-sm">In Progress</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium">623</span>
+                      <Badge variant="secondary">22%</Badge>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <XCircle className="w-4 h-4 text-red-500" />
+                      <span className="text-sm">Pending</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium">377</span>
+                      <Badge variant="secondary">13%</Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>AI vs Human Responses</CardTitle>
+                <CardDescription>
+                  Distribution of AI vs human agent responses
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Bot className="w-4 h-4 text-blue-500" />
+                      <span className="text-sm">AI Responses</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium">12,847</span>
+                      <Badge variant="secondary">78%</Badge>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <UserCheck className="w-4 h-4 text-green-500" />
+                      <span className="text-sm">Human Responses</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium">3,585</span>
+                      <Badge variant="secondary">22%</Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="performance" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">First Response Time</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">2.3 min</div>
+                <div className="flex items-center space-x-2">
+                  <TrendingDown className="w-4 h-4 text-green-500" />
+                  <span className="text-xs text-green-500">-15.2%</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Resolution Time</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">8.7 min</div>
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-red-500" />
+                  <span className="text-xs text-red-500">+5.1%</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Customer Satisfaction</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">4.8/5</div>
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-green-500" />
+                  <span className="text-xs text-green-500">+0.3</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Agent Productivity</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">94.2%</div>
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-green-500" />
+                  <span className="text-xs text-green-500">+2.1%</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="platforms" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {platformStats.map((platform, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      {platform.icon}
+                      <div>
+                        <CardTitle className="text-lg">{platform.platform}</CardTitle>
+                        <CardDescription>Platform performance metrics</CardDescription>
                       </div>
-                    ))}
+                    </div>
+                    {getTrendIcon(platform.trend)}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-2xl font-bold">{platform.conversations.toLocaleString()}</div>
+                      <div className="text-sm text-muted-foreground">Conversations</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold">{platform.messages.toLocaleString()}</div>
+                      <div className="text-sm text-muted-foreground">Messages</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-lg font-semibold">{platform.responseTime}</div>
+                      <div className="text-sm text-muted-foreground">Avg Response Time</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-semibold">{platform.satisfaction}/5</div>
+                      <div className="text-sm text-muted-foreground">Satisfaction</div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
+            ))}
+          </div>
+        </TabsContent>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Bot Performance</CardTitle>
-                  <CardDescription>Performance metrics for each bot</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {botPerformance.map((bot, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <Bot className="w-5 h-5 text-whatsapp" />
-                          <span className="font-medium">{bot.bot}</span>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm font-medium">{bot.satisfaction}% satisfaction</div>
-                          <div className="text-xs text-muted-foreground">{bot.responseTime} avg response</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+        <TabsContent value="insights" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Zap className="w-5 h-5 mr-2" />
+                  AI Insights
+                </CardTitle>
+                <CardDescription>
+                  AI-generated insights and recommendations
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-medium mb-2">Peak Hours Analysis</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Most conversations occur between 2-4 PM. Consider scheduling more agents during this time.
+                  </p>
+                </div>
+                <div className="p-4 bg-green-50 rounded-lg">
+                  <h4 className="font-medium mb-2">Customer Satisfaction</h4>
+                  <p className="text-sm text-muted-foreground">
+                    WhatsApp users show 15% higher satisfaction. Consider promoting WhatsApp as preferred channel.
+                  </p>
+                </div>
+                <div className="p-4 bg-yellow-50 rounded-lg">
+                  <h4 className="font-medium mb-2">Response Time Alert</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Instagram DM response times are 40% slower than average. Review automation rules.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Channels Tab */}
-          <TabsContent value="channels" className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
-              {channelStats.map((channel, index) => (
-                <Card key={index}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <channel.icon className={`w-5 h-5 ${channel.color}`} />
-                      {channel.channel}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Conversations</p>
-                        <p className="text-2xl font-bold">{channel.conversations.toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Messages</p>
-                        <p className="text-2xl font-bold">{channel.messages.toLocaleString()}</p>
-                      </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <TrendingUp className="w-5 h-5 mr-2" />
+                  Growth Metrics
+                </CardTitle>
+                <CardDescription>
+                  Growth and trend analysis
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <div className="font-medium">User Growth</div>
+                      <div className="text-sm text-muted-foreground">New users this month</div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Users</p>
-                        <p className="text-lg font-semibold">{channel.users.toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Satisfaction</p>
-                        <p className="text-lg font-semibold">{channel.satisfaction}%</p>
-                      </div>
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-green-500">+23%</div>
+                      <div className="text-sm">1,847 users</div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Bots Tab */}
-          <TabsContent value="bots" className="space-y-6">
-            <div className="space-y-4">
-              {botPerformance.map((bot, index) => (
-                <Card key={index}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <Bot className="w-8 h-8 text-whatsapp" />
-                        <div>
-                          <h4 className="font-medium text-lg">{bot.bot}</h4>
-                          <p className="text-sm text-muted-foreground">{bot.conversations} conversations</p>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-3 gap-6 text-center">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Satisfaction</p>
-                          <p className="text-lg font-semibold">{bot.satisfaction}%</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Response Time</p>
-                          <p className="text-lg font-semibold">{bot.responseTime}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Uptime</p>
-                          <p className="text-lg font-semibold">{bot.uptime}</p>
-                        </div>
-                      </div>
-                      <Badge className={getStatusColor(bot.status)}>
-                        {bot.status}
-                      </Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <div className="font-medium">Engagement Rate</div>
+                      <div className="text-sm text-muted-foreground">Messages per conversation</div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Reports Tab */}
-          <TabsContent value="reports" className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Analytics Chart</CardTitle>
-                  <CardDescription>Visual representation of your data</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <BarChart3 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Analytics Chart</h3>
-                    <p className="text-muted-foreground">
-                      Connect to analytics service for detailed insights
-                    </p>
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-blue-500">5.4</div>
+                      <div className="text-sm">+0.8 this month</div>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Export Options</CardTitle>
-                  <CardDescription>Download your analytics data</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {[
-                      "Export to CSV",
-                      "Export to PDF",
-                      "Export to Excel",
-                      "Schedule reports",
-                      "Custom date ranges"
-                    ].map((option, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-whatsapp rounded-full mt-2" />
-                        <span className="text-sm">{option}</span>
-                      </div>
-                    ))}
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <div className="font-medium">Retention Rate</div>
+                      <div className="text-sm text-muted-foreground">Returning customers</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-purple-500">87%</div>
+                      <div className="text-sm">+3% this month</div>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </AdminPageLayout>
   );
 };
 

@@ -61,6 +61,10 @@ import RoleManagement from "./pages/admin/RoleManagement";
 import SessionManagement from "./pages/admin/SessionManagement";
 import SecurityDashboard from "./pages/admin/SecurityDashboard";
 import GDPRTools from "./pages/admin/GDPRTools";
+import Platforms from "./pages/Platforms";
+import FlowBuilder from "./pages/FlowBuilder";
+import UnifiedInbox from "./pages/UnifiedInbox";
+import MessengerChannel from "./pages/MessengerChannel";
 
 const queryClient = new QueryClient();
 
@@ -129,6 +133,27 @@ function App() {
                       </ProtectedRoute>
                     } />
                     
+                    {/* Platform Management - Manager+ */}
+                    <Route path="platforms" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'platforms', action: 'read' }}>
+                        <Platforms />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Flow Builder - Manager+ */}
+                    <Route path="flow-builder" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'flows', action: 'read' }}>
+                        <FlowBuilder />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Unified Inbox - Agent+ */}
+                    <Route path="inbox" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'conversations', action: 'read' }}>
+                        <UnifiedInbox />
+                      </ProtectedRoute>
+                    } />
+                    
                     {/* Integrations - Manager+ */}
                     <Route path="integrations" element={
                       <ProtectedRoute requiredPermission={{ resource: 'integrations', action: 'read' }}>
@@ -182,6 +207,11 @@ function App() {
                     <Route path="channels/instagram" element={
                       <ProtectedRoute requiredPermission={{ resource: 'channels', action: 'manage' }}>
                         <InstagramChannel />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="channels/messenger" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'channels', action: 'manage' }}>
+                        <MessengerChannel />
                       </ProtectedRoute>
                     } />
                     <Route path="channels/website" element={
