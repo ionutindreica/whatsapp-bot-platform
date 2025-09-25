@@ -58,6 +58,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import UsersManagement from "./pages/admin/UsersManagement";
 import RolesPermissions from "./pages/admin/RolesPermissions";
 import WorkspacesManagement from "./pages/admin/WorkspacesManagement";
+import PlatformSettings from "./pages/admin/PlatformSettings";
 import AuditLogs from "./pages/admin/AuditLogs";
 import RoleManagement from "./pages/admin/RoleManagement";
 import SessionManagement from "./pages/admin/SessionManagement";
@@ -342,6 +343,11 @@ function App() {
                         <WorkspacesManagement />
                       </ProtectedRoute>
                     } />
+                    <Route path="admin/platform-settings" element={
+                      <ProtectedRoute rbacRole="ROOT_OWNER">
+                        <PlatformSettings />
+                      </ProtectedRoute>
+                    } />
                     <Route path="admin/audit-logs" element={
                       <ProtectedRoute rbacPermissions={['SYSTEM_VIEW_LOGS']}>
                         <AuditLogs />
@@ -373,9 +379,16 @@ function App() {
                       </ProtectedRoute>
                     } />
                     
+                    {/* Root Owner Only */}
+                    <Route path="root" element={
+                      <ProtectedRoute rbacRole="ROOT_OWNER">
+                        <SuperAdminDashboard />
+                      </ProtectedRoute>
+                    } />
+                    
                     {/* Super Admin Only */}
                     <Route path="superadmin" element={
-                      <ProtectedRoute rbacRole="SUPER_ADMIN">
+                      <ProtectedRoute rbacMinRole="SUPER_ADMIN">
                         <SuperAdminDashboard />
                       </ProtectedRoute>
                     } />
