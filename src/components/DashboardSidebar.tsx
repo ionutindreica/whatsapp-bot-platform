@@ -206,6 +206,15 @@ export default function DashboardSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {/* TEST: Hardcoded CRM Light */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild className="group">
+                  <NavLink to="/dashboard/crm" className={getNavCls}>
+                    <Database className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                    {!collapsed && <span className="font-medium">CRM Light (TEST)</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
