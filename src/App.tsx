@@ -47,6 +47,7 @@ import TriggerSystem from "./pages/TriggerSystem";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import SubscriptionTiers from "./pages/SubscriptionTiers";
+import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -102,6 +103,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/subscription-tiers" element={<SubscriptionTiers />} />
+          <Route path="/superadmin" element={<SuperAdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

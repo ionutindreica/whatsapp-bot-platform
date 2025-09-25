@@ -40,6 +40,8 @@ model User {
   agent        Agent?
   flowExecutions FlowExecution[]
   profile      UserProfile?
+  adminActions AdminAction[]
+  targetActions AdminAction[]
 
   @@map("users")
 }
@@ -354,6 +356,17 @@ enum UserRole {
   USER
   ADMIN
   SUPER_ADMIN
+}
+
+enum AdminAction {
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  USER_SUSPENDED
+  USER_ACTIVATED
+  SUBSCRIPTION_CHANGED
+  PAYMENT_PROCESSED
+  SYSTEM_CONFIGURED
 }
 
 enum UserStatus {
@@ -744,6 +757,46 @@ model InstagramAccount {
   bot             Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
 
   @@map("instagram_accounts")
+}
+
+// SuperAdmin Management
+model AdminAction {
+  id          String     @id @default(cuid())
+  adminId     String
+  targetUserId String?
+  action      AdminAction
+  description String?
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime   @default(now())
+
+  admin       User       @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  targetUser  User?      @relation(fields: [targetUserId], references: [id], onDelete: SetNull)
+
+  @@map("admin_actions")
+}
+
+model SystemSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+model AdminDashboard {
+  id        String   @id @default(cuid())
+  adminId   String
+  widgets   Json
+  layout    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admin_dashboards")
 }
 
 // Additional Enums for Triggers and Flows
