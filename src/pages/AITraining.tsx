@@ -1,5 +1,5 @@
 import { useState } from "react";
-import BackToDashboard from "@/components/BackToDashboard";
+import AdminPageLayout from "@/components/AdminPageLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { 
   Zap, 
   Upload, 
@@ -27,12 +29,33 @@ import {
   MessageSquare,
   Database,
   Settings,
-  RefreshCw
+  RefreshCw,
+  Bot,
+  Cpu,
+  Layers,
+  Network,
+  Activity,
+  BarChart3,
+  Lightbulb,
+  Code2,
+  GitBranch,
+  Workflow
 } from "lucide-react";
 
 const AITraining = () => {
+  const [activeTab, setActiveTab] = useState('overview');
   const [trainingStatus, setTrainingStatus] = useState("idle");
   const [trainingProgress, setTrainingProgress] = useState(0);
+  const [selectedModel, setSelectedModel] = useState('gpt-4');
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [aiSettings, setAiSettings] = useState({
+    temperature: 0.7,
+    maxTokens: 150,
+    enableMemory: true,
+    enableContext: true,
+    enableSentiment: true,
+    enableIntentDetection: true
+  });
   
   const templates = [
     {

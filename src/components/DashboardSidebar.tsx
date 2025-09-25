@@ -69,10 +69,12 @@ const conversationItems = [
 // 🤖 AI & Automation
 const aiItems = [
   { title: "My AI Agents", url: "/dashboard/bots", icon: Bot },
+  { title: "Core AI Engine", url: "/dashboard/ai/core", icon: Zap },
   { title: "AI Training", url: "/dashboard/ai/training", icon: Zap },
   { title: "AI Templates", url: "/dashboard/ai/templates", icon: FileText },
   { title: "AI Knowledge Base", url: "/dashboard/ai/knowledge", icon: Database },
   { title: "Flow Builder", url: "/dashboard/flow-builder", icon: Target },
+  { title: "Automation Center", url: "/dashboard/automation", icon: Target },
   { title: "Triggers", url: "/dashboard/triggers", icon: Target },
 ];
 

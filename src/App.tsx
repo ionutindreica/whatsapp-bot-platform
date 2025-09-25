@@ -65,6 +65,8 @@ import Platforms from "./pages/Platforms";
 import FlowBuilder from "./pages/FlowBuilder";
 import UnifiedInbox from "./pages/UnifiedInbox";
 import MessengerChannel from "./pages/MessengerChannel";
+import CoreAI from "./pages/CoreAI";
+import AutomationCenter from "./pages/AutomationCenter";
 
 const queryClient = new QueryClient();
 
@@ -145,6 +147,13 @@ function App() {
                     <Route path="flow-builder" element={
                       <ProtectedRoute requiredPermission={{ resource: 'flows', action: 'read' }}>
                         <FlowBuilder />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Automation Center - Manager+ */}
+                    <Route path="automation" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'automations', action: 'read' }}>
+                        <AutomationCenter />
                       </ProtectedRoute>
                     } />
                     
@@ -232,6 +241,11 @@ function App() {
                     } />
                     
                     {/* AI Features - Manager+ */}
+                    <Route path="ai/core" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'bots', action: 'update' }}>
+                        <CoreAI />
+                      </ProtectedRoute>
+                    } />
                     <Route path="ai/training" element={
                       <ProtectedRoute requiredPermission={{ resource: 'bots', action: 'update' }}>
                         <AITraining />
