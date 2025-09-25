@@ -67,6 +67,7 @@ import UnifiedInbox from "./pages/UnifiedInbox";
 import MessengerChannel from "./pages/MessengerChannel";
 import CoreAI from "./pages/CoreAI";
 import AutomationCenter from "./pages/AutomationCenter";
+import CRMLight from "./pages/CRMLight";
 
 const queryClient = new QueryClient();
 
@@ -154,6 +155,13 @@ function App() {
                     <Route path="automation" element={
                       <ProtectedRoute requiredPermission={{ resource: 'automations', action: 'read' }}>
                         <AutomationCenter />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* CRM Light - Manager+ */}
+                    <Route path="crm" element={
+                      <ProtectedRoute requiredPermission={{ resource: 'customers', action: 'read' }}>
+                        <CRMLight />
                       </ProtectedRoute>
                     } />
                     
