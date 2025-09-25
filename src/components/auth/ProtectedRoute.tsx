@@ -65,10 +65,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
   
   console.log('✅ ProtectedRoute: User authenticated:', user.email, 'Role:', user.role);
+  console.log('🔍 ProtectedRoute: Checking RBAC props:', { rbacRole, rbacMinRole, rbacPermissions, rbacFeatures });
   
   // Root admin has access to everything
   if (user.role === 'ROOT_OWNER') {
     console.log('👑 Root Owner detected - granting full access');
+    return <>{children}</>;
+  }
+  
+  // Super Admin also has access to admin panels
+  if (user.role === 'SUPER_ADMIN' && (rbacMinRole === 'SUPER_ADMIN' || rbacRole === 'SUPER_ADMIN')) {
+    console.log('🔧 Super Admin detected - granting admin access');
     return <>{children}</>;
   }
 
