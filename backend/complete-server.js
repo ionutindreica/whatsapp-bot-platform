@@ -334,6 +334,8 @@ app.get('/api/bots', authenticateToken, (req, res) => {
         name: 'Customer Support Bot',
         status: 'ACTIVE',
         channels: ['whatsapp', 'instagram'],
+        messages: 1250,
+        users: 45,
         createdAt: new Date().toISOString()
       },
       {
@@ -341,6 +343,8 @@ app.get('/api/bots', authenticateToken, (req, res) => {
         name: 'Sales Assistant',
         status: 'ACTIVE',
         channels: ['whatsapp', 'messenger'],
+        messages: 890,
+        users: 32,
         createdAt: new Date().toISOString()
       },
       {
@@ -348,6 +352,8 @@ app.get('/api/bots', authenticateToken, (req, res) => {
         name: 'Lead Generation Bot',
         status: 'PAUSED',
         channels: ['website', 'instagram'],
+        messages: 456,
+        users: 18,
         createdAt: new Date().toISOString()
       }
     ];
