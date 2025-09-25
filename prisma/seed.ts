@@ -290,7 +290,7 @@ async function main() {
       price: 2900, // $29/month
       currency: 'USD',
       interval: 'month',
-      features: {
+      features: JSON.stringify({
         'MULTI_WORKSPACE': false,
         'SSO_SCIM': false,
         'WHITE_LABEL': false,
@@ -301,15 +301,15 @@ async function main() {
         'CUSTOM_ROLES': false,
         'API_UNLIMITED': false,
         'PRIORITY_SUPPORT': false
-      },
-      limits: {
+      }),
+      limits: JSON.stringify({
         'activeBots': 1,
         'channels': 2,
         'conversationsPerMonth': 1000,
         'apiRequestsPerDay': 100,
         'users': 5,
         'workspaces': 1
-      },
+      }),
     },
   });
 
@@ -323,7 +323,7 @@ async function main() {
       price: 9900, // $99/month
       currency: 'USD',
       interval: 'month',
-      features: {
+      features: JSON.stringify({
         'MULTI_WORKSPACE': true,
         'SSO_SCIM': false,
         'WHITE_LABEL': false,
@@ -334,15 +334,15 @@ async function main() {
         'CUSTOM_ROLES': false,
         'API_UNLIMITED': false,
         'PRIORITY_SUPPORT': false
-      },
-      limits: {
+      }),
+      limits: JSON.stringify({
         'activeBots': 5,
         'channels': 4,
         'conversationsPerMonth': 10000,
         'apiRequestsPerDay': 1000,
         'users': 25,
         'workspaces': 3
-      },
+      }),
     },
   });
 
@@ -356,7 +356,7 @@ async function main() {
       price: 29900, // $299/month
       currency: 'USD',
       interval: 'month',
-      features: {
+      features: JSON.stringify({
         'MULTI_WORKSPACE': true,
         'SSO_SCIM': true,
         'WHITE_LABEL': true,
@@ -367,15 +367,15 @@ async function main() {
         'CUSTOM_ROLES': true,
         'API_UNLIMITED': true,
         'PRIORITY_SUPPORT': true
-      },
-      limits: {
+      }),
+      limits: JSON.stringify({
         'activeBots': 'unlimited',
         'channels': 'unlimited',
         'conversationsPerMonth': 'unlimited',
         'apiRequestsPerDay': 'unlimited',
         'users': 'unlimited',
         'workspaces': 'unlimited'
-      },
+      }),
     },
   });
 
