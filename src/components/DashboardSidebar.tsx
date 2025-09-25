@@ -215,6 +215,10 @@ export default function DashboardSidebar() {
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              {/* TEST: Simple div */}
+              <div className="p-2 bg-red-500 text-white">
+                TEST DIV - Dacă vezi asta, sidebar-ul se renderizează
+              </div>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
