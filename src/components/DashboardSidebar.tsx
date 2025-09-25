@@ -140,11 +140,11 @@ export default function DashboardSidebar() {
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
-      ? "bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 font-semibold rounded-xl border border-blue-200/50 shadow-sm" 
-      : "hover:bg-slate-50 text-slate-700 hover:text-blue-600 hover:shadow-sm rounded-xl transition-all duration-200";
+      ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold rounded-xl border border-blue-200 dark:border-blue-700 shadow-sm" 
+      : "hover:bg-gray-100 dark:hover:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-sm rounded-xl transition-all duration-200";
 
   return (
-    <Sidebar className={`${collapsed ? "w-16" : "w-72"} border-r border-slate-200/60 bg-white/95 backdrop-blur-sm shadow-sm`} collapsible="icon">
+    <Sidebar className={`${collapsed ? "w-16" : "w-72"} border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm`} collapsible="icon">
       <SidebarTrigger className="m-3 self-end hover:bg-slate-100 rounded-lg transition-colors" />
       
       <SidebarContent className="px-3 py-2">
@@ -157,7 +157,7 @@ export default function DashboardSidebar() {
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">ChatFlow AI</span>
-                <span className="text-xs text-slate-500 font-medium">Omnichannel Platform</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Omnichannel Platform</span>
               </div>
             </div>
           )}
@@ -171,7 +171,7 @@ export default function DashboardSidebar() {
         {/* Modern Navigation */}
         {/* 🏠 Dashboard */}
         <SidebarGroup className="mb-6">
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
             🏠 Dashboard
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -192,7 +192,7 @@ export default function DashboardSidebar() {
 
         {/* 💬 Conversations */}
         <SidebarGroup className="mb-6">
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
             💬 Conversations
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -213,7 +213,7 @@ export default function DashboardSidebar() {
 
         {/* 🤖 AI & Automation */}
         <SidebarGroup className="mb-6">
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
             🤖 AI & Automation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -234,7 +234,7 @@ export default function DashboardSidebar() {
 
         {/* 🌐 Channels & Integrations */}
         <SidebarGroup className="mb-6">
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
             🌐 Channels & Integrations
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -265,7 +265,7 @@ export default function DashboardSidebar() {
 
         {/* 📊 Analytics & Insights */}
         <SidebarGroup className="mb-6">
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
             📊 Analytics & Insights
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -286,7 +286,7 @@ export default function DashboardSidebar() {
 
         {/* 👥 Team & Settings */}
         <SidebarGroup className="mb-6">
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
             👥 Team & Settings
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -317,7 +317,7 @@ export default function DashboardSidebar() {
 
         {/* 💳 Billing & Admin */}
         <SidebarGroup className="mb-6">
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
             💳 Billing & Admin
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -338,7 +338,7 @@ export default function DashboardSidebar() {
 
         {/* 📚 Help & Resources */}
         <SidebarGroup className="mb-6">
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
             📚 Help & Resources
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -359,14 +359,14 @@ export default function DashboardSidebar() {
 
         {/* Modern Footer */}
         {!collapsed && (
-          <div className="mt-auto p-4 border-t border-slate-200/60 space-y-4">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50/50">
-              <span className="text-sm font-medium text-slate-600">Theme</span>
+          <div className="mt-auto p-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Theme</span>
               <ThemeToggle />
             </div>
             <Button 
               variant="ghost" 
-              className="w-full justify-start text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors group"
+              className="w-full justify-start text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors group"
               onClick={logout}
             >
               <LogOut className="h-4 w-4 mr-3 group-hover:scale-110 transition-transform" />
@@ -377,11 +377,11 @@ export default function DashboardSidebar() {
         
         {/* Collapsed footer */}
         {collapsed && (
-          <div className="mt-auto p-4 border-t border-slate-200/60">
+          <div className="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
             <Button 
               variant="ghost" 
               size="icon"
-              className="w-full text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="w-full text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
               onClick={logout}
             >
               <LogOut className="h-4 w-4" />

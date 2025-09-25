@@ -11,9 +11,9 @@
     --whatsapp-dark: 221 83% 43%;
     --whatsapp-light: 221 50% 89%;
     
-    /* Modern 2025 Design System - Airy & Clean */
-    --background: 248 250 252; /* #F8FAFC - Airy background */
-    --foreground: 15 23 42; /* #0F172A - Deep blue text */
+    /* Modern 2025 Design System - High Contrast */
+    --background: 255 255 255; /* Pure white background */
+    --foreground: 15 23 42; /* #0F172A - Dark text */
 
     --card: 255 255 255; /* Pure white cards */
     --card-foreground: 15 23 42;
@@ -21,15 +21,15 @@
     --popover: 255 255 255;
     --popover-foreground: 15 23 42;
 
-    /* Primary using modern blue */
+    /* Primary using vibrant blue */
     --primary: 59 130 246; /* #3B82F6 - Vibrant blue */
     --primary-foreground: 255 255 255;
 
-    --secondary: 241 245 249; /* #F1F5F9 - Light gray */
-    --secondary-foreground: 71 85 105; /* #475569 - Secondary text */
+    --secondary: 248 250 252; /* #F8FAFC - Very light gray */
+    --secondary-foreground: 30 41 59; /* #1E293B - Dark gray text */
 
-    --muted: 241 245 249; /* #F1F5F9 - Light gray */
-    --muted-foreground: 100 116 139; /* #64748B - Muted text */
+    --muted: 248 250 252; /* #F8FAFC - Very light gray */
+    --muted-foreground: 71 85 105; /* #475569 - Medium gray text */
 
     --accent: 16 185 129; /* #10B981 - Success green */
     --accent-foreground: 255 255 255;
@@ -37,8 +37,8 @@
     --destructive: 239 68 68; /* #EF4444 - Error red */
     --destructive-foreground: 255 255 255;
 
-    --border: 226 232 240; /* #E2E8F0 - Soft borders */
-    --input: 226 232 240;
+    --border: 226 232 240; /* #E2E8F0 - Light borders */
+    --input: 248 250 252; /* #F8FAFC - Light input background */
     --ring: 59 130 246; /* Modern blue ring */
 
     --radius: 1rem; /* More rounded corners for modern look */
@@ -66,34 +66,34 @@
   }
 
   .dark {
-    /* Dark mode with WhatsApp theme */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* High contrast dark mode */
+    --background: 15 23 42; /* #0F172A - Dark blue background */
+    --foreground: 248 250 252; /* #F8FAFC - Light text */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 30 41 59; /* #1E293B - Dark card background */
+    --card-foreground: 248 250 252; /* #F8FAFC - Light text */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 30 41 59; /* #1E293B - Dark popover */
+    --popover-foreground: 248 250 252; /* #F8FAFC - Light text */
 
-    --primary: 221 83% 65%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 96 165 250; /* #60A5FA - Lighter blue for dark mode */
+    --primary-foreground: 15 23 42; /* Dark text on light blue */
 
-    --secondary: 217.2 32.6% 20%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 51 65 85; /* #334155 - Darker secondary */
+    --secondary-foreground: 203 213 225; /* #CBD5E1 - Light secondary text */
 
-    --muted: 217.2 32.6% 15%;
-    --muted-foreground: 215 20.2% 70%;
+    --muted: 51 65 85; /* #334155 - Darker muted */
+    --muted-foreground: 148 163 184; /* #94A3B8 - Light muted text */
 
-    --accent: 217.2 32.6% 20%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 52 211 153; /* #34D399 - Lighter green for dark mode */
+    --accent-foreground: 15 23 42; /* Dark text on light green */
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 248 113 113; /* #F87171 - Lighter red for dark mode */
+    --destructive-foreground: 15 23 42; /* Dark text on light red */
 
-    --border: 217.2 32.6% 25%;
-    --input: 217.2 32.6% 20%;
-    --ring: 221 83% 65%;
+    --border: 71 85 105; /* #475569 - Medium gray borders */
+    --input: 51 65 85; /* #334155 - Dark input background */
+    --ring: 96 165 250; /* Lighter blue ring for dark mode */
 
     /* Dark mode gradients */
     --gradient-whatsapp: linear-gradient(135deg, hsl(221 83% 60%), hsl(221 90% 70%));
