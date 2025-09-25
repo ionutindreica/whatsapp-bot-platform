@@ -55,7 +55,9 @@ import Analytics from "./pages/Analytics";
 import IntegrationsIndex from "./pages/IntegrationsIndex";
 import Unauthorized from "./pages/Unauthorized";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import UserManagement from "./pages/admin/UserManagement";
+import UsersManagement from "./pages/admin/UsersManagement";
+import RolesPermissions from "./pages/admin/RolesPermissions";
+import WorkspacesManagement from "./pages/admin/WorkspacesManagement";
 import AuditLogs from "./pages/admin/AuditLogs";
 import RoleManagement from "./pages/admin/RoleManagement";
 import SessionManagement from "./pages/admin/SessionManagement";
@@ -326,18 +328,23 @@ function App() {
                     
                     {/* Admin Management - Admin+ */}
                     <Route path="admin/users" element={
-                      <ProtectedRoute rbacPermissions={['USER_VIEW_DETAILS']}>
-                        <UserManagement />
+                      <ProtectedRoute rbacRole="ROOT_OWNER">
+                        <UsersManagement />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="admin/roles" element={
+                      <ProtectedRoute rbacRole="ROOT_OWNER">
+                        <RolesPermissions />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="admin/workspaces" element={
+                      <ProtectedRoute rbacRole="ROOT_OWNER">
+                        <WorkspacesManagement />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/audit-logs" element={
                       <ProtectedRoute rbacPermissions={['SYSTEM_VIEW_LOGS']}>
                         <AuditLogs />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="admin/roles" element={
-                      <ProtectedRoute rbacPermissions={['USER_MANAGE_ALL']}>
-                        <RoleManagement />
                       </ProtectedRoute>
                     } />
                     <Route path="admin/sessions" element={
