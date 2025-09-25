@@ -108,9 +108,36 @@ const SuperAdminDashboard = () => {
   const handleUserAction = async (userId: string, action: string) => {
     try {
       console.log(`Performing ${action} on user ${userId}`);
-      // Implement API calls for user actions
+      
+      // Update local state for demo
+      if (action === 'suspend') {
+        setUsers(prev => prev.map(user => 
+          user.id === userId ? { ...user, status: 'SUSPENDED' } : user
+        ));
+        alert(`User ${userId} has been suspended`);
+      } else if (action === 'activate') {
+        setUsers(prev => prev.map(user => 
+          user.id === userId ? { ...user, status: 'ACTIVE' } : user
+        ));
+        alert(`User ${userId} has been activated`);
+      } else if (action === 'edit') {
+        const user = users.find(u => u.id === userId);
+        const newName = prompt('Enter new name:', user?.name || '');
+        if (newName) {
+          setUsers(prev => prev.map(user => 
+            user.id === userId ? { ...user, name: newName } : user
+          ));
+          alert(`User ${userId} has been updated`);
+        }
+      } else if (action === 'delete') {
+        if (confirm(`Are you sure you want to delete user ${userId}?`)) {
+          setUsers(prev => prev.filter(user => user.id !== userId));
+          alert(`User ${userId} has been deleted`);
+        }
+      }
     } catch (error) {
       console.error('Error performing user action:', error);
+      alert('Error performing action');
     }
   };
 
@@ -149,7 +176,7 @@ const SuperAdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -163,7 +190,11 @@ const SuperAdminDashboard = () => {
                 <Shield className="w-4 h-4 mr-1" />
                 SuperAdmin Access
               </Badge>
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={() => alert('Opening System Settings...')}
+                className="hover:bg-blue-50 hover:border-blue-300"
+              >
                 <Settings className="w-4 h-4 mr-2" />
                 System Settings
               </Button>
@@ -255,7 +286,11 @@ const SuperAdminDashboard = () => {
                       className="pl-10"
                     />
                   </div>
-                  <Button variant="outline">
+                  <Button 
+                    variant="outline"
+                    onClick={() => alert('Filter options:\n- By Role: USER, ADMIN, SUPER_ADMIN\n- By Status: ACTIVE, INACTIVE, SUSPENDED\n- By Plan: Free, Pro, Enterprise')}
+                    className="hover:bg-blue-50 hover:border-blue-300"
+                  >
                     <Filter className="w-4 h-4 mr-2" />
                     Filters
                   </Button>
@@ -299,6 +334,8 @@ const SuperAdminDashboard = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => setSelectedUser(user)}
+                            className="hover:bg-blue-50 hover:border-blue-300"
+                            title="View Details"
                           >
                             <Eye className="w-4 h-4" />
                           </Button>
@@ -306,6 +343,8 @@ const SuperAdminDashboard = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleUserAction(user.id, 'edit')}
+                            className="hover:bg-green-50 hover:border-green-300"
+                            title="Edit User"
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -314,6 +353,8 @@ const SuperAdminDashboard = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => handleUserAction(user.id, 'suspend')}
+                              className="hover:bg-red-50 hover:border-red-300"
+                              title="Suspend User"
                             >
                               <Ban className="w-4 h-4" />
                             </Button>
@@ -322,6 +363,8 @@ const SuperAdminDashboard = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => handleUserAction(user.id, 'activate')}
+                              className="hover:bg-green-50 hover:border-green-300"
+                              title="Activate User"
                             >
                               <CheckCircle className="w-4 h-4" />
                             </Button>
@@ -330,6 +373,8 @@ const SuperAdminDashboard = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleUserAction(user.id, 'delete')}
+                            className="hover:bg-red-50 hover:border-red-300"
+                            title="Delete User"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -422,7 +467,10 @@ const SuperAdminDashboard = () => {
                       </div>
                     </div>
                   </div>
-                  <Button className="w-full">
+                  <Button 
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    onClick={() => alert('System settings saved successfully!')}
+                  >
                     Save System Settings
                   </Button>
                 </div>

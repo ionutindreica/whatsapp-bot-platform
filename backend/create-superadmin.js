@@ -1,7 +1,14 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 
-const prisma = new PrismaClient();
+// Use SQLite for demo if MySQL is not available
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL || "file:./dev.db"
+    }
+  }
+});
 
 async function createSuperAdmin() {
   try {

@@ -1,0 +1,40 @@
+{
+  "users": [
+    {
+      "id": "superadmin-1758784305759",
+      "email": "superadmin@chatflow.ai",
+      "password": "$2a$12$v5W1vt9OOsycNe3F6uM.fOS40h8HtAb4LUOnAMvvWO6bpg1yxtMD2",
+      "name": "Super Admin",
+      "role": "SUPER_ADMIN",
+      "status": "ACTIVE",
+      "emailVerified": true,
+      "createdAt": "2025-09-25T07:11:45.759Z"
+    }
+  ],
+  "settings": [
+    {
+      "key": "max_users",
+      "value": 10000
+    },
+    {
+      "key": "max_bots_per_user",
+      "value": 50
+    },
+    {
+      "key": "max_messages_per_day",
+      "value": 1000000
+    },
+    {
+      "key": "email_verification_required",
+      "value": true
+    },
+    {
+      "key": "registration_enabled",
+      "value": true
+    },
+    {
+      "key": "maintenance_mode",
+      "value": false
+    }
+  ]
+}
