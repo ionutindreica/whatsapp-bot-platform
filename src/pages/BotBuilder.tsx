@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import QRCode from "qrcode";
 import { 
   Bot, 
   Play, 
@@ -61,6 +62,15 @@ const BotBuilder = () => {
   const [copiedField, setCopiedField] = useState("");
   const [currentConversationId, setCurrentConversationId] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
+  const [showQRCode, setShowQRCode] = useState(false);
+  const [connectedChannels, setConnectedChannels] = useState({
+    whatsapp: false,
+    telegram: false,
+    instagram: false,
+    facebook: false,
+    website: false
+  });
 
   const handleConfigChange = (field, value) => {
     setBotConfig(prev => ({
@@ -153,6 +163,47 @@ const BotBuilder = () => {
     } catch (error) {
       console.error('Error submitting feedback:', error);
     }
+  };
+
+  const generateQRCode = async () => {
+    if (!botConfig.phoneNumber) {
+      alert('Please enter a phone number first!');
+      return;
+    }
+
+    try {
+      const phoneNumber = `${botConfig.countryCode || '+40'}${botConfig.phoneNumber}`;
+      const message = `Hello! I want to connect with ${botConfig.name || 'My Bot'}`;
+      const whatsappLink = `https://api.whatsapp.com/send?phone=${phoneNumber.replace('+', '')}&text=${encodeURIComponent(message)}`;
+      
+      // Generate QR code
+      const qrDataUrl = await QRCode.toDataURL(whatsappLink, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+      
+      setQrCodeDataUrl(qrDataUrl);
+      setShowQRCode(true);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      alert('Error generating QR code');
+    }
+  };
+
+  const openWhatsAppLink = () => {
+    if (!botConfig.phoneNumber) {
+      alert('Please enter a phone number first!');
+      return;
+    }
+
+    const phoneNumber = `${botConfig.countryCode || '+40'}${botConfig.phoneNumber}`;
+    const message = `Hello! I want to connect with ${botConfig.name || 'My Bot'}`;
+    const whatsappLink = `https://api.whatsapp.com/send?phone=${phoneNumber.replace('+', '')}&text=${encodeURIComponent(message)}`;
+    window.open(whatsappLink, '_blank');
   };
 
   const navItems = [
@@ -689,15 +740,233 @@ const BotBuilder = () => {
 
                 {/* Integration Tab */}
               <TabsContent value="integration" className="space-y-6">
-                  {/* Channel Management */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <MessageSquare className="w-5 h-5" />
-                        Channel Management
-                      </CardTitle>
-                      <CardDescription>Manage your bot's communication channels and their status</CardDescription>
-                    </CardHeader>
+              {/* Multi-Channel Overview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5" />
+                    Multi-Channel Bot
+                  </CardTitle>
+                  <CardDescription>Connect your bot to multiple channels simultaneously for maximum reach</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    {/* WhatsApp Channel */}
+                    <div className="border rounded-lg p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                            <MessageSquare className="w-4 h-4 text-green-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-sm">WhatsApp</h3>
+                            <p className="text-xs text-muted-foreground">Business messaging</p>
+                          </div>
+                        </div>
+                        <Badge className={connectedChannels.whatsapp ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                          {connectedChannels.whatsapp ? "Connected" : "Not Connected"}
+                        </Badge>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Status:</span> {connectedChannels.whatsapp ? "Active" : "Inactive"}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Messages today:</span> {connectedChannels.whatsapp ? "24" : "0"}
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant={connectedChannels.whatsapp ? "outline" : "default"}
+                          className="w-full"
+                          onClick={() => setConnectedChannels(prev => ({...prev, whatsapp: !prev.whatsapp}))}
+                        >
+                          {connectedChannels.whatsapp ? "Disconnect" : "Connect"}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Telegram Channel */}
+                    <div className="border rounded-lg p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                            <MessageSquare className="w-4 h-4 text-blue-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-sm">Telegram</h3>
+                            <p className="text-xs text-muted-foreground">Bot messaging</p>
+                          </div>
+                        </div>
+                        <Badge className={connectedChannels.telegram ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"}>
+                          {connectedChannels.telegram ? "Connected" : "Not Connected"}
+                        </Badge>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Status:</span> {connectedChannels.telegram ? "Active" : "Inactive"}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Messages today:</span> {connectedChannels.telegram ? "18" : "0"}
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant={connectedChannels.telegram ? "outline" : "default"}
+                          className="w-full"
+                          onClick={() => setConnectedChannels(prev => ({...prev, telegram: !prev.telegram}))}
+                        >
+                          {connectedChannels.telegram ? "Disconnect" : "Connect"}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Instagram Channel */}
+                    <div className="border rounded-lg p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-pink-100 dark:bg-pink-900 rounded-full flex items-center justify-center">
+                            <MessageSquare className="w-4 h-4 text-pink-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-sm">Instagram</h3>
+                            <p className="text-xs text-muted-foreground">Direct messages</p>
+                          </div>
+                        </div>
+                        <Badge className={connectedChannels.instagram ? "bg-pink-100 text-pink-800" : "bg-gray-100 text-gray-800"}>
+                          {connectedChannels.instagram ? "Connected" : "Not Connected"}
+                        </Badge>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Status:</span> {connectedChannels.instagram ? "Active" : "Inactive"}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Messages today:</span> {connectedChannels.instagram ? "12" : "0"}
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant={connectedChannels.instagram ? "outline" : "default"}
+                          className="w-full"
+                          onClick={() => setConnectedChannels(prev => ({...prev, instagram: !prev.instagram}))}
+                        >
+                          {connectedChannels.instagram ? "Disconnect" : "Connect"}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Facebook Messenger */}
+                    <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center">
+                            <MessageSquare className="w-4 h-4 text-indigo-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-sm">Facebook</h3>
+                            <p className="text-xs text-muted-foreground">Messenger bot</p>
+                          </div>
+                        </div>
+                        <Badge className={connectedChannels.facebook ? "bg-indigo-100 text-indigo-800" : "bg-gray-100 text-gray-800"}>
+                          {connectedChannels.facebook ? "Connected" : "Not Connected"}
+                        </Badge>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Status:</span> {connectedChannels.facebook ? "Active" : "Inactive"}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Messages today:</span> {connectedChannels.facebook ? "8" : "0"}
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant={connectedChannels.facebook ? "outline" : "default"}
+                          className="w-full"
+                          onClick={() => setConnectedChannels(prev => ({...prev, facebook: !prev.facebook}))}
+                        >
+                          {connectedChannels.facebook ? "Disconnect" : "Connect"}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Website Widget */}
+                    <div className="border rounded-lg p-4 bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-900/20 dark:to-slate-900/20">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center justify-center">
+                            <MessageSquare className="w-4 h-4 text-gray-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-sm">Website</h3>
+                            <p className="text-xs text-muted-foreground">Chat widget</p>
+                          </div>
+                        </div>
+                        <Badge className={connectedChannels.website ? "bg-gray-100 text-gray-800" : "bg-gray-100 text-gray-800"}>
+                          {connectedChannels.website ? "Connected" : "Not Connected"}
+                        </Badge>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Status:</span> {connectedChannels.website ? "Active" : "Inactive"}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-medium">Visitors today:</span> {connectedChannels.website ? "45" : "0"}
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant={connectedChannels.website ? "outline" : "default"}
+                          className="w-full"
+                          onClick={() => setConnectedChannels(prev => ({...prev, website: !prev.website}))}
+                        >
+                          {connectedChannels.website ? "Disconnect" : "Connect"}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Multi-Channel Stats */}
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg p-4">
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <Zap className="w-4 h-4" />
+                      Multi-Channel Analytics
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {Object.values(connectedChannels).filter(Boolean).length}
+                        </div>
+                        <div className="text-xs text-muted-foreground">Active Channels</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                          {Object.values(connectedChannels).filter(Boolean).length * 15}
+                        </div>
+                        <div className="text-xs text-muted-foreground">Total Messages</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-purple-600">
+                          {Object.values(connectedChannels).filter(Boolean).length * 8}
+                        </div>
+                        <div className="text-xs text-muted-foreground">Active Users</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600">
+                          98%
+                        </div>
+                        <div className="text-xs text-muted-foreground">Response Rate</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Channel Management */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5" />
+                    Channel Management
+                  </CardTitle>
+                  <CardDescription>Manage your bot's communication channels and their status</CardDescription>
+                </CardHeader>
                     <CardContent className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {/* WhatsApp Channel */}
@@ -875,92 +1144,136 @@ const BotBuilder = () => {
                       <CardDescription>Connect your bot to different messaging platforms</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      {/* WhatsApp Business Integration */}
-                      <div className="border rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                              <MessageSquare className="w-4 h-4 text-green-600" />
-                            </div>
-                            <div>
-                              <h3 className="font-medium">WhatsApp Business</h3>
-                              <p className="text-sm text-muted-foreground">Customer support via WhatsApp</p>
-                            </div>
+                      {/* WhatsApp Business Integration - Simplified */}
+                      <div className="border rounded-lg p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                            <MessageSquare className="w-5 h-5 text-green-600 dark:text-green-400" />
                           </div>
-                          <Badge className="bg-green-100 text-green-800">Active</Badge>
+                          <div>
+                            <h3 className="font-semibold text-lg">WhatsApp Business</h3>
+                            <p className="text-sm text-muted-foreground">Connect your bot to WhatsApp in 3 simple steps</p>
+                          </div>
                         </div>
                         
-                        <div className="space-y-3">
-                          <div>
-                            <label className="text-sm font-medium text-foreground">Phone Number</label>
-                            <div className="flex gap-2 mt-1">
-                              <Select value={botConfig.countryCode || "+40"} onValueChange={(value) => handleConfigChange('countryCode', value)}>
-                                <SelectTrigger className="w-32">
-                                  <SelectValue placeholder="Country" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="+1">🇺🇸 +1 (US)</SelectItem>
-                                  <SelectItem value="+40">🇷🇴 +40 (RO)</SelectItem>
-                                  <SelectItem value="+44">🇬🇧 +44 (UK)</SelectItem>
-                                  <SelectItem value="+49">🇩🇪 +49 (DE)</SelectItem>
-                                  <SelectItem value="+33">🇫🇷 +33 (FR)</SelectItem>
-                                  <SelectItem value="+39">🇮🇹 +39 (IT)</SelectItem>
-                                  <SelectItem value="+34">🇪🇸 +34 (ES)</SelectItem>
-                                  <SelectItem value="+31">🇳🇱 +31 (NL)</SelectItem>
-                                  <SelectItem value="+46">🇸🇪 +46 (SE)</SelectItem>
-                                  <SelectItem value="+47">🇳🇴 +47 (NO)</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <Input
-                                value={botConfig.phoneNumber}
-                                onChange={(e) => handleConfigChange('phoneNumber', e.target.value)}
-                                className="flex-1"
-                                placeholder="721 234 567"
-                              />
-                            </div>
-                          </div>
-                          
-                          <div>
-                            <label className="text-sm font-medium text-foreground">WhatsApp Business ID</label>
-                            <div className="flex gap-2 mt-1">
-                              <Input
-                                value={botConfig.whatsappBusinessId}
-                                onChange={(e) => handleConfigChange('whatsappBusinessId', e.target.value)}
-                                className="flex-1"
-                                placeholder="123456789012345"
-                              />
-                              <Button
-                                type="button"
-                                variant="outline"
+                        {/* Step-by-step guide */}
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                            <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400">1</div>
+                            <div className="flex-1">
+                              <h4 className="font-medium mb-1">Get WhatsApp Business Account</h4>
+                              <p className="text-sm text-muted-foreground mb-2">Create a WhatsApp Business account if you don't have one</p>
+                              <Button 
+                                variant="outline" 
                                 size="sm"
                                 onClick={() => window.open('https://business.whatsapp.com', '_blank')}
-                                className="flex items-center gap-1"
+                                className="flex items-center gap-2"
                               >
-                                <ExternalLink className="w-3 h-3" />
-                                Setup
+                                <ExternalLink className="w-4 h-4" />
+                                Open WhatsApp Business
                               </Button>
                             </div>
                           </div>
-                          
-                          <div>
-                            <label className="text-sm font-medium text-foreground">Webhook URL</label>
-                            <div className="flex gap-2 mt-1">
-                              <Input
-                                value={botConfig.webhookUrl}
-                                onChange={(e) => handleConfigChange('webhookUrl', e.target.value)}
-                                className="flex-1"
-                                placeholder="https://your-domain.com/webhook"
-                              />
-                              <Button
-                                type="button"
+
+                          <div className="flex items-start gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                            <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400">2</div>
+                            <div className="flex-1">
+                              <h4 className="font-medium mb-1">Add Your Phone Number</h4>
+                              <p className="text-sm text-muted-foreground mb-2">Enter the phone number you want to use for your bot</p>
+                              <div className="flex gap-2">
+                                <Select value={botConfig.countryCode || "+40"} onValueChange={(value) => handleConfigChange('countryCode', value)}>
+                                  <SelectTrigger className="w-32">
+                                    <SelectValue placeholder="Country" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="+1">🇺🇸 +1 (US)</SelectItem>
+                                    <SelectItem value="+40">🇷🇴 +40 (RO)</SelectItem>
+                                    <SelectItem value="+44">🇬🇧 +44 (UK)</SelectItem>
+                                    <SelectItem value="+49">🇩🇪 +49 (DE)</SelectItem>
+                                    <SelectItem value="+33">🇫🇷 +33 (FR)</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <Input
+                                  value={botConfig.phoneNumber}
+                                  onChange={(e) => handleConfigChange('phoneNumber', e.target.value)}
+                                  className="flex-1"
+                                  placeholder="721 234 567"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                            <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400">3</div>
+                            <div className="flex-1">
+                              <h4 className="font-medium mb-1">We'll Handle the Rest!</h4>
+                              <p className="text-sm text-muted-foreground mb-2">Our system will automatically configure the webhook and API connections</p>
+                              <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span>Auto-configured webhook: <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">https://api.oglis.com/webhook/{botConfig.name?.toLowerCase().replace(/\s+/g, '-') || 'your-bot'}</code></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Quick Connect Options */}
+                        <div className="mt-4 space-y-3">
+                          {/* QR Code Option */}
+                          <div className="p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                                  <span className="text-xs font-bold">QR</span>
+                                </div>
+                                <div>
+                                  <h4 className="font-medium text-sm">Scan QR Code</h4>
+                                  <p className="text-xs text-muted-foreground">Generate QR code for easy connection</p>
+                                </div>
+                              </div>
+                              <Button 
+                                size="sm" 
                                 variant="outline"
-                                size="sm"
-                                onClick={() => handleCopyToClipboard(botConfig.webhookUrl || 'https://your-domain.com/webhook', 'webhook')}
-                                className="flex items-center gap-1"
+                                onClick={generateQRCode}
+                                disabled={!botConfig.phoneNumber}
                               >
-                                {copiedField === 'webhook' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                                {copiedField === 'webhook' ? 'Copied!' : 'Copy'}
+                                Generate QR
                               </Button>
+                            </div>
+                          </div>
+
+                          {/* Direct Link Option */}
+                          <div className="p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                                  <ExternalLink className="w-4 h-4 text-green-600" />
+                                </div>
+                                <div>
+                                  <h4 className="font-medium text-sm">Direct WhatsApp Link</h4>
+                                  <p className="text-xs text-muted-foreground">Click to open WhatsApp directly</p>
+                                </div>
+                              </div>
+                              <Button 
+                                size="sm" 
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                                onClick={openWhatsAppLink}
+                                disabled={!botConfig.phoneNumber}
+                              >
+                                Open WhatsApp
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Connection Status */}
+                          <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span className="text-sm font-medium text-green-700 dark:text-green-300">Ready to connect</span>
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {botConfig.countryCode || '+40'}{botConfig.phoneNumber || 'Enter phone number'}
+                              </div>
                             </div>
                           </div>
                         </div>
