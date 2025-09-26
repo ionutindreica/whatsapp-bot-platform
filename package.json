@@ -21,6 +21,6 @@
     "clean": "docker-compose -f docker/docker-compose.yml down -v && docker system prune -f"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.2"
   }
 }

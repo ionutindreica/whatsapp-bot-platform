@@ -7,7 +7,9 @@ import fs from 'fs';
 const router = express.Router();
 
 // Upload document to knowledge base
-router.post('/upload', authenticateToken, req.upload.single('file'), async (req, res) => {
+router.post('/upload', authenticateToken, (req, res, next) => {
+  req.upload.single('file')(req, res, next);
+}, async (req, res) => {
   try {
     const { botId } = req.body;
     const file = req.file;
