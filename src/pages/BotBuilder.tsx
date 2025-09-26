@@ -632,12 +632,239 @@ const BotBuilder = () => {
                           </div>
                         </div>
                       </div>
-                      <Input
-                        value={botConfig.phoneNumber}
-                        onChange={(e) => handleConfigChange('phoneNumber', e.target.value)}
-                        className="mt-1"
-                        placeholder="+40 721 234 567"
-                      />
+                      <div className="flex gap-2">
+                        <Select value={botConfig.countryCode || "+40"} onValueChange={(value) => handleConfigChange('countryCode', value)}>
+                          <SelectTrigger className="w-32">
+                            <SelectValue placeholder="Country" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="+1">🇺🇸 +1 (US)</SelectItem>
+                            <SelectItem value="+40">🇷🇴 +40 (RO)</SelectItem>
+                            <SelectItem value="+44">🇬🇧 +44 (UK)</SelectItem>
+                            <SelectItem value="+49">🇩🇪 +49 (DE)</SelectItem>
+                            <SelectItem value="+33">🇫🇷 +33 (FR)</SelectItem>
+                            <SelectItem value="+39">🇮🇹 +39 (IT)</SelectItem>
+                            <SelectItem value="+34">🇪🇸 +34 (ES)</SelectItem>
+                            <SelectItem value="+31">🇳🇱 +31 (NL)</SelectItem>
+                            <SelectItem value="+46">🇸🇪 +46 (SE)</SelectItem>
+                            <SelectItem value="+47">🇳🇴 +47 (NO)</SelectItem>
+                            <SelectItem value="+45">🇩🇰 +45 (DK)</SelectItem>
+                            <SelectItem value="+41">🇨🇭 +41 (CH)</SelectItem>
+                            <SelectItem value="+43">🇦🇹 +43 (AT)</SelectItem>
+                            <SelectItem value="+32">🇧🇪 +32 (BE)</SelectItem>
+                            <SelectItem value="+48">🇵🇱 +48 (PL)</SelectItem>
+                            <SelectItem value="+420">🇨🇿 +420 (CZ)</SelectItem>
+                            <SelectItem value="+421">🇸🇰 +421 (SK)</SelectItem>
+                            <SelectItem value="+36">🇭🇺 +36 (HU)</SelectItem>
+                            <SelectItem value="+385">🇭🇷 +385 (HR)</SelectItem>
+                            <SelectItem value="+386">🇸🇮 +386 (SI)</SelectItem>
+                            <SelectItem value="+372">🇪🇪 +372 (EE)</SelectItem>
+                            <SelectItem value="+371">🇱🇻 +371 (LV)</SelectItem>
+                            <SelectItem value="+370">🇱🇹 +370 (LT)</SelectItem>
+                            <SelectItem value="+359">🇧🇬 +359 (BG)</SelectItem>
+                            <SelectItem value="+40">🇷🇴 +40 (RO)</SelectItem>
+                            <SelectItem value="+7">🇷🇺 +7 (RU)</SelectItem>
+                            <SelectItem value="+90">🇹🇷 +90 (TR)</SelectItem>
+                            <SelectItem value="+86">🇨🇳 +86 (CN)</SelectItem>
+                            <SelectItem value="+81">🇯🇵 +81 (JP)</SelectItem>
+                            <SelectItem value="+82">🇰🇷 +82 (KR)</SelectItem>
+                            <SelectItem value="+65">🇸🇬 +65 (SG)</SelectItem>
+                            <SelectItem value="+60">🇲🇾 +60 (MY)</SelectItem>
+                            <SelectItem value="+66">🇹🇭 +66 (TH)</SelectItem>
+                            <SelectItem value="+63">🇵🇭 +63 (PH)</SelectItem>
+                            <SelectItem value="+61">🇦🇺 +61 (AU)</SelectItem>
+                            <SelectItem value="+64">🇳🇿 +64 (NZ)</SelectItem>
+                            <SelectItem value="+55">🇧🇷 +55 (BR)</SelectItem>
+                            <SelectItem value="+54">🇦🇷 +54 (AR)</SelectItem>
+                            <SelectItem value="+56">🇨🇱 +56 (CL)</SelectItem>
+                            <SelectItem value="+57">🇨🇴 +57 (CO)</SelectItem>
+                            <SelectItem value="+52">🇲🇽 +52 (MX)</SelectItem>
+                            <SelectItem value="+1">🇨🇦 +1 (CA)</SelectItem>
+                            <SelectItem value="+91">🇮🇳 +91 (IN)</SelectItem>
+                            <SelectItem value="+92">🇵🇰 +92 (PK)</SelectItem>
+                            <SelectItem value="+880">🇧🇩 +880 (BD)</SelectItem>
+                            <SelectItem value="+94">🇱🇰 +94 (LK)</SelectItem>
+                            <SelectItem value="+977">🇳🇵 +977 (NP)</SelectItem>
+                            <SelectItem value="+975">🇧🇹 +975 (BT)</SelectItem>
+                            <SelectItem value="+93">🇦🇫 +93 (AF)</SelectItem>
+                            <SelectItem value="+98">🇮🇷 +98 (IR)</SelectItem>
+                            <SelectItem value="+964">🇮🇶 +964 (IQ)</SelectItem>
+                            <SelectItem value="+966">🇸🇦 +966 (SA)</SelectItem>
+                            <SelectItem value="+971">🇦🇪 +971 (AE)</SelectItem>
+                            <SelectItem value="+974">🇶🇦 +974 (QA)</SelectItem>
+                            <SelectItem value="+965">🇰🇼 +965 (KW)</SelectItem>
+                            <SelectItem value="+973">🇧🇭 +973 (BH)</SelectItem>
+                            <SelectItem value="+968">🇴🇲 +968 (OM)</SelectItem>
+                            <SelectItem value="+967">🇾🇪 +967 (YE)</SelectItem>
+                            <SelectItem value="+20">🇪🇬 +20 (EG)</SelectItem>
+                            <SelectItem value="+27">🇿🇦 +27 (ZA)</SelectItem>
+                            <SelectItem value="+234">🇳🇬 +234 (NG)</SelectItem>
+                            <SelectItem value="+254">🇰🇪 +254 (KE)</SelectItem>
+                            <SelectItem value="+256">🇺🇬 +256 (UG)</SelectItem>
+                            <SelectItem value="+250">🇷🇼 +250 (RW)</SelectItem>
+                            <SelectItem value="+255">🇹🇿 +255 (TZ)</SelectItem>
+                            <SelectItem value="+233">🇬🇭 +233 (GH)</SelectItem>
+                            <SelectItem value="+225">🇨🇮 +225 (CI)</SelectItem>
+                            <SelectItem value="+221">🇸🇳 +221 (SN)</SelectItem>
+                            <SelectItem value="+223">🇲🇱 +223 (ML)</SelectItem>
+                            <SelectItem value="+226">🇧🇫 +226 (BF)</SelectItem>
+                            <SelectItem value="+227">🇳🇪 +227 (NE)</SelectItem>
+                            <SelectItem value="+228">🇹🇬 +228 (TG)</SelectItem>
+                            <SelectItem value="+229">🇧🇯 +229 (BJ)</SelectItem>
+                            <SelectItem value="+230">🇲🇺 +230 (MU)</SelectItem>
+                            <SelectItem value="+231">🇱🇷 +231 (LR)</SelectItem>
+                            <SelectItem value="+232">🇸🇱 +232 (SL)</SelectItem>
+                            <SelectItem value="+234">🇳🇬 +234 (NG)</SelectItem>
+                            <SelectItem value="+235">🇹🇩 +235 (TD)</SelectItem>
+                            <SelectItem value="+236">🇨🇫 +236 (CF)</SelectItem>
+                            <SelectItem value="+237">🇨🇲 +237 (CM)</SelectItem>
+                            <SelectItem value="+238">🇨🇻 +238 (CV)</SelectItem>
+                            <SelectItem value="+239">🇸🇹 +239 (ST)</SelectItem>
+                            <SelectItem value="+240">🇬🇶 +240 (GQ)</SelectItem>
+                            <SelectItem value="+241">🇬🇦 +241 (GA)</SelectItem>
+                            <SelectItem value="+242">🇨🇬 +242 (CG)</SelectItem>
+                            <SelectItem value="+243">🇨🇩 +243 (CD)</SelectItem>
+                            <SelectItem value="+244">🇦🇴 +244 (AO)</SelectItem>
+                            <SelectItem value="+245">🇬🇼 +245 (GW)</SelectItem>
+                            <SelectItem value="+246">🇮🇴 +246 (IO)</SelectItem>
+                            <SelectItem value="+247">🇦🇨 +247 (AC)</SelectItem>
+                            <SelectItem value="+248">🇸🇨 +248 (SC)</SelectItem>
+                            <SelectItem value="+249">🇸🇩 +249 (SD)</SelectItem>
+                            <SelectItem value="+250">🇷🇼 +250 (RW)</SelectItem>
+                            <SelectItem value="+251">🇪🇹 +251 (ET)</SelectItem>
+                            <SelectItem value="+252">🇸🇴 +252 (SO)</SelectItem>
+                            <SelectItem value="+253">🇩🇯 +253 (DJ)</SelectItem>
+                            <SelectItem value="+254">🇰🇪 +254 (KE)</SelectItem>
+                            <SelectItem value="+255">🇹🇿 +255 (TZ)</SelectItem>
+                            <SelectItem value="+256">🇺🇬 +256 (UG)</SelectItem>
+                            <SelectItem value="+257">🇧🇮 +257 (BI)</SelectItem>
+                            <SelectItem value="+258">🇲🇿 +258 (MZ)</SelectItem>
+                            <SelectItem value="+260">🇿🇲 +260 (ZM)</SelectItem>
+                            <SelectItem value="+261">🇲🇬 +261 (MG)</SelectItem>
+                            <SelectItem value="+262">🇷🇪 +262 (RE)</SelectItem>
+                            <SelectItem value="+263">🇿🇼 +263 (ZW)</SelectItem>
+                            <SelectItem value="+264">🇳🇦 +264 (NA)</SelectItem>
+                            <SelectItem value="+265">🇲🇼 +265 (MW)</SelectItem>
+                            <SelectItem value="+266">🇱🇸 +266 (LS)</SelectItem>
+                            <SelectItem value="+267">🇧🇼 +267 (BW)</SelectItem>
+                            <SelectItem value="+268">🇸🇿 +268 (SZ)</SelectItem>
+                            <SelectItem value="+269">🇰🇲 +269 (KM)</SelectItem>
+                            <SelectItem value="+290">🇸🇭 +290 (SH)</SelectItem>
+                            <SelectItem value="+291">🇪🇷 +291 (ER)</SelectItem>
+                            <SelectItem value="+297">🇦🇼 +297 (AW)</SelectItem>
+                            <SelectItem value="+298">🇫🇴 +298 (FO)</SelectItem>
+                            <SelectItem value="+299">🇬🇱 +299 (GL)</SelectItem>
+                            <SelectItem value="+350">🇬🇮 +350 (GI)</SelectItem>
+                            <SelectItem value="+351">🇵🇹 +351 (PT)</SelectItem>
+                            <SelectItem value="+352">🇱🇺 +352 (LU)</SelectItem>
+                            <SelectItem value="+353">🇮🇪 +353 (IE)</SelectItem>
+                            <SelectItem value="+354">🇮🇸 +354 (IS)</SelectItem>
+                            <SelectItem value="+355">🇦🇱 +355 (AL)</SelectItem>
+                            <SelectItem value="+356">🇲🇹 +356 (MT)</SelectItem>
+                            <SelectItem value="+357">🇨🇾 +357 (CY)</SelectItem>
+                            <SelectItem value="+358">🇫🇮 +358 (FI)</SelectItem>
+                            <SelectItem value="+359">🇧🇬 +359 (BG)</SelectItem>
+                            <SelectItem value="+370">🇱🇹 +370 (LT)</SelectItem>
+                            <SelectItem value="+371">🇱🇻 +371 (LV)</SelectItem>
+                            <SelectItem value="+372">🇪🇪 +372 (EE)</SelectItem>
+                            <SelectItem value="+373">🇲🇩 +373 (MD)</SelectItem>
+                            <SelectItem value="+374">🇦🇲 +374 (AM)</SelectItem>
+                            <SelectItem value="+375">🇧🇾 +375 (BY)</SelectItem>
+                            <SelectItem value="+376">🇦🇩 +376 (AD)</SelectItem>
+                            <SelectItem value="+377">🇲🇨 +377 (MC)</SelectItem>
+                            <SelectItem value="+378">🇸🇲 +378 (SM)</SelectItem>
+                            <SelectItem value="+380">🇺🇦 +380 (UA)</SelectItem>
+                            <SelectItem value="+381">🇷🇸 +381 (RS)</SelectItem>
+                            <SelectItem value="+382">🇲🇪 +382 (ME)</SelectItem>
+                            <SelectItem value="+383">🇽🇰 +383 (XK)</SelectItem>
+                            <SelectItem value="+385">🇭🇷 +385 (HR)</SelectItem>
+                            <SelectItem value="+386">🇸🇮 +386 (SI)</SelectItem>
+                            <SelectItem value="+387">🇧🇦 +387 (BA)</SelectItem>
+                            <SelectItem value="+389">🇲🇰 +389 (MK)</SelectItem>
+                            <SelectItem value="+420">🇨🇿 +420 (CZ)</SelectItem>
+                            <SelectItem value="+421">🇸🇰 +421 (SK)</SelectItem>
+                            <SelectItem value="+423">🇱🇮 +423 (LI)</SelectItem>
+                            <SelectItem value="+500">🇫🇰 +500 (FK)</SelectItem>
+                            <SelectItem value="+501">🇧🇿 +501 (BZ)</SelectItem>
+                            <SelectItem value="+502">🇬🇹 +502 (GT)</SelectItem>
+                            <SelectItem value="+503">🇸🇻 +503 (SV)</SelectItem>
+                            <SelectItem value="+504">🇭🇳 +504 (HN)</SelectItem>
+                            <SelectItem value="+505">🇳🇮 +505 (NI)</SelectItem>
+                            <SelectItem value="+506">🇨🇷 +506 (CR)</SelectItem>
+                            <SelectItem value="+507">🇵🇦 +507 (PA)</SelectItem>
+                            <SelectItem value="+508">🇵🇲 +508 (PM)</SelectItem>
+                            <SelectItem value="+509">🇭🇹 +509 (HT)</SelectItem>
+                            <SelectItem value="+590">🇬🇵 +590 (GP)</SelectItem>
+                            <SelectItem value="+591">🇧🇴 +591 (BO)</SelectItem>
+                            <SelectItem value="+592">🇬🇾 +592 (GY)</SelectItem>
+                            <SelectItem value="+593">🇪🇨 +593 (EC)</SelectItem>
+                            <SelectItem value="+594">🇬🇫 +594 (GF)</SelectItem>
+                            <SelectItem value="+595">🇵🇾 +595 (PY)</SelectItem>
+                            <SelectItem value="+596">🇲🇶 +596 (MQ)</SelectItem>
+                            <SelectItem value="+597">🇸🇷 +597 (SR)</SelectItem>
+                            <SelectItem value="+598">🇺🇾 +598 (UY)</SelectItem>
+                            <SelectItem value="+599">🇧🇶 +599 (BQ)</SelectItem>
+                            <SelectItem value="+670">🇹🇱 +670 (TL)</SelectItem>
+                            <SelectItem value="+672">🇦🇶 +672 (AQ)</SelectItem>
+                            <SelectItem value="+673">🇧🇳 +673 (BN)</SelectItem>
+                            <SelectItem value="+674">🇳🇷 +674 (NR)</SelectItem>
+                            <SelectItem value="+675">🇵🇬 +675 (PG)</SelectItem>
+                            <SelectItem value="+676">🇹🇴 +676 (TO)</SelectItem>
+                            <SelectItem value="+677">🇸🇧 +677 (SB)</SelectItem>
+                            <SelectItem value="+678">🇻🇺 +678 (VU)</SelectItem>
+                            <SelectItem value="+679">🇫🇯 +679 (FJ)</SelectItem>
+                            <SelectItem value="+680">🇵🇼 +680 (PW)</SelectItem>
+                            <SelectItem value="+681">🇼🇫 +681 (WF)</SelectItem>
+                            <SelectItem value="+682">🇨🇰 +682 (CK)</SelectItem>
+                            <SelectItem value="+683">🇳🇺 +683 (NU)</SelectItem>
+                            <SelectItem value="+684">🇦🇸 +684 (AS)</SelectItem>
+                            <SelectItem value="+685">🇼🇸 +685 (WS)</SelectItem>
+                            <SelectItem value="+686">🇰🇮 +686 (KI)</SelectItem>
+                            <SelectItem value="+687">🇳🇨 +687 (NC)</SelectItem>
+                            <SelectItem value="+688">🇹🇻 +688 (TV)</SelectItem>
+                            <SelectItem value="+689">🇵🇫 +689 (PF)</SelectItem>
+                            <SelectItem value="+690">🇹🇰 +690 (TK)</SelectItem>
+                            <SelectItem value="+691">🇫🇲 +691 (FM)</SelectItem>
+                            <SelectItem value="+692">🇲🇭 +692 (MH)</SelectItem>
+                            <SelectItem value="+850">🇰🇵 +850 (KP)</SelectItem>
+                            <SelectItem value="+852">🇭🇰 +852 (HK)</SelectItem>
+                            <SelectItem value="+853">🇲🇴 +853 (MO)</SelectItem>
+                            <SelectItem value="+855">🇰🇭 +855 (KH)</SelectItem>
+                            <SelectItem value="+856">🇱🇦 +856 (LA)</SelectItem>
+                            <SelectItem value="+880">🇧🇩 +880 (BD)</SelectItem>
+                            <SelectItem value="+886">🇹🇼 +886 (TW)</SelectItem>
+                            <SelectItem value="+960">🇲🇻 +960 (MV)</SelectItem>
+                            <SelectItem value="+961">🇱🇧 +961 (LB)</SelectItem>
+                            <SelectItem value="+962">🇯🇴 +962 (JO)</SelectItem>
+                            <SelectItem value="+963">🇸🇾 +963 (SY)</SelectItem>
+                            <SelectItem value="+964">🇮🇶 +964 (IQ)</SelectItem>
+                            <SelectItem value="+965">🇰🇼 +965 (KW)</SelectItem>
+                            <SelectItem value="+966">🇸🇦 +966 (SA)</SelectItem>
+                            <SelectItem value="+967">🇾🇪 +967 (YE)</SelectItem>
+                            <SelectItem value="+968">🇴🇲 +968 (OM)</SelectItem>
+                            <SelectItem value="+970">🇵🇸 +970 (PS)</SelectItem>
+                            <SelectItem value="+971">🇦🇪 +971 (AE)</SelectItem>
+                            <SelectItem value="+972">🇮🇱 +972 (IL)</SelectItem>
+                            <SelectItem value="+973">🇧🇭 +973 (BH)</SelectItem>
+                            <SelectItem value="+974">🇶🇦 +974 (QA)</SelectItem>
+                            <SelectItem value="+975">🇧🇹 +975 (BT)</SelectItem>
+                            <SelectItem value="+976">🇲🇳 +976 (MN)</SelectItem>
+                            <SelectItem value="+977">🇳🇵 +977 (NP)</SelectItem>
+                            <SelectItem value="+992">🇹🇯 +992 (TJ)</SelectItem>
+                            <SelectItem value="+993">🇹🇲 +993 (TM)</SelectItem>
+                            <SelectItem value="+994">🇦🇿 +994 (AZ)</SelectItem>
+                            <SelectItem value="+995">🇬🇪 +995 (GE)</SelectItem>
+                            <SelectItem value="+996">🇰🇬 +996 (KG)</SelectItem>
+                            <SelectItem value="+998">🇺🇿 +998 (UZ)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          value={botConfig.phoneNumber}
+                          onChange={(e) => handleConfigChange('phoneNumber', e.target.value)}
+                          className="flex-1"
+                          placeholder="721 234 567"
+                        />
+                      </div>
                     </div>
 
                     {/* WhatsApp Business ID Section */}
@@ -747,12 +974,12 @@ const BotBuilder = () => {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     {/* Facebook Setup Instructions */}
-                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <h4 className="font-medium text-blue-900 mb-3 flex items-center gap-2">
+                    <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                         Facebook Messenger Setup Instructions
                       </h4>
-                      <div className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
+                      <div className="space-y-2 text-sm text-blue-900 dark:text-blue-100">
                         <p><strong>Step 1:</strong> Create a Facebook Business account</p>
                         <p><strong>Step 2:</strong> Go to Facebook Developers and create an App</p>
                         <p><strong>Step 3:</strong> Add Messenger product to your App</p>
@@ -763,7 +990,7 @@ const BotBuilder = () => {
 
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Facebook App ID</label>
+                        <label className="text-sm font-medium text-foreground">Facebook App ID</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
                           <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
@@ -786,7 +1013,7 @@ const BotBuilder = () => {
 
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Page Access Token</label>
+                        <label className="text-sm font-medium text-foreground">Page Access Token</label>
                         <div className="group relative">
                           <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
                           <div className="absolute left-8 top-0 w-80 p-4 bg-card border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
@@ -812,7 +1039,7 @@ const BotBuilder = () => {
                       variant="outline"
                       size="sm"
                       onClick={() => window.open('https://developers.facebook.com', '_blank')}
-                      className="w-full flex items-center gap-1"
+                      className="w-full flex items-center gap-1 text-foreground hover:text-foreground"
                     >
                       <ExternalLink className="w-3 h-3" />
                       Go to Facebook Developers
