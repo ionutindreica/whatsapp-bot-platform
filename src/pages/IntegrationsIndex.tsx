@@ -4,6 +4,7 @@ import BackToDashboard from "@/components/BackToDashboard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   Globe, 
   Code, 
@@ -133,19 +134,45 @@ const IntegrationsIndex = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <TooltipProvider>
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-7xl mx-auto space-y-8">
         {/* Back to Dashboard */}
         <BackToDashboard title="Back to Dashboard" />
         
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Settings className="w-8 h-8 text-whatsapp" />
-              Integrations
+            <h1 className="text-3xl font-bold flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <Settings className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span>Integrations</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button className="w-6 h-6 rounded-full bg-blue-100 hover:bg-blue-200 border border-blue-300 flex items-center justify-center text-blue-600 hover:text-blue-800 transition-all duration-200 hover:scale-110 shadow-sm">
+                      <span className="text-sm font-bold">?</span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent 
+                    className="max-w-sm bg-gray-900 text-white border-gray-700 shadow-lg" 
+                    side="bottom"
+                    align="start"
+                    sideOffset={8}
+                  >
+                    <div className="space-y-2">
+                      <p className="font-medium text-white">What are Integrations?</p>
+                      <p className="text-sm text-gray-300">
+                        Connect your AI bots to external platforms and services. 
+                        Enable seamless communication across WhatsApp, websites, APIs, and more.
+                      </p>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </h1>
-            <p className="text-muted-foreground">Connect your AI bots to any platform or service</p>
+            <p className="text-muted-foreground mt-2">Connect your AI bots to any platform or service</p>
           </div>
         </div>
 
@@ -204,9 +231,20 @@ const IntegrationsIndex = () => {
                           {integration.status === "coming-soon" ? "Coming Soon" : "Configure"}
                         </Button>
                       </Link>
-                      <Button variant="outline">
-                        <Zap className="w-4 h-4" />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="outline">
+                            <Zap className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent 
+                          className="bg-gray-900 text-white border-gray-700 shadow-lg" 
+                          side="top"
+                          sideOffset={5}
+                        >
+                          <p className="text-white">Quick setup with AI assistance</p>
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                   </CardContent>
                 </Card>
@@ -262,9 +300,20 @@ const IntegrationsIndex = () => {
                       >
                         {channel.status === "coming-soon" ? "Coming Soon" : "Setup"}
                       </Button>
-                      <Button variant="outline">
-                        <Settings className="w-4 h-4" />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="outline">
+                            <Settings className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent 
+                          className="bg-gray-900 text-white border-gray-700 shadow-lg" 
+                          side="top"
+                          sideOffset={5}
+                        >
+                          <p className="text-white">Advanced configuration options</p>
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                   </CardContent>
                 </Card>
@@ -274,11 +323,36 @@ const IntegrationsIndex = () => {
         </div>
 
         {/* Quick Start */}
-        <Card>
+        <Card className="border-2 border-dashed border-blue-200 bg-blue-50/50">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="w-5 h-5" />
-              Quick Start Guide
+            <CardTitle className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                <Zap className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span>Quick Start Guide</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button className="w-5 h-5 rounded-full bg-blue-100 hover:bg-blue-200 border border-blue-300 flex items-center justify-center text-blue-600 hover:text-blue-800 transition-all duration-200 hover:scale-110 shadow-sm">
+                      <span className="text-xs font-bold">?</span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent 
+                    className="max-w-sm bg-gray-900 text-white border-gray-700 shadow-lg" 
+                    side="bottom"
+                    align="start"
+                    sideOffset={8}
+                  >
+                    <div className="space-y-2">
+                      <p className="font-medium text-white">Quick Start Guide</p>
+                      <p className="text-sm text-gray-300">
+                        Follow these steps to get your first integration up and running in minutes. 
+                        Choose the option that best fits your needs.
+                      </p>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </CardTitle>
             <CardDescription>Get started with integrations in minutes</CardDescription>
           </CardHeader>
@@ -325,8 +399,9 @@ const IntegrationsIndex = () => {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
