@@ -1317,10 +1317,39 @@ const BotBuilder = () => {
                             
                             <div className="flex items-center gap-4">
                               <Button 
-                                onClick={() => {
-                                  // Save bot configuration
-                                  console.log('Saving bot configuration:', botConfig);
-                                  alert('Bot configuration saved!');
+                                onClick={async () => {
+                                  try {
+                                    // Save bot configuration to backend
+                                    const response = await fetch('http://localhost:5000/api/bots', {
+                                      method: 'POST',
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                                      },
+                                      body: JSON.stringify({
+                                        name: botConfig.name,
+                                        description: botConfig.description,
+                                        personality: botConfig.personality,
+                                        language: botConfig.language,
+                                        phoneNumber: botConfig.phoneNumber,
+                                        countryCode: botConfig.countryCode,
+                                        status: 'inactive',
+                                        type: 'Custom',
+                                        channels: connectedChannels
+                                      })
+                                    });
+
+                                    if (response.ok) {
+                                      alert('Bot saved successfully! You can find it in the Bots section.');
+                                      // Optionally redirect to bots page
+                                      // window.location.href = '/dashboard/bots';
+                                    } else {
+                                      throw new Error('Failed to save bot');
+                                    }
+                                  } catch (error) {
+                                    console.error('Error saving bot:', error);
+                                    alert('Error saving bot. Please try again.');
+                                  }
                                 }}
                                 className="bg-blue-600 hover:bg-blue-700"
                               >

@@ -430,6 +430,50 @@ app.get('/api/bots', authenticateToken, (req, res) => {
   }
 });
 
+// Create new bot
+app.post('/api/bots', authenticateToken, (req, res) => {
+  try {
+    console.log('🤖 Creating new bot:', req.body);
+    
+    const db = readDatabase();
+    
+    const newBot = {
+      id: `bot-${Date.now()}`,
+      name: req.body.name,
+      description: req.body.description,
+      personality: req.body.personality,
+      language: req.body.language,
+      phoneNumber: req.body.phoneNumber,
+      countryCode: req.body.countryCode,
+      status: req.body.status || 'inactive',
+      type: req.body.type || 'Custom',
+      channels: req.body.channels || {},
+      conversations: 0,
+      messages: 0,
+      lastActivity: null,
+      createdAt: new Date().toISOString(),
+      ownerId: req.user.userId
+    };
+    
+    if (!db.bots) {
+      db.bots = [];
+    }
+    
+    db.bots.push(newBot);
+    writeDatabase(db);
+    
+    console.log('✅ Bot created successfully:', newBot.id);
+    
+    res.json({
+      success: true,
+      bot: newBot
+    });
+  } catch (error) {
+    console.error('❌ Create bot error:', error);
+    res.status(500).json({ error: 'Failed to create bot' });
+  }
+});
+
 app.post('/api/bots/:id/toggle', authenticateToken, (req, res) => {
   try {
     const { id } = req.params;
