@@ -270,13 +270,12 @@ const BotBuilder = () => {
             {/* Main Configuration Panel */}
             <div className="lg:col-span-3">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-6">
-                  <TabsTrigger value="configuration">Configuration</TabsTrigger>
-                  <TabsTrigger value="design">Design</TabsTrigger>
-                  <TabsTrigger value="knowledge">Knowledge</TabsTrigger>
-                  <TabsTrigger value="ai settings">AI Settings</TabsTrigger>
-                  <TabsTrigger value="channels">Channels</TabsTrigger>
-                  <TabsTrigger value="integration">Integration</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-5">
+                  <TabsTrigger value="configuration">Basic Setup</TabsTrigger>
+                  <TabsTrigger value="design">Appearance</TabsTrigger>
+                  <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
+                  <TabsTrigger value="ai settings">AI Behavior</TabsTrigger>
+                  <TabsTrigger value="integration">Connections</TabsTrigger>
                 </TabsList>
 
                 {/* Configuration Tab */}
@@ -759,15 +758,16 @@ const BotBuilder = () => {
                   </Card>
                 </TabsContent>
 
-                {/* Channels Tab */}
-                <TabsContent value="channels" className="space-y-6">
+                {/* Integration Tab */}
+                <TabsContent value="integration" className="space-y-6">
+                  {/* Channel Management */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <MessageSquare className="w-5 h-5" />
                         Channel Management
                       </CardTitle>
-                      <CardDescription>Manage your bot's communication channels</CardDescription>
+                      <CardDescription>Manage your bot's communication channels and their status</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -935,11 +935,8 @@ const BotBuilder = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </TabsContent>
 
-                {/* Integration Tab */}
-                <TabsContent value="integration" className="space-y-4">
-                  {/* Integration Dropdown */}
+                  {/* Platform Integrations */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -1161,6 +1158,140 @@ const BotBuilder = () => {
                                 {copiedField === 'widget' ? 'Copied!' : 'Get Code'}
                               </Button>
                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Additional Connections */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Zap className="w-5 h-5" />
+                        Additional Connections
+                      </CardTitle>
+                      <CardDescription>Connect your bot to external services and APIs</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* CRM Integration */}
+                        <div className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                                <Brain className="w-4 h-4 text-orange-600" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">CRM Integration</h3>
+                                <p className="text-xs text-muted-foreground">Salesforce, HubSpot</p>
+                              </div>
+                            </div>
+                            <Badge className="bg-orange-100 text-orange-800">Available</Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Sync Contacts</span>
+                              <span className="font-medium">Enabled</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Lead Scoring</span>
+                              <span className="font-medium">Active</span>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Settings className="w-4 h-4 mr-2" />
+                              Configure
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Email Integration */}
+                        <div className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <MessageSquare className="w-4 h-4 text-blue-600" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Email Service</h3>
+                                <p className="text-xs text-muted-foreground">SendGrid, Mailgun</p>
+                              </div>
+                            </div>
+                            <Badge className="bg-blue-100 text-blue-800">Connected</Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Emails Sent</span>
+                              <span className="font-medium">1,234</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Delivery Rate</span>
+                              <span className="font-medium">99.2%</span>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Settings className="w-4 h-4 mr-2" />
+                              Configure
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Analytics Integration */}
+                        <div className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                <Brain className="w-4 h-4 text-purple-600" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Analytics</h3>
+                                <p className="text-xs text-muted-foreground">Google Analytics</p>
+                              </div>
+                            </div>
+                            <Badge className="bg-purple-100 text-purple-800">Active</Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Events Tracked</span>
+                              <span className="font-medium">5,678</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Conversion Rate</span>
+                              <span className="font-medium">12.5%</span>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Settings className="w-4 h-4 mr-2" />
+                              View Analytics
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Database Integration */}
+                        <div className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <Brain className="w-4 h-4 text-green-600" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Database</h3>
+                                <p className="text-xs text-muted-foreground">PostgreSQL, MongoDB</p>
+                              </div>
+                            </div>
+                            <Badge className="bg-green-100 text-green-800">Connected</Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Records Stored</span>
+                              <span className="font-medium">45,678</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Query Performance</span>
+                              <span className="font-medium">98ms</span>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Settings className="w-4 h-4 mr-2" />
+                              Manage
+                            </Button>
                           </div>
                         </div>
                       </div>
