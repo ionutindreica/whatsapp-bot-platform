@@ -587,7 +587,6 @@ const WorkspacesManagement: React.FC = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
     </AdminPageLayout>
   );
 };
