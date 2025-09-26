@@ -1187,129 +1187,157 @@ const BotBuilder = () => {
                           </div>
                         </div>
                         
-                        {/* WhatsApp Connection Interface */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                          {/* Left Panel - Instructions */}
-                          <div className="space-y-6">
-                            <div>
-                              <h3 className="text-lg font-semibold mb-4">Follow these steps on your computer or mobile device</h3>
-                              
-                              {/* STEP 1 */}
-                              <div className="space-y-3">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                                  <span className="font-medium">Scan the QR code with your phone's camera or go to:</span>
-                                </div>
-                                <div className="flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                                  <Input
-                                    value={`https://api.whatsapp.com/send?phone=${(botConfig.countryCode || '+40').replace('+', '')}${botConfig.phoneNumber || 'XXXXXXXXX'}&text=${encodeURIComponent(`Hello! I want to connect with ${botConfig.name || 'My Bot'}`)}`}
-                                    readOnly
-                                    className="flex-1 bg-transparent border-none"
-                                  />
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => {
-                                      const link = `https://api.whatsapp.com/send?phone=${(botConfig.countryCode || '+40').replace('+', '')}${botConfig.phoneNumber || 'XXXXXXXXX'}&text=${encodeURIComponent(`Hello! I want to connect with ${botConfig.name || 'My Bot'}`)}`;
-                                      navigator.clipboard.writeText(link);
-                                    }}
-                                  >
-                                    <Copy className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              </div>
-
-                              {/* STEP 2 */}
-                              <div className="space-y-3">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                                  <span className="font-medium">Send the linking code:</span>
-                                </div>
-                                <div className="flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                                  <Input
-                                    value="SKCGCS"
-                                    readOnly
-                                    className="flex-1 bg-transparent border-none font-mono"
-                                  />
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => navigator.clipboard.writeText('SKCGCS')}
-                                  >
-                                    <Copy className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              </div>
-
-                              {/* STEP 3 */}
-                              <div className="space-y-3">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                                  <span className="font-medium">Your agent is now ready to be tested on WhatsApp! Say "Hi"</span>
-                                </div>
-                              </div>
+                        {/* WhatsApp Connection - Clean & Progressive */}
+                        <div className="space-y-6">
+                          {/* Step 1: Phone Number Input */}
+                          <div className="bg-white dark:bg-gray-800 rounded-lg border p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-sm font-bold text-blue-600">1</div>
+                              <h3 className="text-lg font-semibold">Add Your Phone Number</h3>
                             </div>
-
-                            {/* Action Buttons */}
-                            <div className="space-y-3">
-                              <Button 
-                                variant="destructive" 
-                                size="sm" 
-                                className="w-full"
-                                onClick={() => {
-                                  setConnectedChannels(prev => ({...prev, whatsapp: false}));
-                                  setShowQRCode(false);
-                                  setQrCodeDataUrl(null);
-                                }}
-                              >
-                                Remove test connections
-                              </Button>
-                              
-                              <Button 
-                                variant="default" 
-                                size="sm" 
-                                className="w-full bg-blue-600 hover:bg-blue-700"
-                                onClick={() => window.open('https://business.whatsapp.com', '_blank')}
-                              >
-                                <ExternalLink className="w-4 h-4 mr-2" />
-                                View conversations
-                              </Button>
-                              
-                              <Button 
-                                variant="default" 
-                                size="sm" 
-                                className="w-full bg-green-600 hover:bg-green-700"
-                                onClick={() => window.open('https://business.whatsapp.com', '_blank')}
-                              >
-                                Connect your business account
-                                <ExternalLink className="w-4 h-4 ml-2" />
-                              </Button>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="text-sm font-medium mb-2 block">Country Code</label>
+                                <Select value={botConfig.countryCode || "+40"} onValueChange={(value) => handleConfigChange('countryCode', value)}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select country" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="+1">🇺🇸 +1 (US)</SelectItem>
+                                    <SelectItem value="+40">🇷🇴 +40 (RO)</SelectItem>
+                                    <SelectItem value="+44">🇬🇧 +44 (UK)</SelectItem>
+                                    <SelectItem value="+49">🇩🇪 +49 (DE)</SelectItem>
+                                    <SelectItem value="+33">🇫🇷 +33 (FR)</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <label className="text-sm font-medium mb-2 block">Phone Number</label>
+                                <Input
+                                  value={botConfig.phoneNumber}
+                                  onChange={(e) => handleConfigChange('phoneNumber', e.target.value)}
+                                  placeholder="721 234 567"
+                                />
+                              </div>
                             </div>
                           </div>
 
-                          {/* Right Panel - QR Code */}
-                          <div className="flex flex-col items-center justify-center">
-                            {showQRCode && qrCodeDataUrl ? (
-                              <div className="text-center">
-                                <div className="w-64 h-64 bg-white p-4 rounded-lg border-2 border-gray-300 flex items-center justify-center">
-                                  <img 
-                                    src={qrCodeDataUrl} 
-                                    alt="WhatsApp QR Code" 
-                                    className="w-full h-full"
-                                  />
-                                </div>
-                                <p className="text-sm text-muted-foreground mt-3">
-                                  Scan with your phone camera
-                                </p>
+                          {/* Step 2: QR Code Display */}
+                          {botConfig.phoneNumber && (
+                            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6">
+                              <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center text-sm font-bold text-green-600">2</div>
+                                <h3 className="text-lg font-semibold">Scan QR Code</h3>
                               </div>
-                            ) : (
-                              <div className="w-64 h-64 bg-gray-100 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
-                                <div className="text-center">
-                                  <MessageSquare className="w-16 h-16 text-gray-400 mx-auto mb-2" />
-                                  <p className="text-sm text-muted-foreground">Enter phone number to generate QR code</p>
+                              
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Instructions */}
+                                <div className="space-y-4">
+                                  <p className="text-sm text-muted-foreground">Follow these steps on your phone:</p>
+                                  
+                                  <div className="space-y-3">
+                                    <div className="flex items-start gap-3">
+                                      <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                                      <div>
+                                        <p className="text-sm font-medium">Scan the QR code with your phone's camera</p>
+                                        <p className="text-xs text-muted-foreground">Or go to the link below</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="flex items-start gap-3">
+                                      <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                                      <div>
+                                        <p className="text-sm font-medium">Send the linking code: <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">SKCGCS</code></p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="flex items-start gap-3">
+                                      <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                                      <div>
+                                        <p className="text-sm font-medium">Your bot is ready! Say "Hi" to test</p>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* WhatsApp Link */}
+                                  <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                                    <p className="text-xs text-muted-foreground mb-2">Or use this link:</p>
+                                    <div className="flex items-center gap-2">
+                                      <Input
+                                        value={`https://api.whatsapp.com/send?phone=${(botConfig.countryCode || '+40').replace('+', '')}${botConfig.phoneNumber}&text=${encodeURIComponent(`Hello! I want to connect with ${botConfig.name || 'My Bot'}`)}`}
+                                        readOnly
+                                        className="text-xs"
+                                      />
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => {
+                                          const link = `https://api.whatsapp.com/send?phone=${(botConfig.countryCode || '+40').replace('+', '')}${botConfig.phoneNumber}&text=${encodeURIComponent(`Hello! I want to connect with ${botConfig.name || 'My Bot'}`)}`;
+                                          navigator.clipboard.writeText(link);
+                                        }}
+                                      >
+                                        <Copy className="w-3 h-3" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* QR Code */}
+                                <div className="flex justify-center">
+                                  {showQRCode && qrCodeDataUrl ? (
+                                    <div className="text-center">
+                                      <div className="w-48 h-48 bg-white p-4 rounded-lg border flex items-center justify-center">
+                                        <img 
+                                          src={qrCodeDataUrl} 
+                                          alt="WhatsApp QR Code" 
+                                          className="w-full h-full"
+                                        />
+                                      </div>
+                                      <p className="text-xs text-muted-foreground mt-2">Scan with your phone camera</p>
+                                    </div>
+                                  ) : (
+                                    <div className="w-48 h-48 bg-gray-100 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+                                      <div className="text-center">
+                                        <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                                        <p className="text-xs text-muted-foreground">Generating QR code...</p>
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
-                            )}
+                            </div>
+                          )}
+
+                          {/* Step 3: Save & Connect */}
+                          <div className="bg-white dark:bg-gray-800 rounded-lg border p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center text-sm font-bold text-purple-600">3</div>
+                              <h3 className="text-lg font-semibold">Save & Connect</h3>
+                            </div>
+                            
+                            <div className="flex items-center gap-4">
+                              <Button 
+                                onClick={() => {
+                                  // Save bot configuration
+                                  console.log('Saving bot configuration:', botConfig);
+                                  alert('Bot configuration saved!');
+                                }}
+                                className="bg-blue-600 hover:bg-blue-700"
+                              >
+                                <Save className="w-4 h-4 mr-2" />
+                                Save Configuration
+                              </Button>
+                              
+                              <Button 
+                                variant="outline"
+                                onClick={() => {
+                                  setConnectedChannels(prev => ({...prev, whatsapp: !prev.whatsapp}));
+                                }}
+                                className={connectedChannels.whatsapp ? "border-red-300 text-red-600 hover:bg-red-50" : "border-green-300 text-green-600 hover:bg-green-50"}
+                              >
+                                {connectedChannels.whatsapp ? "Disconnect" : "Connect WhatsApp"}
+                              </Button>
+                            </div>
                           </div>
                         </div>
 
