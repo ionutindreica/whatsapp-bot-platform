@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
   Search, 
@@ -227,8 +228,8 @@ const UsersManagement: React.FC = () => {
         {/* Header Actions */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Users Management</h1>
-            <p className="text-gray-600 mt-2">Manage users, roles, and permissions across your platform</p>
+            <h1 className="text-3xl font-bold text-foreground">Users Management</h1>
+            <p className="text-muted-foreground mt-2">Manage users, roles, and permissions across your platform</p>
           </div>
           <div className="flex items-center space-x-3">
             <Button variant="outline" className="flex items-center space-x-2">
@@ -251,8 +252,8 @@ const UsersManagement: React.FC = () => {
                   <Users className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Users</p>
-                  <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                  <p className="text-2xl font-bold text-foreground">{users.length}</p>
                 </div>
               </div>
             </CardContent>
@@ -265,8 +266,8 @@ const UsersManagement: React.FC = () => {
                   <CheckCircle className="h-6 w-6 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Users</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-muted-foreground">Active Users</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {users.filter(u => u.status === 'ACTIVE').length}
                   </p>
                 </div>
@@ -281,8 +282,8 @@ const UsersManagement: React.FC = () => {
                   <Crown className="h-6 w-6 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Admins</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-muted-foreground">Admins</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {users.filter(u => ['ROOT_OWNER', 'SUPER_ADMIN', 'ADMIN'].includes(u.role)).length}
                   </p>
                 </div>
@@ -297,8 +298,8 @@ const UsersManagement: React.FC = () => {
                   <AlertTriangle className="h-6 w-6 text-yellow-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-muted-foreground">Pending</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {users.filter(u => u.status === 'PENDING_VERIFICATION').length}
                   </p>
                 </div>
@@ -313,7 +314,7 @@ const UsersManagement: React.FC = () => {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     placeholder="Search users..."
                     value={searchTerm}
@@ -322,37 +323,39 @@ const UsersManagement: React.FC = () => {
                   />
                 </div>
                 
-                <select
-                  value={selectedRole}
-                  onChange={(e) => setSelectedRole(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="ALL">All Roles</option>
-                  <option value="ROOT_OWNER">Root Owner</option>
-                  <option value="SUPER_ADMIN">Super Admin</option>
-                  <option value="ADMIN">Admin</option>
-                  <option value="MANAGER">Manager</option>
-                  <option value="AGENT">Agent</option>
-                  <option value="VIEWER">Viewer</option>
-                  <option value="CLIENT">Client</option>
-                </select>
+                <Select value={selectedRole} onValueChange={setSelectedRole}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="All Roles" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL">All Roles</SelectItem>
+                    <SelectItem value="ROOT_OWNER">Root Owner</SelectItem>
+                    <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
+                    <SelectItem value="ADMIN">Admin</SelectItem>
+                    <SelectItem value="MANAGER">Manager</SelectItem>
+                    <SelectItem value="AGENT">Agent</SelectItem>
+                    <SelectItem value="VIEWER">Viewer</SelectItem>
+                    <SelectItem value="CLIENT">Client</SelectItem>
+                  </SelectContent>
+                </Select>
 
-                <select
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="ALL">All Status</option>
-                  <option value="ACTIVE">Active</option>
-                  <option value="INACTIVE">Inactive</option>
-                  <option value="SUSPENDED">Suspended</option>
-                  <option value="PENDING_VERIFICATION">Pending</option>
-                </select>
+                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="All Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL">All Status</SelectItem>
+                    <SelectItem value="ACTIVE">Active</SelectItem>
+                    <SelectItem value="INACTIVE">Inactive</SelectItem>
+                    <SelectItem value="SUSPENDED">Suspended</SelectItem>
+                    <SelectItem value="PENDING_VERIFICATION">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {selectedUsers.length > 0 && (
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground">
                     {selectedUsers.length} selected
                   </span>
                   <Button
@@ -419,12 +422,12 @@ const UsersManagement: React.FC = () => {
                       </td>
                       <td className="p-4">
                         <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                            <Users className="h-5 w-5 text-gray-600" />
+                          <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
+                            <Users className="h-5 w-5 text-muted-foreground" />
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">{user.name}</p>
-                            <p className="text-sm text-gray-600">{user.email}</p>
+                            <p className="font-medium text-foreground">{user.name}</p>
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
                           </div>
                         </div>
                       </td>
@@ -440,8 +443,8 @@ const UsersManagement: React.FC = () => {
                         </Badge>
                       </td>
                       <td className="p-4">
-                        <span className="text-sm text-gray-600">
-                          {user.lastLoginAt 
+                        <span className="text-sm text-muted-foreground">
+                          {user.lastLoginAt
                             ? new Date(user.lastLoginAt).toLocaleDateString()
                             : 'Never'
                           }
