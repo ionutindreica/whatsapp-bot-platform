@@ -243,14 +243,15 @@ const FlowBuilder: React.FC = () => {
             <span>Create and manage automated conversation flows</span>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 hover:text-gray-800 transition-colors">
-                  <span className="text-xs font-bold">?</span>
+                <button className="w-6 h-6 rounded-full bg-blue-100 hover:bg-blue-200 border border-blue-300 flex items-center justify-center text-blue-600 hover:text-blue-800 transition-all duration-200 hover:scale-110 shadow-sm">
+                  <span className="text-sm font-bold">?</span>
                 </button>
               </TooltipTrigger>
               <TooltipContent 
-                className="max-w-sm bg-gray-900 text-white border-gray-700" 
+                className="max-w-sm bg-gray-900 text-white border-gray-700 shadow-lg" 
                 side="bottom"
                 align="start"
+                sideOffset={8}
               >
                 <div className="space-y-2">
                   <p className="font-medium text-white">What is a Flow?</p>
@@ -332,7 +333,11 @@ const FlowBuilder: React.FC = () => {
                           <Copy className="w-4 h-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent className="bg-gray-900 text-white border-gray-700">
+                      <TooltipContent 
+                        className="bg-gray-900 text-white border-gray-700 shadow-lg" 
+                        side="top"
+                        sideOffset={5}
+                      >
                         <p className="text-white">Duplicate this flow</p>
                       </TooltipContent>
                     </Tooltip>
@@ -342,7 +347,11 @@ const FlowBuilder: React.FC = () => {
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent className="bg-gray-900 text-white border-gray-700">
+                      <TooltipContent 
+                        className="bg-gray-900 text-white border-gray-700 shadow-lg" 
+                        side="top"
+                        sideOffset={5}
+                      >
                         <p className="text-white">Delete this flow</p>
                       </TooltipContent>
                     </Tooltip>
@@ -448,16 +457,17 @@ const FlowBuilder: React.FC = () => {
                     ].map((nodeType) => (
                       <Tooltip key={nodeType.type}>
                         <TooltipTrigger asChild>
-                          <div className="flex flex-col items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                          <div className="flex flex-col items-center p-4 border rounded-lg hover:bg-gray-50 hover:border-blue-300 hover:shadow-md cursor-pointer transition-all duration-200">
                             {getNodeIcon(nodeType.type)}
                             <span className="font-medium text-sm mt-2">{nodeType.title}</span>
                             <span className="text-xs text-muted-foreground text-center">{nodeType.description}</span>
                           </div>
                         </TooltipTrigger>
                         <TooltipContent 
-                          className="max-w-xs bg-gray-900 text-white border-gray-700" 
+                          className="max-w-xs bg-gray-900 text-white border-gray-700 shadow-xl" 
                           side="top"
                           align="center"
+                          sideOffset={5}
                         >
                           <div className="space-y-2">
                             <p className="font-medium text-white">{nodeType.title}</p>
