@@ -206,7 +206,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto bg-gray-50">
-          <div className="p-6">
+          <div className="container mx-auto p-6 space-y-6">
             {children}
           </div>
         </main>

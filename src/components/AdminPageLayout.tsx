@@ -19,8 +19,7 @@ export default function AdminPageLayout({
   backLabel = "Back to SuperAdmin Dashboard"
 }: AdminPageLayoutProps) {
   return (
-    <div className="min-h-screen flex w-full bg-background">
-      <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto p-6 space-y-6">
         {/* Header with Back Button */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -49,7 +48,6 @@ export default function AdminPageLayout({
         <div className="space-y-6">
           {children}
         </div>
-      </div>
     </div>
   );
 }

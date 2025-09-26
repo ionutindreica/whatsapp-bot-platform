@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import AdminPageLayout from '@/components/AdminPageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -205,19 +205,16 @@ const PlatformSettings: React.FC = () => {
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
-      </AdminLayout>
+      </AdminPageLayout>
     );
   }
 
   return (
-    <AdminLayout>
+    <AdminPageLayout 
+      title="Platform Settings"
+      description="Configure global platform settings"
+    >
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Platform Settings</h1>
-            <p className="text-gray-600 mt-2">Configure global platform settings and preferences</p>
-          </div>
           <div className="flex items-center space-x-3">
             <Button variant="outline" onClick={() => window.location.reload()}>
               <RefreshCw className="h-4 w-4 mr-2" />
@@ -768,7 +765,7 @@ const PlatformSettings: React.FC = () => {
           </Button>
         </div>
       </div>
-    </AdminLayout>
+    </AdminPageLayout>
   );
 };
 

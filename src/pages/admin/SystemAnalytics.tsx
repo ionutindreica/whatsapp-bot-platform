@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import AdminPageLayout from '@/components/AdminPageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -215,20 +215,26 @@ const SystemAnalytics: React.FC = () => {
 
   if (isLoading) {
     return (
-      <AdminLayout>
+      <AdminPageLayout 
+        title="System Analytics"
+        description="Platform usage and performance analytics"
+      >
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <RefreshCcw className="h-8 w-8 animate-spin mx-auto mb-4" />
             <p className="text-muted-foreground">Loading analytics data...</p>
           </div>
         </div>
-      </AdminLayout>
+      </AdminPageLayout>
     );
   }
 
   if (!analyticsData) {
     return (
-      <AdminLayout>
+      <AdminPageLayout 
+        title="System Analytics"
+        description="Platform usage and performance analytics"
+      >
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-4" />
@@ -238,20 +244,16 @@ const SystemAnalytics: React.FC = () => {
             </Button>
           </div>
         </div>
-      </AdminLayout>
+      </AdminPageLayout>
     );
   }
 
   return (
-    <AdminLayout>
+    <AdminPageLayout 
+      title="System Analytics"
+      description="Platform usage and performance analytics"
+    >
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center">
-              <BarChart3 className="w-7 h-7 mr-3" /> System Analytics
-            </h1>
-            <p className="text-muted-foreground">Comprehensive analytics and insights for the platform</p>
-          </div>
           <div className="flex items-center space-x-4">
             <select
               value={selectedPeriod}
@@ -472,7 +474,7 @@ const SystemAnalytics: React.FC = () => {
           </Card>
         </div>
       </div>
-    </AdminLayout>
+    </AdminPageLayout>
   );
 };
 

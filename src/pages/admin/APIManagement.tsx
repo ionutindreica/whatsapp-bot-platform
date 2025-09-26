@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import AdminPageLayout from '@/components/AdminPageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -310,12 +310,11 @@ const APIManagement: React.FC = () => {
   };
 
   return (
-    <AdminLayout>
+    <AdminPageLayout 
+      title="API Management"
+      description="Manage API keys, webhooks, and integrations"
+    >
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold flex items-center">
-          <Key className="w-7 h-7 mr-3" /> API Management
-        </h1>
-        <p className="text-muted-foreground">Manage API keys, webhooks, and rate limits for the platform.</p>
 
         {/* Tabs */}
         <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
@@ -690,7 +689,7 @@ const APIManagement: React.FC = () => {
           </Card>
         )}
       </div>
-    </AdminLayout>
+    </AdminPageLayout>
   );
 };
 

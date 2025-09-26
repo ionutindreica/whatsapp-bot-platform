@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import AdminPageLayout from '@/components/AdminPageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -301,12 +301,11 @@ const PlansSubscriptions: React.FC = () => {
   };
 
   return (
-    <AdminLayout>
+    <AdminPageLayout 
+      title="Plans & Subscriptions"
+      description="Manage subscription plans and billing"
+    >
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold flex items-center">
-          <CreditCard className="w-7 h-7 mr-3" /> Plans & Subscriptions
-        </h1>
-        <p className="text-muted-foreground">Manage subscription plans and monitor customer subscriptions.</p>
 
         {/* Tabs */}
         <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
@@ -603,7 +602,7 @@ const PlansSubscriptions: React.FC = () => {
           </div>
         )}
       </div>
-    </AdminLayout>
+    </AdminPageLayout>
   );
 };
 

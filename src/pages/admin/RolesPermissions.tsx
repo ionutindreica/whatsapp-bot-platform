@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import AdminPageLayout from '@/components/AdminPageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -225,19 +225,16 @@ const RolesPermissions: React.FC = () => {
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
-      </AdminLayout>
+      </AdminPageLayout>
     );
   }
 
   return (
-    <AdminLayout>
+    <AdminPageLayout 
+      title="Roles & Permissions"
+      description="Manage roles and permissions"
+    >
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Roles & Permissions</h1>
-            <p className="text-gray-600 mt-2">Manage user roles and define access permissions</p>
-          </div>
           <Button onClick={handleCreateRole} className="flex items-center space-x-2">
             <Plus className="h-4 w-4" />
             <span>Create Role</span>
@@ -487,7 +484,7 @@ const RolesPermissions: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </AdminLayout>
+    </AdminPageLayout>
   );
 };
 
