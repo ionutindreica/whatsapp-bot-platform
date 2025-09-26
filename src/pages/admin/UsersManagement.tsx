@@ -479,6 +479,7 @@ const UsersManagement: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
     </AdminPageLayout>
   );
 };
