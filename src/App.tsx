@@ -41,6 +41,8 @@ import SettingsExport from "./pages/SettingsExport";
 import Billing from "./pages/Billing";
 import SubscriptionTiers from "./pages/SubscriptionTiers";
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
+import TrainingAnalytics from "./pages/TrainingAnalytics";
+import AutomationBuilder from "./pages/AutomationBuilder";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -288,6 +290,27 @@ function App() {
                     <Route path="flows" element={
                       <ProtectedRoute requiredPermission={{ resource: 'flows', action: 'read' }}>
                         <BotBuilder />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Bot Builder - Direct access */}
+                    <Route path="bot-builder" element={
+                      <ProtectedRoute>
+                        <BotBuilder />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Training Analytics */}
+                    <Route path="training" element={
+                      <ProtectedRoute>
+                        <TrainingAnalytics />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Automation Builder */}
+                    <Route path="automation" element={
+                      <ProtectedRoute>
+                        <AutomationBuilder />
                       </ProtectedRoute>
                     } />
                     

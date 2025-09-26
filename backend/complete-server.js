@@ -2218,6 +2218,659 @@ app.delete('/api/admin/custom-roles/:id', authenticateToken, (req, res) => {
   }
 });
 
+// Bot Testing Endpoints
+app.post('/api/bot/test', async (req, res) => {
+  try {
+    const db = readDatabase();
+    const { message, botConfig } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    // Enhanced AI response logic
+    const responses = {
+      greeting: [
+        "Hello! How can I help you today?",
+        "Hi there! What can I do for you?",
+        "Greetings! I'm here to assist you."
+      ],
+      help: [
+        "I can help you with various tasks. What do you need?",
+        "I'm here to assist you. What would you like to know?",
+        "How can I be of service to you today?"
+      ],
+      pricing: [
+        "We have flexible pricing plans. Would you like to see our options?",
+        "I can help you understand our pricing structure. What's your budget range?",
+        "Let me show you our current pricing plans and features."
+      ],
+      weather: [
+        "I can't check the weather directly, but I can help you with other information!",
+        "For weather updates, I'd recommend checking a weather app or website.",
+        "I'm not connected to weather services, but I can help with other questions!"
+      ],
+      default: [
+        "I understand you're looking for help. Can you be more specific?",
+        "That's interesting! Tell me more about what you need.",
+        "I'm here to help. What specific information do you need?"
+      ]
+    };
+
+    // Enhanced keyword matching
+    const lowerMessage = message.toLowerCase();
+    let responseType = 'default';
+    
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey') || lowerMessage.includes('good morning') || lowerMessage.includes('good afternoon')) {
+      responseType = 'greeting';
+    } else if (lowerMessage.includes('help') || lowerMessage.includes('assist') || lowerMessage.includes('support') || lowerMessage.includes('can you help')) {
+      responseType = 'help';
+    } else if (lowerMessage.includes('price') || lowerMessage.includes('pricing') || lowerMessage.includes('cost') || lowerMessage.includes('plan') || lowerMessage.includes('subscription')) {
+      responseType = 'pricing';
+    } else if (lowerMessage.includes('weather') || lowerMessage.includes('rain') || lowerMessage.includes('sunny') || lowerMessage.includes('temperature')) {
+      responseType = 'weather';
+    }
+
+    const responseOptions = responses[responseType];
+    const randomResponse = responseOptions[Math.floor(Math.random() * responseOptions.length)];
+
+    // Log the test interaction
+    const testLog = {
+      id: Date.now().toString(),
+      message,
+      response: randomResponse,
+      botConfig: botConfig || {},
+      timestamp: new Date().toISOString(),
+      userAgent: req.get('User-Agent'),
+      ip: req.ip
+    };
+
+    if (!db.botTests) {
+      db.botTests = [];
+    }
+    db.botTests.push(testLog);
+    // writeDatabase(db); // Temporarily disabled for testing
+
+    res.json({
+      success: true,
+      response: randomResponse,
+      testId: testLog.id,
+      timestamp: testLog.timestamp
+    });
+
+  } catch (error) {
+    console.error('Error testing bot:', error);
+    res.status(500).json({ error: 'Failed to test bot' });
+  }
+});
+
+// Get bot test history
+app.get('/api/bot/tests', (req, res) => {
+  try {
+    const db = readDatabase();
+    const tests = db.botTests || [];
+    res.json({ tests });
+  } catch (error) {
+    console.error('Error fetching bot tests:', error);
+    res.status(500).json({ error: 'Failed to fetch bot tests' });
+  }
+});
+
+// Clear bot test history
+app.delete('/api/bot/tests', (req, res) => {
+  try {
+    const db = readDatabase();
+    db.botTests = [];
+    writeDatabase(db);
+    res.json({ message: 'Bot test history cleared' });
+  } catch (error) {
+    console.error('Error clearing bot tests:', error);
+    res.status(500).json({ error: 'Failed to clear bot tests' });
+  }
+});
+
+// RAG Chat Endpoint
+app.post('/api/rag/chat', async (req, res) => {
+  try {
+    const db = readDatabase(); // Added this line
+    const { message, sessionId, conversationHistory } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    // Enhanced RAG with real document search
+    const lowerMessage = message.toLowerCase();
+    
+    // Search through ingested documents for relevant content
+    const relevantDocs = db.ragDocuments ? db.ragDocuments.filter(doc => {
+      const docText = doc.text.toLowerCase();
+      const docTitle = (doc.metadata?.title || '').toLowerCase();
+      const docCategory = (doc.metadata?.category || '').toLowerCase();
+      
+      // Check for keyword matches
+      const keywords = lowerMessage.split(' ').filter(word => word.length > 3);
+      return keywords.some(keyword => 
+        docText.includes(keyword) || 
+        docTitle.includes(keyword) || 
+        docCategory.includes(keyword)
+      );
+    }) : [];
+
+    let reply = '';
+    let confidence = 0.6;
+    let method = 'rag_simulation';
+
+    if (relevantDocs.length > 0) {
+      // Use real document content for response
+      const bestDoc = relevantDocs[0];
+      const docText = bestDoc.text;
+      
+      // Extract relevant sentences based on query
+      const sentences = docText.split(/[.!?]+/).filter(s => s.trim().length > 20);
+      const relevantSentences = sentences.filter(sentence => {
+        const sentenceLower = sentence.toLowerCase();
+        return lowerMessage.split(' ').some(word => 
+          word.length > 3 && sentenceLower.includes(word)
+        );
+      });
+
+      if (relevantSentences.length > 0) {
+        reply = relevantSentences.slice(0, 2).join('. ').trim() + '.';
+        confidence = 0.85;
+        method = 'document_search';
+      } else {
+        // Fallback to document summary
+        reply = docText.substring(0, 200) + '...';
+        confidence = 0.75;
+        method = 'document_fallback';
+      }
+    } else {
+      // Fallback to keyword-based responses
+      const responses = {
+        greeting: [
+          "Hello! I'm your AI assistant. How can I help you today?",
+          "Hi there! I'm here to assist you with any questions.",
+          "Greetings! I'm ready to help you with information and support."
+        ],
+        help: [
+          "I can help you with various topics. What specific information do you need?",
+          "I'm here to assist you. What would you like to know about?",
+          "How can I be of service to you today? I have access to helpful information."
+        ],
+        budget: [
+          "For Amazon business, you typically need $2000-5000 initial investment. This includes inventory, tools, and marketing budget.",
+          "Starting an Amazon business requires $2000-3000 minimum for first 3 months, including FBA fees and advertising.",
+          "Budget for Amazon business: $2000-5000 startup costs, plus $1000-3000 monthly for ads and operations."
+        ],
+        amazon: [
+          "Amazon business requires proper planning, product research, and marketing strategy. Budget: $2000-5000 initial investment.",
+          "For Amazon FBA, you need business registration, inventory budget, and marketing funds. Start with $2000-3000.",
+          "Amazon sellers typically need $2000-5000 to start, including inventory, tools, and advertising budget."
+        ],
+        default: [
+          "I understand you're looking for help. Can you be more specific about what you need?",
+          "That's an interesting question! Tell me more about what you're trying to find out.",
+          "I'm here to help. What specific information are you looking for?"
+        ]
+      };
+
+      let responseType = 'default';
+      
+      if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+        responseType = 'greeting';
+      } else if (lowerMessage.includes('help') || lowerMessage.includes('assist') || lowerMessage.includes('support')) {
+        responseType = 'help';
+      } else if (lowerMessage.includes('budget') || lowerMessage.includes('cost') || lowerMessage.includes('money') || lowerMessage.includes('investment')) {
+        responseType = 'budget';
+      } else if (lowerMessage.includes('amazon') || lowerMessage.includes('amz') || lowerMessage.includes('fba') || lowerMessage.includes('business')) {
+        responseType = 'amazon';
+      }
+
+      const responseOptions = responses[responseType];
+      reply = responseOptions[Math.floor(Math.random() * responseOptions.length)];
+      confidence = responseType === 'budget' ? 0.8 : responseType === 'amazon' ? 0.8 : 0.6;
+    }
+
+    // Enhanced logging for training data
+    const ragLog = {
+      id: Date.now().toString(),
+      message,
+      response: reply,
+      sessionId: sessionId || 'unknown',
+      confidence,
+      method,
+      sources: relevantDocs.length > 0 ? relevantDocs.map(doc => ({
+        id: doc.id,
+        title: doc.metadata?.title,
+        category: doc.metadata?.category,
+        score: confidence
+      })) : [],
+      userFeedback: null, // Will be updated when user provides feedback
+      improvementSuggestions: [],
+      timestamp: new Date().toISOString(),
+      userAgent: req.get('User-Agent'),
+      ip: req.ip,
+      trainingData: {
+        keywords: lowerMessage.split(' ').filter(word => word.length > 3),
+        intent: responseType || 'unknown',
+        context: conversationHistory || [],
+        success: confidence > 0.7
+      }
+    };
+
+    if (!db.ragLogs) {
+      db.ragLogs = [];
+    }
+    db.ragLogs.push(ragLog);
+    
+    // Save training data for improvement
+    if (!db.trainingData) {
+      db.trainingData = {
+        conversations: [],
+        feedback: [],
+        improvements: [],
+        patterns: []
+      };
+    }
+    
+    // Add to training conversations
+    db.trainingData.conversations.push({
+      id: ragLog.id,
+      query: message,
+      response: reply,
+      confidence,
+      method,
+      timestamp: new Date().toISOString(),
+      sessionId
+    });
+    
+    // Analyze patterns for improvement
+    if (confidence < 0.6) {
+      db.trainingData.patterns.push({
+        type: 'low_confidence',
+        query: message,
+        response: reply,
+        suggestedImprovement: 'Add more specific training data for this topic',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    writeDatabase(db);
+
+    res.json({
+      reply: reply,
+      sources: relevantDocs.length > 0 ? [{ id: relevantDocs[0].id, score: confidence }] : [{ id: 'fallback', score: confidence }],
+      confidence: confidence,
+      method: method
+    });
+
+  } catch (error) {
+    console.error('Error in RAG chat:', error);
+    res.status(500).json({ error: 'Failed to process RAG request' });
+  }
+});
+
+// RAG Ingest Endpoint
+app.post('/api/rag/ingest', async (req, res) => {
+  try {
+    const db = readDatabase(); // Added this line
+    const { text, metadata } = req.body;
+    
+    if (!text) {
+      return res.status(400).json({ error: 'Text is required' });
+    }
+
+    // Simulate document ingestion (without vector DB for now)
+    const docId = Date.now().toString();
+    const document = {
+      id: docId,
+      text: text.trim(),
+      metadata: {
+        ...metadata,
+        createdAt: new Date().toISOString(),
+        status: 'ingested'
+      }
+    };
+
+    if (!db.ragDocuments) {
+      db.ragDocuments = [];
+    }
+    db.ragDocuments.push(document);
+    writeDatabase(db);
+
+    res.json({
+      id: docId,
+      success: true,
+      message: "Document ingested successfully (simulated)"
+    });
+
+  } catch (error) {
+    console.error('Error ingesting document:', error);
+    res.status(500).json({ error: 'Failed to ingest document' });
+  }
+});
+
+// Training Feedback Endpoint
+app.post('/api/rag/feedback', async (req, res) => {
+  try {
+    const db = readDatabase();
+    const { conversationId, rating, feedback, improvement } = req.body;
+    
+    if (!conversationId || !rating) {
+      return res.status(400).json({ error: 'Conversation ID and rating are required' });
+    }
+
+    // Find the conversation
+    const conversation = db.ragLogs?.find(log => log.id === conversationId);
+    if (!conversation) {
+      return res.status(404).json({ error: 'Conversation not found' });
+    }
+
+    // Update conversation with feedback
+    conversation.userFeedback = {
+      rating: parseInt(rating), // 1-5 scale
+      feedback: feedback || '',
+      improvement: improvement || '',
+      timestamp: new Date().toISOString()
+    };
+
+    // Add to training feedback
+    if (!db.trainingData) {
+      db.trainingData = { conversations: [], feedback: [], improvements: [], patterns: [] };
+    }
+    
+    db.trainingData.feedback.push({
+      conversationId,
+      rating: parseInt(rating),
+      feedback,
+      improvement,
+      originalQuery: conversation.message,
+      originalResponse: conversation.response,
+      timestamp: new Date().toISOString()
+    });
+
+    // Generate improvement suggestions
+    if (rating <= 2) {
+      db.trainingData.improvements.push({
+        type: 'negative_feedback',
+        conversationId,
+        suggestion: 'Consider adding more training data for this topic',
+        priority: 'high',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    writeDatabase(db);
+    res.json({ success: true, message: 'Feedback recorded for training' });
+
+  } catch (error) {
+    console.error('Error recording feedback:', error);
+    res.status(500).json({ error: 'Failed to record feedback' });
+  }
+});
+
+// Training Analytics Endpoint
+app.get('/api/rag/training/analytics', async (req, res) => {
+  try {
+    const db = readDatabase();
+    
+    if (!db.trainingData) {
+      return res.json({
+        totalConversations: 0,
+        averageConfidence: 0,
+        feedbackStats: { positive: 0, negative: 0, neutral: 0 },
+        improvementAreas: [],
+        patterns: []
+      });
+    }
+
+    const conversations = db.trainingData.conversations || [];
+    const feedback = db.trainingData.feedback || [];
+    const patterns = db.trainingData.patterns || [];
+
+    // Calculate analytics
+    const totalConversations = conversations.length;
+    const averageConfidence = conversations.length > 0 
+      ? conversations.reduce((sum, conv) => sum + conv.confidence, 0) / conversations.length 
+      : 0;
+
+    const feedbackStats = {
+      positive: feedback.filter(f => f.rating >= 4).length,
+      negative: feedback.filter(f => f.rating <= 2).length,
+      neutral: feedback.filter(f => f.rating === 3).length
+    };
+
+    const improvementAreas = patterns.map(pattern => ({
+      type: pattern.type,
+      count: patterns.filter(p => p.type === pattern.type).length,
+      suggestion: pattern.suggestedImprovement
+    }));
+
+    res.json({
+      totalConversations,
+      averageConfidence: Math.round(averageConfidence * 100) / 100,
+      feedbackStats,
+      improvementAreas,
+      patterns: patterns.slice(-10), // Last 10 patterns
+      recentFeedback: feedback.slice(-5) // Last 5 feedback entries
+    });
+
+  } catch (error) {
+    console.error('Error getting training analytics:', error);
+    res.status(500).json({ error: 'Failed to get training analytics' });
+  }
+});
+
+// Export Training Data
+app.get('/api/rag/training/export', async (req, res) => {
+  try {
+    const db = readDatabase();
+    
+    const exportData = {
+      conversations: db.trainingData?.conversations || [],
+      feedback: db.trainingData?.feedback || [],
+      patterns: db.trainingData?.patterns || [],
+      documents: db.ragDocuments || [],
+      exportDate: new Date().toISOString(),
+      totalRecords: (db.trainingData?.conversations?.length || 0) + (db.trainingData?.feedback?.length || 0)
+    };
+
+    res.json(exportData);
+
+  } catch (error) {
+    console.error('Error exporting training data:', error);
+    res.status(500).json({ error: 'Failed to export training data' });
+  }
+});
+
+// ==================== AUTOMATION ENDPOINTS ====================
+
+// Get all automations
+app.get('/api/automation', async (req, res) => {
+  try {
+    const db = readDatabase();
+    const automations = db.automations || [];
+    res.json({ automations });
+  } catch (error) {
+    console.error('Error fetching automations:', error);
+    res.status(500).json({ error: 'Failed to fetch automations' });
+  }
+});
+
+// Create new automation
+app.post('/api/automation', async (req, res) => {
+  try {
+    const db = readDatabase();
+    const { name, category, trigger, actions, conditions } = req.body;
+    
+    if (!name || !category || !trigger) {
+      return res.status(400).json({ error: 'Name, category, and trigger are required' });
+    }
+
+    const automation = {
+      id: Date.now().toString(),
+      name,
+      category,
+      status: 'draft',
+      trigger,
+      actions: actions || [],
+      conditions: conditions || [],
+      createdAt: new Date().toISOString(),
+      lastModified: new Date().toISOString(),
+      stats: {
+        executions: 0,
+        successRate: 0,
+        lastExecuted: null
+      }
+    };
+
+    if (!db.automations) {
+      db.automations = [];
+    }
+    db.automations.push(automation);
+    writeDatabase(db);
+
+    res.json({ success: true, automation });
+  } catch (error) {
+    console.error('Error creating automation:', error);
+    res.status(500).json({ error: 'Failed to create automation' });
+  }
+});
+
+// Update automation
+app.put('/api/automation/:id', async (req, res) => {
+  try {
+    const db = readDatabase();
+    const { id } = req.params;
+    const updates = req.body;
+
+    if (!db.automations) {
+      return res.status(404).json({ error: 'Automation not found' });
+    }
+
+    const automationIndex = db.automations.findIndex(auto => auto.id === id);
+    if (automationIndex === -1) {
+      return res.status(404).json({ error: 'Automation not found' });
+    }
+
+    db.automations[automationIndex] = {
+      ...db.automations[automationIndex],
+      ...updates,
+      lastModified: new Date().toISOString()
+    };
+
+    writeDatabase(db);
+    res.json({ success: true, automation: db.automations[automationIndex] });
+  } catch (error) {
+    console.error('Error updating automation:', error);
+    res.status(500).json({ error: 'Failed to update automation' });
+  }
+});
+
+// Delete automation
+app.delete('/api/automation/:id', async (req, res) => {
+  try {
+    const db = readDatabase();
+    const { id } = req.params;
+
+    if (!db.automations) {
+      return res.status(404).json({ error: 'Automation not found' });
+    }
+
+    db.automations = db.automations.filter(auto => auto.id !== id);
+    writeDatabase(db);
+
+    res.json({ success: true, message: 'Automation deleted' });
+  } catch (error) {
+    console.error('Error deleting automation:', error);
+    res.status(500).json({ error: 'Failed to delete automation' });
+  }
+});
+
+// Execute automation
+app.post('/api/automation/:id/execute', async (req, res) => {
+  try {
+    const db = readDatabase();
+    const { id } = req.params;
+    const { context } = req.body;
+
+    const automation = db.automations?.find(auto => auto.id === id);
+    if (!automation) {
+      return res.status(404).json({ error: 'Automation not found' });
+    }
+
+    if (automation.status !== 'active') {
+      return res.status(400).json({ error: 'Automation is not active' });
+    }
+
+    // Simulate automation execution
+    const execution = {
+      id: Date.now().toString(),
+      automationId: id,
+      status: 'success',
+      executedAt: new Date().toISOString(),
+      context,
+      results: []
+    };
+
+    // Log execution
+    if (!db.automationExecutions) {
+      db.automationExecutions = [];
+    }
+    db.automationExecutions.push(execution);
+
+    // Update automation stats
+    automation.stats.executions += 1;
+    automation.stats.lastExecuted = new Date().toISOString();
+
+    writeDatabase(db);
+
+    res.json({ 
+      success: true, 
+      execution,
+      message: `Automation "${automation.name}" executed successfully`
+    });
+  } catch (error) {
+    console.error('Error executing automation:', error);
+    res.status(500).json({ error: 'Failed to execute automation' });
+  }
+});
+
+// Get automation analytics
+app.get('/api/automation/analytics', async (req, res) => {
+  try {
+    const db = readDatabase();
+    
+    const automations = db.automations || [];
+    const executions = db.automationExecutions || [];
+
+    const analytics = {
+      totalAutomations: automations.length,
+      activeAutomations: automations.filter(auto => auto.status === 'active').length,
+      totalExecutions: executions.length,
+      successRate: executions.length > 0 
+        ? (executions.filter(exec => exec.status === 'success').length / executions.length) * 100 
+        : 0,
+      categoryBreakdown: {},
+      recentExecutions: executions.slice(-10)
+    };
+
+    // Calculate category breakdown
+    automations.forEach(auto => {
+      if (!analytics.categoryBreakdown[auto.category]) {
+        analytics.categoryBreakdown[auto.category] = 0;
+      }
+      analytics.categoryBreakdown[auto.category]++;
+    });
+
+    res.json(analytics);
+  } catch (error) {
+    console.error('Error getting automation analytics:', error);
+    res.status(500).json({ error: 'Failed to get automation analytics' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 ChatFlow AI Backend running on port ${PORT}`);
   console.log(`📧 SuperAdmin: johnindreica@gmail.com`);
@@ -2228,4 +2881,7 @@ app.listen(PORT, () => {
   console.log(`📱 2FA methods: TOTP, SMS, Email`);
   console.log(`🔗 Magic Link login enabled`);
   console.log(`🔐 RBAC system enabled with 6 user levels`);
+  console.log(`🤖 Bot testing endpoints: /api/bot/test, /api/bot/tests`);
+  console.log(`🧠 RAG endpoints: /api/rag/chat, /api/rag/ingest`);
+  console.log(`🤖 Automation endpoints: /api/automation/*`);
 });

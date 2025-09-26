@@ -1,0 +1,571 @@
+<testsuites id="" name="" tests="14" failures="14" skipped="0" errors="0" time="96.896503">
+<testsuite name="e2e\auth.spec.ts" timestamp="2025-09-25T23:19:08.346Z" hostname="chromium" tests="14" failures="14" skipped="0" time="342.249" errors="0">
+<testcase name="Authentication Flow › should display login form correctly" classname="e2e\auth.spec.ts" time="24.075">
+<failure message="auth.spec.ts:8:3 should display login form correctly" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:8:3 › Authentication Flow › should display login form correctly ────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByLabel('Email')
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByLabel('Email')
+
+
+       8 |   test('should display login form correctly', async ({ page }) => {
+       9 |     // Check if login form elements are visible
+    > 10 |     await expect(page.getByLabel('Email')).toBeVisible()
+         |                                            ^
+      11 |     await expect(page.getByLabel('Password')).toBeVisible()
+      12 |     await expect(page.getByRole('button', { name: 'Sign In' })).toBeVisible()
+      13 |     
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:10:44
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-c9fcb-isplay-login-form-correctly-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-c9fcb-isplay-login-form-correctly-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Fl-c9fcb-isplay-login-form-correctly-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Fl-c9fcb-isplay-login-form-correctly-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-c9fcb-isplay-login-form-correctly-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-c9fcb-isplay-login-form-correctly-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should show validation errors for empty form" classname="e2e\auth.spec.ts" time="31.019">
+<failure message="auth.spec.ts:19:3 should show validation errors for empty form" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:19:3 › Authentication Flow › should show validation errors for empty form 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Sign In' })
+
+
+      18 |
+      19 |   test('should show validation errors for empty form', async ({ page }) => {
+    > 20 |     await page.getByRole('button', { name: 'Sign In' }).click()
+         |                                                         ^
+      21 |     
+      22 |     await expect(page.getByText('Email is required')).toBeVisible()
+      23 |     await expect(page.getByText('Password is required')).toBeVisible()
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:20:57
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-6a3f4-ation-errors-for-empty-form-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-6a3f4-ation-errors-for-empty-form-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Fl-6a3f4-ation-errors-for-empty-form-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Fl-6a3f4-ation-errors-for-empty-form-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-6a3f4-ation-errors-for-empty-form-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-6a3f4-ation-errors-for-empty-form-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should show validation error for invalid email" classname="e2e\auth.spec.ts" time="30.275">
+<failure message="auth.spec.ts:26:3 should show validation error for invalid email" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:26:3 › Authentication Flow › should show validation error for invalid email 
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Email')
+
+
+      25 |
+      26 |   test('should show validation error for invalid email', async ({ page }) => {
+    > 27 |     await page.getByLabel('Email').fill('invalid-email')
+         |                                    ^
+      28 |     await page.getByLabel('Password').fill('password123')
+      29 |     await page.getByRole('button', { name: 'Sign In' }).click()
+      30 |     
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:27:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-42580-ion-error-for-invalid-email-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-42580-ion-error-for-invalid-email-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Fl-42580-ion-error-for-invalid-email-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Fl-42580-ion-error-for-invalid-email-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-42580-ion-error-for-invalid-email-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-42580-ion-error-for-invalid-email-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should toggle password visibility" classname="e2e\auth.spec.ts" time="31.281">
+<failure message="auth.spec.ts:34:3 should toggle password visibility" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:34:3 › Authentication Flow › should toggle password visibility ─────
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Password')
+
+
+      36 |     const toggleButton = page.getByRole('button', { name: /toggle password visibility/i })
+      37 |     
+    > 38 |     await passwordInput.fill('password123')
+         |                         ^
+      39 |     
+      40 |     // Initially password should be hidden
+      41 |     await expect(passwordInput).toHaveAttribute('type', 'password')
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:38:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-a3c3c--toggle-password-visibility-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-a3c3c--toggle-password-visibility-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Fl-a3c3c--toggle-password-visibility-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Fl-a3c3c--toggle-password-visibility-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-a3c3c--toggle-password-visibility-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-a3c3c--toggle-password-visibility-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should navigate to forgot password page" classname="e2e\auth.spec.ts" time="31.771">
+<failure message="auth.spec.ts:52:3 should navigate to forgot password page" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:52:3 › Authentication Flow › should navigate to forgot password page 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: /forgot password/i })
+
+
+      51 |
+      52 |   test('should navigate to forgot password page', async ({ page }) => {
+    > 53 |     await page.getByRole('link', { name: /forgot password/i }).click()
+         |                                                                ^
+      54 |     await expect(page).toHaveURL(/.*auth\/forgot-password/)
+      55 |   })
+      56 |
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:53:64
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-df95a-ate-to-forgot-password-page-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-df95a-ate-to-forgot-password-page-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Fl-df95a-ate-to-forgot-password-page-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Fl-df95a-ate-to-forgot-password-page-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-df95a-ate-to-forgot-password-page-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-df95a-ate-to-forgot-password-page-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should navigate to register page" classname="e2e\auth.spec.ts" time="30.183">
+<failure message="auth.spec.ts:57:3 should navigate to register page" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:57:3 › Authentication Flow › should navigate to register page ──────
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: /don't have an account/i })
+
+
+      56 |
+      57 |   test('should navigate to register page', async ({ page }) => {
+    > 58 |     await page.getByRole('link', { name: /don't have an account/i }).click()
+         |                                                                      ^
+      59 |     await expect(page).toHaveURL(/.*auth\/register/)
+      60 |   })
+      61 |
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:58:70
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-fe2b3-d-navigate-to-register-page-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-fe2b3-d-navigate-to-register-page-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Fl-fe2b3-d-navigate-to-register-page-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Fl-fe2b3-d-navigate-to-register-page-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-fe2b3-d-navigate-to-register-page-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-fe2b3-d-navigate-to-register-page-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should handle successful login" classname="e2e\auth.spec.ts" time="20.106">
+<failure message="auth.spec.ts:62:3 should handle successful login" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:62:3 › Authentication Flow › should handle successful login ────────
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Email')
+
+
+      83 |     })
+      84 |
+    > 85 |     await page.getByLabel('Email').fill('test@example.com')
+         |                                    ^
+      86 |     await page.getByLabel('Password').fill('password123')
+      87 |     await page.getByRole('button', { name: 'Sign In' }).click()
+      88 |
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:85:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Flow-should-handle-successful-login-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Flow-should-handle-successful-login-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Flow-should-handle-successful-login-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Flow-should-handle-successful-login-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Flow-should-handle-successful-login-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Flow-should-handle-successful-login-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should handle login failure" classname="e2e\auth.spec.ts" time="24.003">
+<failure message="auth.spec.ts:97:3 should handle login failure" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:97:3 › Authentication Flow › should handle login failure ───────────
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Email')
+
+
+      107 |     })
+      108 |
+    > 109 |     await page.getByLabel('Email').fill('test@example.com')
+          |                                    ^
+      110 |     await page.getByLabel('Password').fill('wrongpassword')
+      111 |     await page.getByRole('button', { name: 'Sign In' }).click()
+      112 |
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:109:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Flow-should-handle-login-failure-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Flow-should-handle-login-failure-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Flow-should-handle-login-failure-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Flow-should-handle-login-failure-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Flow-should-handle-login-failure-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Flow-should-handle-login-failure-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should show loading state during login" classname="e2e\auth.spec.ts" time="27.709">
+<failure message="auth.spec.ts:120:3 should show loading state during login" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:120:3 › Authentication Flow › should show loading state during login 
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Email')
+
+
+      129 |     })
+      130 |
+    > 131 |     await page.getByLabel('Email').fill('test@example.com')
+          |                                    ^
+      132 |     await page.getByLabel('Password').fill('password123')
+      133 |     await page.getByRole('button', { name: 'Sign In' }).click()
+      134 |
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:131:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-46dc6--loading-state-during-login-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-46dc6--loading-state-during-login-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Fl-46dc6--loading-state-during-login-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Fl-46dc6--loading-state-during-login-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-46dc6--loading-state-during-login-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-46dc6--loading-state-during-login-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should support keyboard navigation" classname="e2e\auth.spec.ts" time="16.664">
+<failure message="auth.spec.ts:140:3 should support keyboard navigation" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:140:3 › Authentication Flow › should support keyboard navigation ───
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator:  getByLabel('Email')
+    Expected: focused
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeFocused" with timeout 5000ms
+      - waiting for getByLabel('Email')
+
+
+      141 |     // Tab through form elements
+      142 |     await page.keyboard.press('Tab')
+    > 143 |     await expect(page.getByLabel('Email')).toBeFocused()
+          |                                            ^
+      144 |     
+      145 |     await page.keyboard.press('Tab')
+      146 |     await expect(page.getByLabel('Password')).toBeFocused()
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:143:44
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-283fe-support-keyboard-navigation-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Fl-283fe-support-keyboard-navigation-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Fl-283fe-support-keyboard-navigation-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Fl-283fe-support-keyboard-navigation-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-283fe-support-keyboard-navigation-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Fl-283fe-support-keyboard-navigation-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flow › should submit form on Enter key" classname="e2e\auth.spec.ts" time="23.712">
+<failure message="auth.spec.ts:152:3 should submit form on Enter key" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:152:3 › Authentication Flow › should submit form on Enter key ──────
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Email')
+
+
+      160 |     })
+      161 |
+    > 162 |     await page.getByLabel('Email').fill('test@example.com')
+          |                                    ^
+      163 |     await page.getByLabel('Password').fill('password123')
+      164 |     
+      165 |     // Press Enter in password field
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:162:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Flow-should-submit-form-on-Enter-key-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Authentication-Flow-should-submit-form-on-Enter-key-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Authentication-Flow-should-submit-form-on-Enter-key-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Authentication-Flow-should-submit-form-on-Enter-key-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Flow-should-submit-form-on-Enter-key-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Authentication-Flow-should-submit-form-on-Enter-key-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Registration Flow › should display registration form" classname="e2e\auth.spec.ts" time="13.359">
+<failure message="auth.spec.ts:174:3 should display registration form" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:174:3 › Registration Flow › should display registration form ───────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByLabel('Name')
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByLabel('Name')
+
+
+      175 |     await page.goto('http://localhost:3000/auth/register')
+      176 |     
+    > 177 |     await expect(page.getByLabel('Name')).toBeVisible()
+          |                                           ^
+      178 |     await expect(page.getByLabel('Email')).toBeVisible()
+      179 |     await expect(page.getByLabel('Password')).toBeVisible()
+      180 |     await expect(page.getByLabel('Confirm Password')).toBeVisible()
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:177:43
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Registration-Flow-should-display-registration-form-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Registration-Flow-should-display-registration-form-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Registration-Flow-should-display-registration-form-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Registration-Flow-should-display-registration-form-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Registration-Flow-should-display-registration-form-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Registration-Flow-should-display-registration-form-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Registration Flow › should validate password confirmation" classname="e2e\auth.spec.ts" time="18.974">
+<failure message="auth.spec.ts:184:3 should validate password confirmation" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:184:3 › Registration Flow › should validate password confirmation ──
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Name')
+
+
+      185 |     await page.goto('http://localhost:3000/auth/register')
+      186 |     
+    > 187 |     await page.getByLabel('Name').fill('Test User')
+          |                                   ^
+      188 |     await page.getByLabel('Email').fill('test@example.com')
+      189 |     await page.getByLabel('Password').fill('password123')
+      190 |     await page.getByLabel('Confirm Password').fill('differentpassword')
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:187:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Registration-Flow-58693-idate-password-confirmation-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Registration-Flow-58693-idate-password-confirmation-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Registration-Flow-58693-idate-password-confirmation-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Registration-Flow-58693-idate-password-confirmation-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Registration-Flow-58693-idate-password-confirmation-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Registration-Flow-58693-idate-password-confirmation-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Registration Flow › should handle successful registration" classname="e2e\auth.spec.ts" time="19.118">
+<failure message="auth.spec.ts:196:3 should handle successful registration" type="FAILURE">
+<![CDATA[  [chromium] › e2e\auth.spec.ts:196:3 › Registration Flow › should handle successful registration ──
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Name')
+
+
+      208 |     await page.goto('http://localhost:3000/auth/register')
+      209 |     
+    > 210 |     await page.getByLabel('Name').fill('Test User')
+          |                                   ^
+      211 |     await page.getByLabel('Email').fill('test@example.com')
+      212 |     await page.getByLabel('Password').fill('password123')
+      213 |     await page.getByLabel('Confirm Password').fill('password123')
+        at C:\Users\johni\Documents\WEB-HOSTING\GITHUB\whatsapp_bot\main\tests\e2e\auth.spec.ts:210:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Registration-Flow-abc7d-dle-successful-registration-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\e2e-auth-Registration-Flow-abc7d-dle-successful-registration-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\e2e-auth-Registration-Flow-abc7d-dle-successful-registration-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|e2e-auth-Registration-Flow-abc7d-dle-successful-registration-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|e2e-auth-Registration-Flow-abc7d-dle-successful-registration-chromium\video.webm]]
+
+[[ATTACHMENT|e2e-auth-Registration-Flow-abc7d-dle-successful-registration-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

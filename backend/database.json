@@ -175,5 +175,107 @@
       "createdAt": "2025-09-25T17:30:12.047Z",
       "expiresAt": "2025-09-25T17:40:12.047Z"
     }
+  ],
+  "ragLogs": [
+    {
+      "id": "1758875934606",
+      "message": "Hello there!",
+      "response": "Greetings! I'm ready to help you with information and support.",
+      "sessionId": "test",
+      "confidence": 0.9,
+      "method": "rag_simulation",
+      "timestamp": "2025-09-26T08:38:54.606Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26100; en-US) PowerShell/7.5.3",
+      "ip": "::1"
+    },
+    {
+      "id": "1758876049753",
+      "message": "salut",
+      "response": "That's an interesting question! Tell me more about what you're trying to find out.",
+      "sessionId": "test-session",
+      "confidence": 0.6,
+      "method": "rag_simulation",
+      "timestamp": "2025-09-26T08:40:49.753Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "ip": "::1"
+    },
+    {
+      "id": "1758876090628",
+      "message": "nu este cee ce asteptam ca raspuns",
+      "response": "I understand you're looking for help. Can you be more specific about what you need?",
+      "sessionId": "test-session",
+      "confidence": 0.6,
+      "method": "rag_simulation",
+      "timestamp": "2025-09-26T08:41:30.628Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "ip": "::1"
+    },
+    {
+      "id": "1758876118676",
+      "message": "prices",
+      "response": "I can help you understand our pricing structure. What's your budget range?",
+      "sessionId": "test-session",
+      "confidence": 0.85,
+      "method": "rag_simulation",
+      "timestamp": "2025-09-26T08:41:58.676Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "ip": "::1"
+    },
+    {
+      "id": "1758876195348",
+      "message": "hwat bydget de we need to start an AMZ businesss",
+      "response": "That's an interesting question! Tell me more about what you're trying to find out.",
+      "sessionId": "test-session",
+      "confidence": 0.6,
+      "method": "rag_simulation",
+      "timestamp": "2025-09-26T08:43:15.348Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "ip": "::1"
+    }
+  ],
+  "ragDocuments": [
+    {
+      "id": "1758875943375",
+      "text": "This is a test document for RAG system",
+      "metadata": {
+        "title": "Test Doc",
+        "source": "test",
+        "createdAt": "2025-09-26T08:39:03.375Z",
+        "status": "ingested"
+      }
+    },
+    {
+      "id": "1758876381865",
+      "text": "AMZ1TO1.com - Amazon Business Guide. Budget needed to start Amazon business: -5000 initial investment. Key costs: Amazon seller account (.99/month), inventory (-3000), FBA fees (15% of sales), advertising (-2000/month), tools and software (-200/month). Minimum viable budget: -3000 for first 3 months.",
+      "metadata": {
+        "source": "amz1to1.com",
+        "category": "business",
+        "title": "Amazon Business Budget Guide",
+        "createdAt": "2025-09-26T08:46:21.865Z",
+        "status": "ingested"
+      }
+    },
+    {
+      "id": "1758876392979",
+      "text": "Amazon FBA Business Requirements: 1) Business registration, 2) Tax ID, 3) Bank account, 4) Product research tools, 5) Inventory management, 6) Marketing budget. Start with -5000 for first products, -3000 monthly for ads, -1500 for tools.",
+      "metadata": {
+        "source": "amz1to1.com",
+        "category": "requirements",
+        "title": "FBA Requirements",
+        "createdAt": "2025-09-26T08:46:32.979Z",
+        "status": "ingested"
+      }
+    },
+    {
+      "id": "1758876400950",
+      "text": "Amazon Business Profitability: Average profit margins 10-25%. Successful sellers make -10000/month after 6-12 months. Key factors: product selection, pricing strategy, review management, PPC optimization. Break-even typically 3-6 months with proper planning.",
+      "metadata": {
+        "source": "amz1to1.com",
+        "category": "profitability",
+        "title": "Amazon Profitability Guide",
+        "createdAt": "2025-09-26T08:46:40.950Z",
+        "status": "ingested"
+      }
+    }
   ]
 }

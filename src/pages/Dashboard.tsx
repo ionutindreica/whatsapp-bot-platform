@@ -596,7 +596,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </div>
-      </main>
+        </main>
     </Layout>
   );
 };

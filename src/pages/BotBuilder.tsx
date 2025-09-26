@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Bot, 
   Play, 
@@ -85,6 +86,14 @@ const BotBuilder = () => {
   const [copiedField, setCopiedField] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [isScraping, setIsScraping] = useState(false);
+  
+  // Bot testing states
+  const [testMessage, setTestMessage] = useState("");
+  const [testResponse, setTestResponse] = useState("");
+  const [isTesting, setIsTesting] = useState(false);
+  const [testHistory, setTestHistory] = useState([]);
+  const [currentConversationId, setCurrentConversationId] = useState(null);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   // Detect user timezone on component mount
   useEffect(() => {
@@ -195,6 +204,110 @@ const BotBuilder = () => {
   const handleDeploy = () => {
     console.log("Deploying bot:", botConfig);
     alert("Bot deployed successfully!");
+  };
+
+  const handleTestBot = async () => {
+    if (!testMessage.trim() || isTesting) return;
+    
+    setIsTesting(true);
+    setTestResponse("");
+    
+    try {
+      // Try RAG API first, fallback to simple bot
+      let response;
+      let data;
+      
+      try {
+        response = await fetch('http://localhost:5000/api/rag/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: testMessage,
+            sessionId: 'test-session',
+            conversationHistory: testHistory.slice(-3) // Last 3 messages for context
+          })
+        });
+        
+        if (response.ok) {
+          data = await response.json();
+          setTestResponse(`${data.reply}\n\n[Method: ${data.method}, Confidence: ${(data.confidence * 100).toFixed(1)}%]`);
+        } else {
+          throw new Error('RAG API failed');
+        }
+      } catch (ragError) {
+        console.log('RAG API not available, using simple bot...');
+        
+        // Fallback to simple bot
+        response = await fetch('http://localhost:5000/api/bot/test', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify({
+            message: testMessage,
+            botConfig: botConfig
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to test bot');
+        }
+        
+        data = await response.json();
+        setTestResponse(data.response);
+      }
+      
+      // Add to test history
+      const newTest = {
+        id: data.conversationId || Date.now().toString(),
+        message: testMessage,
+        response: data.reply || data.response,
+        timestamp: new Date().toISOString(),
+        method: data.method || 'simple',
+        confidence: data.confidence || 1.0
+      };
+      setTestHistory(prev => [...prev, newTest]);
+      setCurrentConversationId(newTest.id);
+      setShowFeedback(true);
+      
+      // Clear test message
+      setTestMessage("");
+      
+    } catch (error) {
+      console.error('Error testing bot:', error);
+      setTestResponse("Sorry, there was an error testing the bot. Please try again.");
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
+  const handleFeedback = async (rating: number, feedback: string, improvement: string) => {
+    if (!currentConversationId) return;
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/rag/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          conversationId: currentConversationId,
+          rating,
+          feedback,
+          improvement
+        })
+      });
+      
+      if (response.ok) {
+        alert('Feedback saved for training! Thank you for helping improve the bot.');
+        setShowFeedback(false);
+      }
+    } catch (error) {
+      console.error('Error sending feedback:', error);
+    }
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -1693,6 +1806,82 @@ const BotBuilder = () => {
                     </div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Bot Testing */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5" />
+                  Test Your Bot
+                </CardTitle>
+                <CardDescription>
+                  Test your bot's responses in real-time
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Test Message</label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Type a message to test your bot..."
+                      value={testMessage}
+                      onChange={(e) => setTestMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleTestBot()}
+                    />
+                    <Button 
+                      onClick={handleTestBot}
+                      disabled={!testMessage.trim() || isTesting}
+                    >
+                      {isTesting ? 'Testing...' : 'Test'}
+                    </Button>
+                  </div>
+                </div>
+                
+                {testResponse && (
+                  <div className="p-3 bg-muted rounded-lg">
+                    <div className="text-sm font-medium text-muted-foreground mb-1">Bot Response:</div>
+                    <div className="text-sm">{testResponse}</div>
+                  </div>
+                )}
+                
+               {testHistory.length > 0 && (
+                 <div className="space-y-2">
+                   <div className="text-sm font-medium">Recent Tests:</div>
+                   <div className="max-h-32 overflow-y-auto space-y-1">
+                     {testHistory.slice(-3).map((test, index) => (
+                       <div key={index} className="text-xs p-2 bg-muted/50 rounded">
+                         <div className="font-medium">You: {test.message}</div>
+                         <div className="text-muted-foreground">Bot: {test.response}</div>
+                         <div className="text-xs text-muted-foreground">
+                           Method: {test.method} | Confidence: {(test.confidence * 100).toFixed(1)}%
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 </div>
+               )}
+               
+               {showFeedback && currentConversationId && (
+                 <div className="space-y-2 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                   <div className="text-sm font-medium">Rate this response (1-5):</div>
+                   <div className="flex gap-2">
+                     {[1, 2, 3, 4, 5].map((rating) => (
+                       <button
+                         key={rating}
+                         onClick={() => handleFeedback(rating, '', '')}
+                         className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 rounded hover:bg-blue-200 dark:hover:bg-blue-800"
+                       >
+                         {rating}
+                       </button>
+                     ))}
+                   </div>
+                   <div className="text-xs text-muted-foreground">
+                     Your feedback helps improve the bot's training!
+                   </div>
+                 </div>
+               )}
               </CardContent>
             </Card>
 

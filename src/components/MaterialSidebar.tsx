@@ -104,10 +104,12 @@ const menuSections = [
     icon: Bot,
     items: [
       { title: "My AI Agents", url: "/dashboard/bots", icon: Bot },
-      { title: "AI Training", url: "/dashboard/ai/training", icon: Zap },
+          { title: "Bot Builder", url: "/dashboard/flows", icon: Target },
+          { title: "AI Training", url: "/dashboard/ai/training", icon: Zap },
+          { title: "Training Analytics", url: "/dashboard/training", icon: BarChart3 },
+          { title: "Automation Builder", url: "/dashboard/automation", icon: Zap },
       { title: "AI Templates", url: "/dashboard/ai/templates", icon: FileText },
       { title: "AI Knowledge Base", url: "/dashboard/ai/knowledge", icon: Database },
-      { title: "Flow Builder", url: "/dashboard/flows", icon: Target },
       { title: "CRM Light", url: "/dashboard/crm", icon: Users },
       { title: "Triggers", url: "/dashboard/triggers", icon: Target }
     ]
