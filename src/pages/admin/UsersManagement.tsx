@@ -224,6 +224,13 @@ const UsersManagement: React.FC = () => {
       description="Manage users and their access"
     >
       <div className="space-y-6">
+        {/* Header Actions */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Users Management</h1>
+            <p className="text-gray-600 mt-2">Manage users, roles, and permissions across your platform</p>
+          </div>
+          <div className="flex items-center space-x-3">
             <Button variant="outline" className="flex items-center space-x-2">
               <Download className="h-4 w-4" />
               <span>Export</span>
