@@ -486,7 +486,6 @@ const RolesPermissions: React.FC = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
     </AdminPageLayout>
   );
 };
