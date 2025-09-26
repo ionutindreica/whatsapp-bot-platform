@@ -480,6 +480,463 @@ const BotBuilder = () => {
                   </Card>
                 </TabsContent>
 
+                {/* Design Tab */}
+                <TabsContent value="design" className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Palette className="w-5 h-5" />
+                        Bot Design & Branding
+                      </CardTitle>
+                      <CardDescription>Customize your bot's appearance and branding</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Bot Avatar</label>
+                            <div className="flex items-center gap-3">
+                              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center text-2xl">
+                                {botConfig.avatar}
+                              </div>
+                              <div className="space-y-2">
+                                <Input
+                                  value={botConfig.avatar}
+                                  onChange={(e) => handleConfigChange('avatar', e.target.value)}
+                                  placeholder="🤖"
+                                  className="w-20"
+                                />
+                                <p className="text-xs text-muted-foreground">Emoji or text</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Brand Color</label>
+                            <div className="flex items-center gap-3">
+                              <input
+                                type="color"
+                                value={botConfig.color}
+                                onChange={(e) => handleConfigChange('color', e.target.value)}
+                                className="w-12 h-8 rounded border"
+                              />
+                              <Input
+                                value={botConfig.color}
+                                onChange={(e) => handleConfigChange('color', e.target.value)}
+                                placeholder="#25D366"
+                                className="flex-1"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Bot Name</label>
+                            <Input
+                              value={botConfig.name}
+                              onChange={(e) => handleConfigChange('name', e.target.value)}
+                              placeholder="My AI Bot"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Preview</label>
+                            <div className="p-4 border rounded-lg bg-muted/50">
+                              <div className="flex items-center gap-3 mb-3">
+                                <div 
+                                  className="w-10 h-10 rounded-full flex items-center justify-center text-white"
+                                  style={{ backgroundColor: botConfig.color }}
+                                >
+                                  {botConfig.avatar}
+                                </div>
+                                <div>
+                                  <p className="font-medium">{botConfig.name}</p>
+                                  <p className="text-xs text-muted-foreground">Online</p>
+                                </div>
+                              </div>
+                              <div className="space-y-2">
+                                <div className="bg-white p-3 rounded-lg shadow-sm">
+                                  <p className="text-sm">{botConfig.welcomeMessage}</p>
+                                </div>
+                                <div className="bg-gray-100 p-3 rounded-lg ml-8">
+                                  <p className="text-sm">Hello! How can I help you?</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Knowledge Tab */}
+                <TabsContent value="knowledge" className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Brain className="w-5 h-5" />
+                        Knowledge Base
+                      </CardTitle>
+                      <CardDescription>Train your bot with knowledge and documents</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Add Knowledge</label>
+                            <Textarea
+                              placeholder="Enter knowledge or FAQ..."
+                              rows={4}
+                            />
+                            <Button size="sm" className="w-full">
+                              <Brain className="w-4 h-4 mr-2" />
+                              Add to Knowledge Base
+                            </Button>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Upload Documents</label>
+                            <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
+                              <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                              <p className="text-sm text-muted-foreground">Drag & drop files or click to upload</p>
+                              <p className="text-xs text-muted-foreground mt-1">PDF, DOC, TXT files supported</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Knowledge Base Status</label>
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                                <span className="text-sm">Total Documents</span>
+                                <Badge>0</Badge>
+                              </div>
+                              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                                <span className="text-sm">Knowledge Items</span>
+                                <Badge>0</Badge>
+                              </div>
+                              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                                <span className="text-sm">Training Status</span>
+                                <Badge variant="outline">Not Trained</Badge>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Quick Actions</label>
+                            <div className="space-y-2">
+                              <Button variant="outline" size="sm" className="w-full justify-start">
+                                <Brain className="w-4 h-4 mr-2" />
+                                Train AI Model
+                              </Button>
+                              <Button variant="outline" size="sm" className="w-full justify-start">
+                                <Download className="w-4 h-4 mr-2" />
+                                Export Knowledge
+                              </Button>
+                              <Button variant="outline" size="sm" className="w-full justify-start">
+                                <Upload className="w-4 h-4 mr-2" />
+                                Import Knowledge
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* AI Settings Tab */}
+                <TabsContent value="ai settings" className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Zap className="w-5 h-5" />
+                        AI Configuration
+                      </CardTitle>
+                      <CardDescription>Configure AI behavior and response settings</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Response Style</label>
+                            <Select value={botConfig.responseStyle} onValueChange={(value) => handleConfigChange('responseStyle', value)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select style" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="conversational">Conversational</SelectItem>
+                                <SelectItem value="direct">Direct</SelectItem>
+                                <SelectItem value="detailed">Detailed</SelectItem>
+                                <SelectItem value="concise">Concise</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Personality</label>
+                            <Select value={botConfig.personality} onValueChange={(value) => handleConfigChange('personality', value)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select personality" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="friendly">Friendly</SelectItem>
+                                <SelectItem value="professional">Professional</SelectItem>
+                                <SelectItem value="casual">Casual</SelectItem>
+                                <SelectItem value="formal">Formal</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Response Timeout (seconds)</label>
+                            <Input
+                              type="number"
+                              value={botConfig.responseTimeout}
+                              onChange={(e) => handleConfigChange('responseTimeout', e.target.value)}
+                              placeholder="30"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">AI Model</label>
+                            <Select defaultValue="gpt-3.5-turbo">
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select AI model" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+                                <SelectItem value="gpt-4">GPT-4</SelectItem>
+                                <SelectItem value="claude-3">Claude 3</SelectItem>
+                                <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Advanced Settings</label>
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm">Enable Context Memory</span>
+                                <input type="checkbox" className="w-4 h-4" defaultChecked />
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm">Enable Sentiment Analysis</span>
+                                <input type="checkbox" className="w-4 h-4" />
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm">Enable Intent Recognition</span>
+                                <input type="checkbox" className="w-4 h-4" defaultChecked />
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm">Enable Multi-language</span>
+                                <input type="checkbox" className="w-4 h-4" />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Response Length</label>
+                            <Select defaultValue="medium">
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select length" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="short">Short (1-2 sentences)</SelectItem>
+                                <SelectItem value="medium">Medium (2-4 sentences)</SelectItem>
+                                <SelectItem value="long">Long (4+ sentences)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Channels Tab */}
+                <TabsContent value="channels" className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <MessageSquare className="w-5 h-5" />
+                        Channel Management
+                      </CardTitle>
+                      <CardDescription>Manage your bot's communication channels</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {/* WhatsApp Channel */}
+                        <div className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <MessageSquare className="w-4 h-4 text-green-600" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">WhatsApp</h3>
+                                <p className="text-xs text-muted-foreground">Business</p>
+                              </div>
+                            </div>
+                            <Badge className="bg-green-100 text-green-800">Active</Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Messages Today</span>
+                              <span className="font-medium">24</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Response Rate</span>
+                              <span className="font-medium">98%</span>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Settings className="w-4 h-4 mr-2" />
+                              Configure
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Facebook Messenger Channel */}
+                        <div className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <MessageSquare className="w-4 h-4 text-blue-600" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Messenger</h3>
+                                <p className="text-xs text-muted-foreground">Facebook</p>
+                              </div>
+                            </div>
+                            <Badge className="bg-blue-100 text-blue-800">Pending</Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Messages Today</span>
+                              <span className="font-medium">0</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Response Rate</span>
+                              <span className="font-medium">-</span>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Settings className="w-4 h-4 mr-2" />
+                              Setup
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Telegram Channel */}
+                        <div className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-cyan-100 rounded-full flex items-center justify-center">
+                                <MessageSquare className="w-4 h-4 text-cyan-600" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Telegram</h3>
+                                <p className="text-xs text-muted-foreground">Bot</p>
+                              </div>
+                            </div>
+                            <Badge className="bg-cyan-100 text-cyan-800">Ready</Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Messages Today</span>
+                              <span className="font-medium">12</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Response Rate</span>
+                              <span className="font-medium">95%</span>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Settings className="w-4 h-4 mr-2" />
+                              Configure
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Website Widget Channel */}
+                        <div className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                <Monitor className="w-4 h-4 text-purple-600" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Website</h3>
+                                <p className="text-xs text-muted-foreground">Widget</p>
+                              </div>
+                            </div>
+                            <Badge className="bg-purple-100 text-purple-800">Active</Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Visitors Today</span>
+                              <span className="font-medium">156</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Engagement</span>
+                              <span className="font-medium">23%</span>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Settings className="w-4 h-4 mr-2" />
+                              Configure
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Instagram Channel */}
+                        <div className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
+                                <MessageSquare className="w-4 h-4 text-pink-600" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Instagram</h3>
+                                <p className="text-xs text-muted-foreground">Direct</p>
+                              </div>
+                            </div>
+                            <Badge className="bg-gray-100 text-gray-800">Disabled</Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Messages Today</span>
+                              <span className="font-medium">0</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Response Rate</span>
+                              <span className="font-medium">-</span>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Settings className="w-4 h-4 mr-2" />
+                              Enable
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Add New Channel */}
+                        <div className="border-2 border-dashed border-muted rounded-lg p-4 flex flex-col items-center justify-center">
+                          <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center mb-2">
+                            <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                          </div>
+                          <p className="text-sm text-muted-foreground text-center">Add New Channel</p>
+                          <Button variant="outline" size="sm" className="mt-2">
+                            <Settings className="w-4 h-4 mr-2" />
+                            Add Channel
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
                 {/* Integration Tab */}
                 <TabsContent value="integration" className="space-y-4">
                   {/* Integration Dropdown */}
