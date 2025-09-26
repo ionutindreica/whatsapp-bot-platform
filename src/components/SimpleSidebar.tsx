@@ -209,6 +209,7 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({ isCollapsed = false }) =>
               <NavLink
                 key={action.title}
                 to={action.url}
+                end={action.url === '/dashboard'} // Only match exactly for dashboard
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive 
@@ -236,6 +237,7 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({ isCollapsed = false }) =>
               <NavLink
                 key={section.id}
                 to={section.url}
+                end={section.url === '/dashboard'} // Only match exactly for dashboard
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive 
@@ -274,6 +276,7 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({ isCollapsed = false }) =>
                   <NavLink
                     key={feature.id}
                     to={feature.url}
+                    end={feature.url === '/dashboard'} // Only match exactly for dashboard
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                         isActive 
@@ -305,6 +308,7 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({ isCollapsed = false }) =>
                 <NavLink
                   key={feature.id}
                   to={feature.url}
+                  end={feature.url === '/dashboard'} // Only match exactly for dashboard
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       isActive 
