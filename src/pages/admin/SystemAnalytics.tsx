@@ -473,7 +473,6 @@ const SystemAnalytics: React.FC = () => {
             </CardContent>
           </Card>
         </div>
-      </div>
     </AdminPageLayout>
   );
 };
