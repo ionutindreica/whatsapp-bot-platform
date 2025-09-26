@@ -450,23 +450,26 @@ const UsersManagement: React.FC = () => {
                       <td className="p-4">
                         <div className="flex items-center space-x-2">
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={() => handleUserAction(user.id, 'view')}
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={() => handleUserAction(user.id, 'edit')}
+                            className="text-green-600 hover:text-green-700 hover:bg-green-50"
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={() => handleUserAction(user.id, 'suspend')}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
                           >
                             <Ban className="h-4 w-4" />
                           </Button>
