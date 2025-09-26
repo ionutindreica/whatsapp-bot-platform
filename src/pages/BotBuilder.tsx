@@ -270,11 +270,10 @@ const BotBuilder = () => {
             {/* Main Configuration Panel */}
             <div className="lg:col-span-3">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-5">
+                <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="configuration">Basic Setup</TabsTrigger>
                   <TabsTrigger value="design">Appearance</TabsTrigger>
                   <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
-                  <TabsTrigger value="ai settings">AI Behavior</TabsTrigger>
                   <TabsTrigger value="integration">Connections</TabsTrigger>
                 </TabsList>
 
@@ -645,10 +644,8 @@ const BotBuilder = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </TabsContent>
 
-                {/* AI Settings Tab */}
-                <TabsContent value="ai settings" className="space-y-6">
+                  {/* AI Configuration */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -757,6 +754,7 @@ const BotBuilder = () => {
                     </CardContent>
                   </Card>
                 </TabsContent>
+
 
                 {/* Integration Tab */}
                 <TabsContent value="integration" className="space-y-6">
