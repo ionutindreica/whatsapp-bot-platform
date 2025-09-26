@@ -40,6 +40,7 @@ const BotBuilder = () => {
     welcomeMessage: "Hi! How can I help you today?",
     fallbackMessage: "I'm sorry, I didn't understand that. Can you rephrase?",
     isActive: false,
+    responseTimeout: "30",
     // Phone Integration
     phoneNumber: "",
     whatsappBusinessId: "",
@@ -779,6 +780,7 @@ const BotBuilder = () => {
                       <Input
                         placeholder="1234567890123456"
                         className="text-sm"
+                        readOnly
                       />
                     </div>
 
@@ -801,6 +803,7 @@ const BotBuilder = () => {
                       <Input
                         placeholder="EAAxxxxxxxxxxxxxxxxxxxxx"
                         className="text-sm"
+                        readOnly
                       />
                     </div>
 
@@ -864,6 +867,7 @@ const BotBuilder = () => {
                         <Input
                           placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
                           className="flex-1"
+                          readOnly
                         />
                         <Button
                           type="button"
@@ -927,6 +931,7 @@ const BotBuilder = () => {
                         <Input
                           placeholder="yourcompany.com"
                           className="flex-1"
+                          readOnly
                         />
                         <Button
                           type="button"
@@ -1608,7 +1613,8 @@ const BotBuilder = () => {
                       <label className="text-sm font-medium">Response Timeout (seconds)</label>
                       <Input
                         type="number"
-                        defaultValue="30"
+                        value={botConfig.responseTimeout || "30"}
+                        onChange={(e) => handleConfigChange('responseTimeout', e.target.value)}
                         className="mt-1"
                       />
                     </div>
