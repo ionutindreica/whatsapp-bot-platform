@@ -58,7 +58,7 @@ const UsersManagement: React.FC = () => {
     try {
       setLoading(true);
       
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       if (!token) {
         throw new Error('No authentication token found');
       }
@@ -161,7 +161,7 @@ const UsersManagement: React.FC = () => {
     try {
       console.log(`Bulk action: ${action} for users:`, selectedUsers);
       
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       if (!token) {
         throw new Error('No authentication token found');
       }
@@ -189,7 +189,7 @@ const UsersManagement: React.FC = () => {
     try {
       console.log(`Action: ${action} for user:`, userId);
       
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       if (!token) {
         throw new Error('No authentication token found');
       }

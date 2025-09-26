@@ -75,7 +75,7 @@ const SuperAdminDashboard = () => {
       // Load dashboard stats from API
       const statsResponse = await fetch('http://localhost:5000/api/admin/dashboard', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -90,7 +90,7 @@ const SuperAdminDashboard = () => {
       // Load users from API
       const usersResponse = await fetch('http://localhost:5000/api/admin/users', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
         }
       });
