@@ -10,6 +10,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import ModernDashboard from "./pages/ModernDashboard";
+import SmartDashboard from "./pages/SmartDashboard";
 import Layout from "./components/Layout";
 import Pricing from "./pages/Pricing";
 import Docs from "./pages/Docs";
@@ -105,7 +106,7 @@ function App() {
                   
                   {/* Protected routes with Layout */}
                   <Route path="/dashboard" element={<Layout />}>
-                    <Route index element={<ModernDashboard />} />
+                    <Route index element={<SmartDashboard />} />
                     
                     {/* Bot Management - Manager+ */}
                     <Route path="bots" element={

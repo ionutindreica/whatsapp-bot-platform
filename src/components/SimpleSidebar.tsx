@@ -1,16 +1,156 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Home, 
   Bot, 
   MessageSquare, 
+  BarChart3, 
+  Settings, 
+  User, 
+  Phone,
+  CreditCard,
+  LogOut,
+  Globe,
+  Zap,
+  Shield,
+  Users,
+  Crown,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Plus,
+  Play,
+  Target
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-export default function SimpleSidebar() {
+// Simplified menu structure - only 5 core sections
+const coreMenuSections = [
+  {
+    id: "dashboard",
+    title: "Dashboard",
+    icon: Home,
+    url: "/dashboard",
+    description: "Overview and analytics"
+  },
+  {
+    id: "conversations", 
+    title: "Conversations",
+    icon: MessageSquare,
+    url: "/dashboard/conversations",
+    description: "Manage all chats"
+  },
+  {
+    id: "ai",
+    title: "AI Assistant",
+    icon: Bot,
+    url: "/dashboard/bots",
+    description: "Create and manage bots"
+  },
+  {
+    id: "channels",
+    title: "Channels",
+    icon: Globe,
+    url: "/dashboard/channels",
+    description: "Connect platforms"
+  },
+  {
+    id: "settings",
+    title: "Settings",
+    icon: Settings,
+    url: "/dashboard/settings",
+    description: "Account and team"
+  }
+];
+
+// Quick actions for easy access
+const quickActions = [
+  {
+    title: "Create Bot",
+    icon: Plus,
+    url: "/dashboard/flows",
+    color: "bg-blue-500 hover:bg-blue-600"
+  },
+  {
+    title: "Send Message",
+    icon: MessageSquare,
+    url: "/dashboard/broadcast",
+    color: "bg-green-500 hover:bg-green-600"
+  },
+  {
+    title: "View Analytics",
+    icon: BarChart3,
+    url: "/dashboard/analytics",
+    color: "bg-purple-500 hover:bg-purple-600"
+  }
+];
+
+// Advanced features (hidden by default, shown on demand)
+const advancedFeatures = [
+  {
+    id: "automation",
+    title: "Automation",
+    icon: Zap,
+    url: "/dashboard/automation",
+    description: "Workflow automation"
+  },
+  {
+    id: "team",
+    title: "Team",
+    icon: Users,
+    url: "/dashboard/team",
+    description: "Team management"
+  },
+  {
+    id: "billing",
+    title: "Billing",
+    icon: CreditCard,
+    url: "/dashboard/billing",
+    description: "Subscription and billing"
+  }
+];
+
+// Admin features (only for admin users)
+const adminFeatures = [
+  {
+    id: "admin",
+    title: "Admin Panel",
+    icon: Shield,
+    url: "/dashboard/superadmin",
+    description: "System administration",
+    requiredRole: "SUPER_ADMIN"
+  },
+  {
+    id: "root",
+    title: "Root Admin",
+    icon: Crown,
+    url: "/dashboard/root",
+    description: "Root administration",
+    requiredRole: "ROOT_OWNER"
+  }
+];
+
+interface SimpleSidebarProps {
+  isCollapsed?: boolean;
+}
+
+const SimpleSidebar: React.FC<SimpleSidebarProps> = ({ isCollapsed = false }) => {
+  const { user, logout } = useAuth();
+  const location = useLocation();
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
+
+  // Filter features based on user role
+  const filteredAdminFeatures = useMemo(() => {
+    if (!user) return [];
+    return adminFeatures.filter(feature => {
+      if (!feature.requiredRole) return true;
+      return user.role === feature.requiredRole;
+    });
+  }, [user]);
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections(prev => 
@@ -20,91 +160,184 @@ export default function SimpleSidebar() {
     );
   };
 
-  const isExpanded = (sectionId: string) => expandedSections.includes(sectionId);
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
-    <div className="w-80 h-full bg-card border-r border-border shadow-sm p-4">
-      <h2 className="text-xl font-bold mb-6">ChatFlow AI</h2>
-      
-      {/* Dashboard */}
-      <div className="mb-4">
-        <Button variant="ghost" className="w-full justify-start">
-          <Home className="h-4 w-4 mr-2" />
-          Dashboard
-        </Button>
+    <div className={`flex flex-col h-full bg-background border-r transition-all duration-300 ${
+      isCollapsed ? 'w-16' : 'w-64'
+    }`}>
+      {/* Header */}
+      <div className="p-4 border-b">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <Bot className="w-5 h-5 text-primary-foreground" />
+          </div>
+          {!isCollapsed && (
+            <div>
+              <h1 className="text-lg font-bold">ChatFlow</h1>
+              <p className="text-xs text-muted-foreground">AI Platform</p>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Conversations - DROPDOWN */}
-      <div className="mb-4">
-        <Button 
-          variant="ghost" 
-          className="w-full justify-between"
-          onClick={() => toggleSection('conversations')}
-        >
-          <div className="flex items-center">
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Conversations
+      {/* User Info */}
+      {!isCollapsed && user && (
+        <div className="p-4 border-b">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+              <User className="w-4 h-4" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{user.name}</p>
+              <p className="text-xs text-muted-foreground">{user.role}</p>
+            </div>
           </div>
-          {isExpanded('conversations') ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-        </Button>
-        
-        {isExpanded('conversations') && (
-          <div className="ml-6 mt-2 space-y-1">
-            <NavLink to="/conversations" className="block p-2 hover:bg-muted rounded">
-              All Conversations
-            </NavLink>
-            <NavLink to="/live-agent" className="block p-2 hover:bg-muted rounded">
-              Live Transfer
-            </NavLink>
-            <NavLink to="/broadcast" className="block p-2 hover:bg-muted rounded">
-              Broadcast Messages
-            </NavLink>
-            <NavLink to="/polls" className="block p-2 hover:bg-muted rounded">
-              Polls & Surveys
-            </NavLink>
+        </div>
+      )}
+
+      {/* Quick Actions */}
+      {!isCollapsed && (
+        <div className="p-4 border-b">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            Quick Actions
+          </h3>
+          <div className="space-y-2">
+            {quickActions.map((action) => (
+              <NavLink
+                key={action.title}
+                to={action.url}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'hover:bg-muted'
+                  }`
+                }
+              >
+                <action.icon className="w-4 h-4" />
+                {action.title}
+              </NavLink>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Core Navigation */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            Main Menu
+          </h3>
+          <nav className="space-y-1">
+            {coreMenuSections.map((section) => (
+              <NavLink
+                key={section.id}
+                to={section.url}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'hover:bg-muted'
+                  }`
+                }
+              >
+                <section.icon className="w-4 h-4" />
+                {!isCollapsed && (
+                  <div className="flex-1">
+                    <div>{section.title}</div>
+                    <div className="text-xs text-muted-foreground">{section.description}</div>
+                  </div>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+
+        {/* Advanced Features Toggle */}
+        {!isCollapsed && (
+          <div className="p-4 border-t">
+            <Button
+              variant="ghost"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="w-full justify-between"
+            >
+              <span className="text-sm">Advanced Features</span>
+              {showAdvanced ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            </Button>
+            
+            {showAdvanced && (
+              <div className="mt-2 space-y-1">
+                {advancedFeatures.map((feature) => (
+                  <NavLink
+                    key={feature.id}
+                    to={feature.url}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        isActive 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'hover:bg-muted'
+                      }`
+                    }
+                  >
+                    <feature.icon className="w-4 h-4" />
+                    <div className="flex-1">
+                      <div>{feature.title}</div>
+                      <div className="text-xs text-muted-foreground">{feature.description}</div>
+                    </div>
+                  </NavLink>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Admin Features */}
+        {!isCollapsed && filteredAdminFeatures.length > 0 && (
+          <div className="p-4 border-t">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Administration
+            </h3>
+            <div className="space-y-1">
+              {filteredAdminFeatures.map((feature) => (
+                <NavLink
+                  key={feature.id}
+                  to={feature.url}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      isActive 
+                        ? 'bg-primary text-primary-foreground' 
+                        : 'hover:bg-muted'
+                    }`
+                  }
+                >
+                  <feature.icon className="w-4 h-4" />
+                  <div className="flex-1">
+                    <div>{feature.title}</div>
+                    <div className="text-xs text-muted-foreground">{feature.description}</div>
+                  </div>
+                </NavLink>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* AI & Automation - DROPDOWN */}
-      <div className="mb-4">
-        <Button 
-          variant="ghost" 
-          className="w-full justify-between"
-          onClick={() => toggleSection('ai')}
-        >
-          <div className="flex items-center">
-            <Bot className="h-4 w-4 mr-2" />
-            AI & Automation
-          </div>
-          {isExpanded('ai') ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
+      {/* Footer */}
+      <div className="p-4 border-t">
+        <div className="flex items-center justify-between">
+          <ThemeToggle />
+          {!isCollapsed && (
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="w-4 h-4" />
+            </Button>
           )}
-        </Button>
-        
-        {isExpanded('ai') && (
-          <div className="ml-6 mt-2 space-y-1">
-            <NavLink to="/bots" className="block p-2 hover:bg-muted rounded">
-              My AI Agents
-            </NavLink>
-            <NavLink to="/ai/training" className="block p-2 hover:bg-muted rounded">
-              AI Training
-            </NavLink>
-            <NavLink to="/ai/templates" className="block p-2 hover:bg-muted rounded">
-              AI Templates
-            </NavLink>
-            <NavLink to="/ai/knowledge" className="block p-2 hover:bg-muted rounded">
-              AI Knowledge Base
-            </NavLink>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default SimpleSidebar;

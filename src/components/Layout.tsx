@@ -1,13 +1,13 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import MaterialSidebar from './MaterialSidebar';
+import SimpleSidebar from './SimpleSidebar';
 import Topbar from './Topbar';
 
 export default function Layout() {
   return (
     <div className="flex h-screen w-full bg-background">
       {/* Sidebar */}
-      <MaterialSidebar />
+      <SimpleSidebar />
         
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
