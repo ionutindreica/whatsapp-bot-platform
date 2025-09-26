@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { 
   Plus, 
   Play, 
@@ -234,11 +235,12 @@ const FlowBuilder: React.FC = () => {
   };
 
   return (
-    <AdminPageLayout 
-      title="Flow Builder"
-      description="Create and manage automated conversation flows"
-    >
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+    <TooltipProvider>
+      <AdminPageLayout 
+        title="Flow Builder" 
+        description="Create and manage automated conversation flows"
+      >
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="flows">My Flows</TabsTrigger>
           <TabsTrigger value="builder">Flow Builder</TabsTrigger>
@@ -300,12 +302,26 @@ const FlowBuilder: React.FC = () => {
                       <Settings className="w-4 h-4 mr-2" />
                       Edit
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleDuplicateFlow(flow)}>
-                      <Copy className="w-4 h-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleDeleteFlow(flow.id)}>
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline" size="sm" onClick={() => handleDuplicateFlow(flow)}>
+                          <Copy className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Duplicate this flow</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline" size="sm" onClick={() => handleDeleteFlow(flow.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Delete this flow</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                 </CardContent>
               </Card>
@@ -322,14 +338,28 @@ const FlowBuilder: React.FC = () => {
                   <p className="text-muted-foreground">{selectedFlow.description}</p>
                 </div>
                 <div className="flex space-x-2">
-                  <Button variant="outline">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </Button>
-                  <Button>
-                    <Play className="w-4 h-4 mr-2" />
-                    Test Flow
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline">
+                        <Save className="w-4 h-4 mr-2" />
+                        Save
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Save your flow changes</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button>
+                        <Play className="w-4 h-4 mr-2" />
+                        Test Flow
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Test your flow with sample data</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </div>
 
@@ -392,14 +422,18 @@ const FlowBuilder: React.FC = () => {
                       { type: 'webhook', title: 'Webhook', description: 'External API' },
                       { type: 'delay', title: 'Delay', description: 'Wait time' }
                     ].map((nodeType) => (
-                      <div
-                        key={nodeType.type}
-                        className="flex flex-col items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
-                      >
-                        {getNodeIcon(nodeType.type)}
-                        <span className="font-medium text-sm mt-2">{nodeType.title}</span>
-                        <span className="text-xs text-muted-foreground text-center">{nodeType.description}</span>
-                      </div>
+                      <Tooltip key={nodeType.type}>
+                        <TooltipTrigger asChild>
+                          <div className="flex flex-col items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                            {getNodeIcon(nodeType.type)}
+                            <span className="font-medium text-sm mt-2">{nodeType.title}</span>
+                            <span className="text-xs text-muted-foreground text-center">{nodeType.description}</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Drag to canvas to add {nodeType.title.toLowerCase()}</p>
+                        </TooltipContent>
+                      </Tooltip>
                     ))}
                   </div>
                 </CardContent>
@@ -484,17 +518,25 @@ const FlowBuilder: React.FC = () => {
                     <span>Nodes</span>
                     <span className="font-medium">{template.nodes}</span>
                   </div>
-                  <Button className="w-full">
-                    <Download className="w-4 h-4 mr-2" />
-                    Use Template
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button className="w-full">
+                        <Download className="w-4 h-4 mr-2" />
+                        Use Template
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Import this template into your flows</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </CardContent>
               </Card>
             ))}
           </div>
         </TabsContent>
-      </Tabs>
-    </AdminPageLayout>
+        </Tabs>
+      </AdminPageLayout>
+    </TooltipProvider>
   );
 };
 
