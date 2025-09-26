@@ -77,10 +77,13 @@ const UsersManagement: React.FC = () => {
 
       const data = await response.json();
       console.log('📊 Loaded users from API:', data);
-      console.log('🔍 Users roles:', data.map(u => ({ name: u.name, role: u.role })));
-      console.log('👑 Admin count:', data.filter(u => ['ROOT_OWNER', 'SUPER_ADMIN', 'ADMIN'].includes(u.role)).length);
       
-      setUsers(data);
+      // Extract users array from response
+      const users = data.users || data;
+      console.log('🔍 Users roles:', users.map(u => ({ name: u.name, role: u.role })));
+      console.log('👑 Admin count:', users.filter(u => ['ROOT_OWNER', 'SUPER_ADMIN', 'ADMIN'].includes(u.role)).length);
+      
+      setUsers(users);
     } catch (error) {
       console.error('❌ Error loading users:', error);
     } finally {
