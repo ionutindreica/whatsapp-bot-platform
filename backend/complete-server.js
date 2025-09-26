@@ -170,6 +170,12 @@ app.post('/api/auth/login', async (req, res) => {
         { expiresIn: '7d' }
       );
       
+      // Update user's last login
+      const userIndex = db.users.findIndex(u => u.id === user.id);
+      if (userIndex !== -1) {
+        db.users[userIndex].lastLoginAt = new Date().toISOString();
+      }
+      
       // Store session
       db.sessions.push({
         userId: user.id,

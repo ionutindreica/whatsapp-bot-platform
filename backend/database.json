@@ -7,7 +7,8 @@
       "name": "Super Admin",
       "role": "SUPER_ADMIN",
       "status": "ACTIVE",
-      "createdAt": "2025-09-25T09:08:11.154Z"
+      "createdAt": "2025-09-25T09:08:11.154Z",
+      "lastLoginAt": "2025-01-20T10:30:00Z"
     }
   ],
   "sessions": [
