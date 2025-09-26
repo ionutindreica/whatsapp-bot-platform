@@ -494,7 +494,8 @@ app.get('/api/admin/users', authenticateToken, (req, res) => {
         name: user.name,
         role: user.role,
         status: user.status,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
+        lastLoginAt: user.lastLoginAt
       }))
     });
   } catch (error) {
