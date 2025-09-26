@@ -21,7 +21,8 @@ import {
   ChevronRight,
   Plus,
   Play,
-  Target
+  Target,
+  Code
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
