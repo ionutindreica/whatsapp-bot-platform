@@ -324,6 +324,7 @@ function App() {
                     } />
                     
                     {/* Team Management - Admin+ */}
+                    <Route path="team" element={<Navigate to="/dashboard/team/members" replace />} />
                     <Route path="team/members" element={
                       <ProtectedRoute requiredPermission={{ resource: 'team', action: 'read' }}>
                         <TeamManagement />

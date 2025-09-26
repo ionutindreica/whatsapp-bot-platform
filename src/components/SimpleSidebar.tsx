@@ -98,6 +98,13 @@ const advancedFeatures = [
     description: "Workflow automation"
   },
   {
+    id: "integrations",
+    title: "Integrations",
+    icon: Code,
+    url: "/dashboard/integrations",
+    description: "API keys, webhooks, widgets"
+  },
+  {
     id: "team",
     title: "Team",
     icon: Users,
