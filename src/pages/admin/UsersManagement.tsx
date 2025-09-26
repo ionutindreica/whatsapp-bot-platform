@@ -57,74 +57,30 @@ const UsersManagement: React.FC = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      // Mock data - replace with actual API call
-      const mockUsers: User[] = [
-        {
-          id: '1',
-          email: 'johnindreica@gmail.com',
-          name: 'John Indreica',
-          role: 'ROOT_OWNER',
-          status: 'ACTIVE',
-          planTier: 'ENTERPRISE',
-          lastLoginAt: '2024-01-20T10:30:00Z',
-          createdAt: '2024-01-15T08:00:00Z',
-          permissions: ['SYSTEM_MANAGE_ALL', 'WORKSPACE_MANAGE_ALL'],
-          features: ['MULTI_WORKSPACE', 'SSO_SCIM', 'WHITE_LABEL']
-        },
-        {
-          id: '2',
-          email: 'admin@company.com',
-          name: 'Company Admin',
-          role: 'SUPER_ADMIN',
-          status: 'ACTIVE',
-          planTier: 'ENTERPRISE',
-          workspaceId: 'ws-1',
-          lastLoginAt: '2024-01-19T15:45:00Z',
-          createdAt: '2024-01-10T12:00:00Z',
-          permissions: ['WORKSPACE_MANAGE_ALL', 'USER_MANAGE_ALL'],
-          features: ['MULTI_WORKSPACE', 'ADVANCED_ANALYTICS']
-        },
-        {
-          id: '3',
-          email: 'manager@startup.com',
-          name: 'Team Manager',
-          role: 'MANAGER',
-          status: 'ACTIVE',
-          planTier: 'PRO',
-          workspaceId: 'ws-2',
-          lastLoginAt: '2024-01-18T09:20:00Z',
-          createdAt: '2024-01-05T14:30:00Z',
-          permissions: ['TEAM_MANAGE', 'BOT_MANAGE'],
-          features: ['TEAM_COLLABORATION', 'ANALYTICS']
-        },
-        {
-          id: '4',
-          email: 'agent@support.com',
-          name: 'Support Agent',
-          role: 'AGENT',
-          status: 'ACTIVE',
-          planTier: 'STARTER',
-          workspaceId: 'ws-2',
-          lastLoginAt: '2024-01-17T16:10:00Z',
-          createdAt: '2024-01-03T11:15:00Z',
-          permissions: ['CONVERSATION_MANAGE'],
-          features: ['BASIC_CHAT']
-        },
-        {
-          id: '5',
-          email: 'pending@newuser.com',
-          name: 'New User',
-          role: 'VIEWER',
-          status: 'PENDING_VERIFICATION',
-          planTier: 'STARTER',
-          createdAt: '2024-01-20T08:00:00Z',
-          permissions: ['READ_ONLY'],
-          features: ['BASIC_ACCESS']
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await fetch('http://localhost:5000/api/admin/users', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-      ];
-      setUsers(mockUsers);
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('📊 Loaded users from API:', data);
+      
+      setUsers(data);
     } catch (error) {
-      console.error('Error loading users:', error);
+      console.error('❌ Error loading users:', error);
     } finally {
       setLoading(false);
     }
@@ -196,14 +152,73 @@ const UsersManagement: React.FC = () => {
     );
   };
 
-  const handleBulkAction = (action: string) => {
-    console.log(`Bulk action: ${action} for users:`, selectedUsers);
-    // Implement bulk actions
+  const handleBulkAction = async (action: string) => {
+    try {
+      console.log(`Bulk action: ${action} for users:`, selectedUsers);
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      // Implement bulk actions for each selected user
+      for (const userId of selectedUsers) {
+        await fetch(`http://localhost:5000/api/admin/users/${userId}/${action}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      }
+
+      // Reload users after bulk action
+      await loadUsers();
+      setSelectedUsers([]);
+    } catch (error) {
+      console.error('❌ Error performing bulk action:', error);
+    }
   };
 
-  const handleUserAction = (userId: string, action: string) => {
-    console.log(`Action: ${action} for user:`, userId);
-    // Implement user actions
+  const handleUserAction = async (userId: string, action: string) => {
+    try {
+      console.log(`Action: ${action} for user:`, userId);
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      if (action === 'view') {
+        // Handle view action (maybe open user details modal)
+        console.log('Viewing user:', userId);
+        return;
+      }
+
+      if (action === 'edit') {
+        // Handle edit action (maybe open edit modal)
+        console.log('Editing user:', userId);
+        return;
+      }
+
+      // For suspend/activate/delete actions
+      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/${action}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Reload users after action
+      await loadUsers();
+    } catch (error) {
+      console.error('❌ Error performing user action:', error);
+    }
   };
 
   if (loading) {
