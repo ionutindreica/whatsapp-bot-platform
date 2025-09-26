@@ -37,7 +37,8 @@ import {
   Download,
   AlertCircle,
   Globe,
-  Archive
+  Archive,
+  Crown
 } from 'lucide-react';
 
 const SuperAdminDashboard = () => {
