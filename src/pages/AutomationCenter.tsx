@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -32,8 +33,9 @@ import {
   Database,
   GitBranch,
   Workflow,
-  Timer,
+  ShoppingCart,
   Calendar,
+  Timer,
   Bell,
   Mail,
   Phone,
@@ -94,6 +96,7 @@ interface Tag {
 }
 
 const AutomationCenter: React.FC = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedAutomation, setSelectedAutomation] = useState<Automation | null>(null);
 
@@ -336,6 +339,12 @@ const AutomationCenter: React.FC = () => {
         return <Target className="w-4 h-4 text-gray-500" />;
     }
   };
+
+  const handleWorkflowConfigure = (workflowType: string) => {
+    console.log('Configuring workflow:', workflowType);
+    navigate(`/dashboard/workflow/${workflowType}`);
+  };
+
 
   const getTagColor = (color: string) => {
     const colors: { [key: string]: string } = {
@@ -687,22 +696,152 @@ const AutomationCenter: React.FC = () => {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-center py-12">
-                <Workflow className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Workflow Builder</h3>
-                <p className="text-muted-foreground mb-4">
-                  Create complex multi-step workflows with conditional logic and branching
-                </p>
-                <Button>
-                  <GitBranch className="w-4 h-4 mr-2" />
-                  Open Workflow Builder
-                </Button>
+            <CardContent className="space-y-4">
+              {/* Workflow Templates */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Card className="cursor-pointer hover:shadow-lg transition-all h-32 flex flex-col">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Target className="w-4 h-4 text-green-500" />
+                      Lead Qualification
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col justify-between">
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Qualify and segment leads automatically
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="success">Active</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('lead_qualification')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all h-32 flex flex-col">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-blue-500" />
+                      Follow-up Sequence
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col justify-between">
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Automated follow-up sequence
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="success">Active</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('followup_sequence')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all h-32 flex flex-col">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <ShoppingCart className="w-4 h-4 text-purple-500" />
+                      Cart Recovery
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col justify-between">
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Recover abandoned carts automatically
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="success">Active</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('cart_recovery')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all h-32 flex flex-col">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-orange-500" />
+                      Appointment Reminders
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col justify-between">
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Automated appointment reminders
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="success">Active</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('appointment_reminders')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all h-32 flex flex-col">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-red-500" />
+                      Marketing Campaigns
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col justify-between">
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Automated marketing campaigns
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">Draft</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('marketing_campaigns')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all h-32 flex flex-col">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Bot className="w-4 h-4 text-pink-500" />
+                      AI Personalization
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col justify-between">
+                    <p className="text-xs text-muted-foreground mb-2">
+                      AI-powered personalization for recommendations
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">Draft</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('ai_personalization')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
+
+              {/* Workflow Analytics */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="w-5 h-5" />
+                    Workflow Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-500">12</div>
+                      <div className="text-sm text-muted-foreground">Active Workflows</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-500">1,234</div>
+                      <div className="text-sm text-muted-foreground">Executions Today</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-500">89%</div>
+                      <div className="text-sm text-muted-foreground">Success Rate</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-500">45</div>
+                      <div className="text-sm text-muted-foreground">Leads Generated</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
     </AdminPageLayout>
   );
 };

@@ -28,7 +28,10 @@ import {
   Headphones,
   Mail,
   Calendar,
-  FileText
+  FileText,
+  BarChart3,
+  Clock,
+  X
 } from 'lucide-react';
 
 interface Automation {
@@ -45,7 +48,7 @@ interface Automation {
 
 const AutomationBuilder = () => {
   const [automations, setAutomations] = useState<Automation[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('sales');
+  const [selectedCategory, setSelectedCategory] = useState('workflows');
   const [isCreating, setIsCreating] = useState(false);
   const [newAutomation, setNewAutomation] = useState({
     name: '',
@@ -53,6 +56,17 @@ const AutomationBuilder = () => {
     actions: [] as string[],
     conditions: [] as string[]
   });
+  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
+  const [workflowConfig, setWorkflowConfig] = useState<any>(null);
+
+  useEffect(() => {
+    console.log('selectedWorkflow changed:', selectedWorkflow);
+    console.log('workflowConfig changed:', workflowConfig);
+  }, [selectedWorkflow, workflowConfig]);
+
+  useEffect(() => {
+    console.log('selectedCategory changed:', selectedCategory);
+  }, [selectedCategory]);
 
   const categories = [
     {
@@ -236,6 +250,99 @@ const AutomationBuilder = () => {
     ));
   };
 
+  const handleWorkflowConfigure = (workflowType: string) => {
+    console.log('Configuring workflow:', workflowType);
+    setSelectedWorkflow(workflowType);
+    setWorkflowConfig({
+      type: workflowType,
+      steps: getWorkflowSteps(workflowType),
+      conditions: getWorkflowConditions(workflowType),
+      actions: getWorkflowActions(workflowType)
+    });
+  };
+
+  const handleCreateWorkflow = () => {
+    setSelectedWorkflow('new');
+    setWorkflowConfig({
+      type: 'custom',
+      steps: [],
+      conditions: [],
+      actions: []
+    });
+  };
+
+  const getWorkflowSteps = (type: string) => {
+    const steps = {
+      'lead_qualification': [
+        { id: 'welcome', name: 'Welcome Message', type: 'message' },
+        { id: 'qualify', name: 'Lead Qualification', type: 'form' },
+        { id: 'segment', name: 'Lead Segmentation', type: 'logic' },
+        { id: 'notify', name: 'Team Notification', type: 'action' }
+      ],
+      'followup_sequence': [
+        { id: 'trigger', name: 'Follow-up Trigger', type: 'trigger' },
+        { id: 'email1', name: 'Email 1 (24h)', type: 'email' },
+        { id: 'email2', name: 'Email 2 (3 days)', type: 'email' },
+        { id: 'email3', name: 'Email 3 (7 days)', type: 'email' }
+      ],
+      'cart_recovery': [
+        { id: 'detect', name: 'Cart Abandonment Detection', type: 'trigger' },
+        { id: 'email1', name: 'Recovery Email 1 (1h)', type: 'email' },
+        { id: 'email2', name: 'Recovery Email 2 (24h)', type: 'email' },
+        { id: 'email3', name: 'Recovery Email 3 (48h)', type: 'email' }
+      ],
+      'appointment_reminders': [
+        { id: 'schedule', name: 'Appointment Scheduled', type: 'trigger' },
+        { id: 'reminder24h', name: '24h Reminder', type: 'notification' },
+        { id: 'reminder1h', name: '1h Reminder', type: 'notification' },
+        { id: 'followup', name: 'Post-appointment Follow-up', type: 'email' }
+      ]
+    };
+    return steps[type as keyof typeof steps] || [];
+  };
+
+  const getWorkflowConditions = (type: string) => {
+    const conditions = {
+      'lead_qualification': [
+        { id: 'score_high', name: 'Lead Score > 70', value: 'hot' },
+        { id: 'score_medium', name: 'Lead Score 40-70', value: 'warm' },
+        { id: 'score_low', name: 'Lead Score < 40', value: 'cold' }
+      ],
+      'followup_sequence': [
+        { id: 'opened_email', name: 'Email Opened', value: 'continue' },
+        { id: 'clicked_link', name: 'Link Clicked', value: 'convert' },
+        { id: 'no_response', name: 'No Response', value: 'next_email' }
+      ],
+      'cart_recovery': [
+        { id: 'cart_value', name: 'Cart Value > $50', value: 'high_priority' },
+        { id: 'cart_items', name: 'Cart Items > 2', value: 'multiple_items' },
+        { id: 'user_type', name: 'Returning Customer', value: 'loyal_customer' }
+      ]
+    };
+    return conditions[type as keyof typeof conditions] || [];
+  };
+
+  const getWorkflowActions = (type: string) => {
+    const actions = {
+      'lead_qualification': [
+        { id: 'notify_sales', name: 'Notify Sales Team', type: 'notification' },
+        { id: 'add_crm', name: 'Add to CRM', type: 'crm_sync' },
+        { id: 'send_welcome', name: 'Send Welcome Email', type: 'email' }
+      ],
+      'followup_sequence': [
+        { id: 'send_email', name: 'Send Email', type: 'email' },
+        { id: 'update_segment', name: 'Update Segment', type: 'crm_sync' },
+        { id: 'schedule_next', name: 'Schedule Next Email', type: 'scheduler' }
+      ],
+      'cart_recovery': [
+        { id: 'send_recovery', name: 'Send Recovery Email', type: 'email' },
+        { id: 'apply_discount', name: 'Apply Discount', type: 'promotion' },
+        { id: 'update_inventory', name: 'Update Inventory', type: 'inventory' }
+      ]
+    };
+    return actions[type as keyof typeof actions] || [];
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -243,9 +350,9 @@ const AutomationBuilder = () => {
           <h1 className="text-3xl font-bold">Automation Builder</h1>
           <p className="text-muted-foreground">Creează automatizări inteligente pentru toate nevoile business-ului</p>
         </div>
-        <Button onClick={() => setIsCreating(true)} className="flex items-center gap-2">
+        <Button onClick={handleCreateWorkflow} className="flex items-center gap-2">
           <Plus className="w-4 h-4" />
-          Creează Automatizare
+          Creează Workflow
         </Button>
       </div>
 
@@ -279,13 +386,204 @@ const AutomationBuilder = () => {
 
       {/* Automation Builder */}
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
+          <TabsTrigger value="workflows">Workflows</TabsTrigger>
           {categories.map((category) => (
             <TabsTrigger key={category.id} value={category.id}>
               {category.name}
             </TabsTrigger>
           ))}
         </TabsList>
+
+        {/* Workflows Tab */}
+        <TabsContent value="workflows" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5" />
+                Workflows Active
+              </CardTitle>
+              <CardDescription>Gestionează și monitorizează workflow-urile automate</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Workflow Templates */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Card className="cursor-pointer hover:shadow-lg transition-all">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Target className="w-4 h-4 text-green-500" />
+                      Lead Qualification
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Califică și segmentează lead-urile automat
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="success">Active</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('lead_qualification')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-blue-500" />
+                      Follow-up Sequence
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Secvență automată de follow-up
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="success">Active</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('followup_sequence')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <ShoppingCart className="w-4 h-4 text-purple-500" />
+                      Cart Recovery
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Recuperează coșurile abandonate
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="success">Active</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('cart_recovery')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-orange-500" />
+                      Appointment Reminders
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Reminder-uri automate pentru programări
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="success">Active</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('appointment_reminders')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-red-500" />
+                      Marketing Campaigns
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Campanii de marketing automate
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">Draft</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('marketing_campaigns')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-all">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Bot className="w-4 h-4 text-pink-500" />
+                      AI Personalization
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Personalizare AI pentru recomandări
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">Draft</Badge>
+                      <Button size="sm" variant="outline" onClick={() => handleWorkflowConfigure('ai_personalization')}>Configure</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Workflow Analytics */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5" />
+                    Workflow Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-500">12</div>
+                      <div className="text-sm text-muted-foreground">Active Workflows</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-500">1,234</div>
+                      <div className="text-sm text-muted-foreground">Executions Today</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-500">89%</div>
+                      <div className="text-sm text-muted-foreground">Success Rate</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-500">45</div>
+                      <div className="text-sm text-muted-foreground">Leads Generated</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recent Activity */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="w-5 h-5" />
+                    Recent Activity
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 p-2 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">Lead Qualification executed</div>
+                        <div className="text-xs text-muted-foreground">2 minutes ago • 3 leads processed</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">Follow-up sequence sent</div>
+                        <div className="text-xs text-muted-foreground">5 minutes ago • 12 emails sent</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">Cart recovery triggered</div>
+                        <div className="text-xs text-muted-foreground">10 minutes ago • 5 abandoned carts</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {categories.map((category) => (
           <TabsContent key={category.id} value={category.id} className="space-y-4">
@@ -407,6 +705,87 @@ const AutomationBuilder = () => {
           </TabsContent>
         ))}
       </Tabs>
+
+      {/* Workflow Configuration Modal */}
+      {selectedWorkflow && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold">
+                Configure {workflowConfig?.type === 'custom' ? 'Custom' : 'Workflow'}
+              </h2>
+              <Button variant="ghost" onClick={() => setSelectedWorkflow(null)}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            {workflowConfig && (
+              <div className="space-y-6">
+                {/* Workflow Steps */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Workflow Steps</h3>
+                  <div className="space-y-2">
+                    {workflowConfig.steps.map((step: any, index: number) => (
+                      <div key={step.id} className="flex items-center gap-3 p-3 border rounded-lg">
+                        <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-sm font-medium">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-medium">{step.name}</div>
+                          <div className="text-sm text-muted-foreground">Type: {step.type}</div>
+                        </div>
+                        <Button size="sm" variant="outline">Edit</Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Workflow Conditions */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Conditions</h3>
+                  <div className="space-y-2">
+                    {workflowConfig.conditions.map((condition: any) => (
+                      <div key={condition.id} className="flex items-center gap-3 p-3 border rounded-lg">
+                        <div className="flex-1">
+                          <div className="font-medium">{condition.name}</div>
+                          <div className="text-sm text-muted-foreground">Value: {condition.value}</div>
+                        </div>
+                        <Button size="sm" variant="outline">Edit</Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Workflow Actions */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Actions</h3>
+                  <div className="space-y-2">
+                    {workflowConfig.actions.map((action: any) => (
+                      <div key={action.id} className="flex items-center gap-3 p-3 border rounded-lg">
+                        <div className="flex-1">
+                          <div className="font-medium">{action.name}</div>
+                          <div className="text-sm text-muted-foreground">Type: {action.type}</div>
+                        </div>
+                        <Button size="sm" variant="outline">Edit</Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4 border-t">
+                  <Button onClick={() => setSelectedWorkflow(null)}>
+                    Save Configuration
+                  </Button>
+                  <Button variant="outline" onClick={() => setSelectedWorkflow(null)}>
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

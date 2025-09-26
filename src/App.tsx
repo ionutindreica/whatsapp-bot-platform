@@ -43,6 +43,7 @@ import SubscriptionTiers from "./pages/SubscriptionTiers";
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import TrainingAnalytics from "./pages/TrainingAnalytics";
 import AutomationBuilder from "./pages/AutomationBuilder";
+import WorkflowConfig from "./pages/WorkflowConfig";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -150,7 +151,7 @@ function App() {
                     
                     {/* Platform Management - Manager+ */}
                     <Route path="platforms" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'platforms', action: 'read' }}>
+                      <ProtectedRoute>
                         <Platforms />
                       </ProtectedRoute>
                     } />
@@ -164,14 +165,14 @@ function App() {
                     
                     {/* Automation Center - Manager+ */}
                     <Route path="automation" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'automations', action: 'read' }}>
+                      <ProtectedRoute>
                         <AutomationCenter />
                       </ProtectedRoute>
                     } />
                     
                     {/* CRM Light - Manager+ */}
                     <Route path="crm" element={
-                      <ProtectedRoute requiredPermission={{ resource: 'customers', action: 'read' }}>
+                      <ProtectedRoute>
                         <CRMLight />
                       </ProtectedRoute>
                     } />
@@ -311,6 +312,13 @@ function App() {
                     <Route path="automation" element={
                       <ProtectedRoute>
                         <AutomationBuilder />
+                      </ProtectedRoute>
+                    } />
+                    
+                    {/* Workflow Configuration */}
+                    <Route path="workflow/:workflowType" element={
+                      <ProtectedRoute>
+                        <WorkflowConfig />
                       </ProtectedRoute>
                     } />
                     
