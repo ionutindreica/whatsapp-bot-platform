@@ -1,0 +1,38 @@
+{
+  "categories": [
+    {
+      "name": "Product Information",
+      "documents": [
+        "product-features.md",
+        "pricing-plans.md",
+        "integration-guides.md"
+      ]
+    },
+    {
+      "name": "Support",
+      "documents": [
+        "faq.md",
+        "troubleshooting.md",
+        "contact-support.md"
+      ]
+    },
+    {
+      "name": "Business",
+      "documents": [
+        "company-info.md",
+        "policies.md",
+        "terms-of-service.md"
+      ]
+    }
+  ],
+  "embeddings": {
+    "provider": "openai",
+    "model": "text-embedding-ada-002",
+    "batchSize": 100
+  },
+  "indexing": {
+    "autoIndex": true,
+    "updateInterval": "1h",
+    "similarityThreshold": 0.7
+  }
+}

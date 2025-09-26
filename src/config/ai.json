@@ -1,0 +1,52 @@
+{
+  "ai": {
+    "orchestrator": {
+      "model": "llama-3.1-8b",
+      "temperature": 0.7,
+      "maxTokens": 2048,
+      "enableRAG": true,
+      "enableBusinessLogic": true,
+      "enableStreaming": true
+    },
+    "vectorDB": {
+      "provider": "qdrant",
+      "endpoint": "http://localhost:6333",
+      "collectionName": "bot_knowledge",
+      "dimensions": 1536
+    },
+    "embeddings": {
+      "provider": "openai",
+      "model": "text-embedding-ada-002",
+      "dimensions": 1536
+    },
+    "llama": {
+      "modelPath": "./models/llama-3.1-8b-instruct.gguf",
+      "contextLength": 8192,
+      "temperature": 0.7,
+      "topP": 0.9
+    }
+  },
+  "database": {
+    "postgres": {
+      "host": "localhost",
+      "port": 5432,
+      "database": "ai_bot",
+      "username": "ai_user",
+      "password": "ai_password"
+    },
+    "redis": {
+      "host": "localhost",
+      "port": 6379,
+      "db": 0
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "metrics": {
+      "responseTime": true,
+      "tokenUsage": true,
+      "errorRate": true,
+      "userSatisfaction": true
+    }
+  }
+}

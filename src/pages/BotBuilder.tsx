@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import QRCode from "qrcode";
+import LlamaIntegration from "@/lib/ai/llamaIntegration";
 import { 
   Bot, 
   Play, 
@@ -27,7 +28,10 @@ import {
   HelpCircle,
   ExternalLink,
   Copy,
-  Check
+  Check,
+  Cpu,
+  Database,
+  Server
 } from "lucide-react";
 
 const BotBuilder = () => {
@@ -43,6 +47,10 @@ const BotBuilder = () => {
     fallbackMessage: "I'm sorry, I didn't understand that. Can you rephrase?",
     isActive: false,
     responseTimeout: "30",
+    aiModel: "llama-3.1-8b",
+    responseLength: "medium",
+    accuracyLevel: "balanced",
+    temperature: 0.7,
     // Phone Integration
     phoneNumber: "",
     whatsappBusinessId: "",
@@ -71,6 +79,9 @@ const BotBuilder = () => {
     facebook: false,
     website: false
   });
+  const [llamaAI, setLlamaAI] = useState<LlamaIntegration | null>(null);
+  const [aiStatus, setAiStatus] = useState<'not_loaded' | 'loading' | 'ready' | 'error'>('not_loaded');
+  const [aiMetrics, setAiMetrics] = useState<any>(null);
 
   const handleConfigChange = (field, value) => {
     setBotConfig(prev => ({
@@ -85,58 +96,100 @@ const BotBuilder = () => {
     setTimeout(() => setCopiedField(""), 2000);
   };
 
+  const initializeLlama = async () => {
+    if (aiStatus === 'loading' || aiStatus === 'ready') return;
+    
+    setAiStatus('loading');
+    
+    try {
+      const llama = new LlamaIntegration({
+        model: botConfig.aiModel as any,
+        temperature: parseFloat(botConfig.temperature) || 0.7,
+        maxTokens: 2048,
+        topP: 0.9,
+        systemPrompt: `You are ${botConfig.name}, a helpful AI assistant. ${botConfig.description}. Your personality: ${botConfig.personality}.`
+      });
+      
+      const success = await llama.initialize();
+      
+      if (success) {
+        setLlamaAI(llama);
+        setAiStatus('ready');
+        
+        // Get performance metrics
+        const metrics = await llama.getPerformanceMetrics();
+        setAiMetrics(metrics);
+        
+        console.log('🦙 Llama 3 initialized successfully');
+      } else {
+        setAiStatus('error');
+      }
+    } catch (error) {
+      console.error('❌ Failed to initialize Llama 3:', error);
+      setAiStatus('error');
+    }
+  };
+
   const handleTestBot = async () => {
     if (!botConfig.testMessage.trim()) return;
     
     setBotConfig(prev => ({ ...prev, isTesting: true }));
     
     try {
-      // Try RAG API first
-      const ragResponse = await fetch('http://localhost:5000/api/rag/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: botConfig.testMessage })
-      });
+      let response, method, confidence;
       
-      if (ragResponse.ok) {
-        const ragData = await ragResponse.json();
-        const testId = Date.now().toString();
-        setCurrentConversationId(testId);
-        setShowFeedback(true);
-        
-        setBotConfig(prev => ({
-          ...prev,
-          testResponse: ragData.response,
-          isTesting: false,
-          testHistory: [
-            { id: testId, message: prev.testMessage, response: ragData.response, timestamp: new Date().toLocaleTimeString(), method: ragData.method, confidence: ragData.confidence },
-            ...prev.testHistory.slice(0, 4)
-          ]
-        }));
-        return;
-      }
-      
-      // Fallback to simple bot
-      const response = await fetch('http://localhost:5000/api/bot/test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: botConfig.testMessage })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setBotConfig(prev => ({
-          ...prev,
-          testResponse: data.response,
-          isTesting: false,
-          testHistory: [
-            { id: Date.now(), message: prev.testMessage, response: data.response, timestamp: new Date().toLocaleTimeString(), method: 'simple', confidence: data.confidence || 0.8 },
-            ...prev.testHistory.slice(0, 4)
-          ]
-        }));
+      // Use Llama 3 if available, otherwise fallback to RAG
+      if (llamaAI && aiStatus === 'ready') {
+        console.log('🦙 Using Llama 3 for response...');
+        const llamaResponse = await llamaAI.generateResponse(botConfig.testMessage);
+        response = llamaResponse.text;
+        method = 'llama-3';
+        confidence = 0.9; // Llama 3 has high confidence
       } else {
-        throw new Error('Failed to get response');
+        console.log('🔄 Using RAG API fallback...');
+        const ragResponse = await fetch('http://localhost:5000/api/rag/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: botConfig.testMessage })
+        });
+        
+        if (ragResponse.ok) {
+          const ragData = await ragResponse.json();
+          response = ragData.response;
+          method = ragData.method || 'rag';
+          confidence = ragData.confidence || 0.7;
+        } else {
+          // Fallback to simple bot
+          const simpleResponse = await fetch('http://localhost:5000/api/bot/test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: botConfig.testMessage })
+          });
+          
+          if (simpleResponse.ok) {
+            const simpleData = await simpleResponse.json();
+            response = simpleData.response;
+            method = 'simple-bot';
+            confidence = 0.8;
+          } else {
+            throw new Error('All APIs failed');
+          }
+        }
       }
+      
+      const testId = Date.now().toString();
+      setCurrentConversationId(testId);
+      setShowFeedback(true);
+      
+      setBotConfig(prev => ({
+        ...prev,
+        testResponse: response,
+        isTesting: false,
+        testHistory: [
+          { id: testId, message: prev.testMessage, response: response, timestamp: new Date().toLocaleTimeString(), method: method, confidence: confidence },
+          ...prev.testHistory.slice(0, 4)
+        ]
+      }));
     } catch (error) {
       setBotConfig(prev => ({
         ...prev,
@@ -712,15 +765,33 @@ const BotBuilder = () => {
 
                           <div className="space-y-2">
                             <label className="text-sm font-medium">AI Model</label>
-                            <Select defaultValue="gpt-3.5-turbo">
+                            <Select value={botConfig.aiModel} onValueChange={(value) => handleConfigChange('aiModel', value)}>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select AI model" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-                                <SelectItem value="gpt-4">GPT-4</SelectItem>
-                                <SelectItem value="claude-3">Claude 3</SelectItem>
-                                <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
+                                {/* Open Source Models */}
+                                <SelectItem value="llama-3.1-8b">🦙 Llama 3.1 8B (Open Source)</SelectItem>
+                                <SelectItem value="llama-3.1-70b">🦙 Llama 3.1 70B (Open Source)</SelectItem>
+                                <SelectItem value="mistral-7b">🌪️ Mistral 7B (Open Source)</SelectItem>
+                                <SelectItem value="mistral-nemo">🌪️ Mistral Nemo (Open Source)</SelectItem>
+                                <SelectItem value="codellama-13b">🦙 CodeLlama 13B (Open Source)</SelectItem>
+                                <SelectItem value="phi-3-mini">Φ Phi-3 Mini (Open Source)</SelectItem>
+                                <SelectItem value="phi-3-medium">Φ Phi-3 Medium (Open Source)</SelectItem>
+                                <SelectItem value="qwen-2.5-7b">Qwen 2.5 7B (Open Source)</SelectItem>
+                                <SelectItem value="qwen-2.5-14b">Qwen 2.5 14B (Open Source)</SelectItem>
+                                <SelectItem value="gemma-2-9b">💎 Gemma 2 9B (Open Source)</SelectItem>
+                                <SelectItem value="gemma-2-27b">💎 Gemma 2 27B (Open Source)</SelectItem>
+                                
+                                {/* Commercial Models */}
+                                <SelectItem value="gpt-3.5-turbo">🤖 GPT-3.5 Turbo (OpenAI)</SelectItem>
+                                <SelectItem value="gpt-4">🤖 GPT-4 (OpenAI)</SelectItem>
+                                <SelectItem value="gpt-4-turbo">🤖 GPT-4 Turbo (OpenAI)</SelectItem>
+                                <SelectItem value="claude-3-haiku">🧠 Claude 3 Haiku (Anthropic)</SelectItem>
+                                <SelectItem value="claude-3-sonnet">🧠 Claude 3 Sonnet (Anthropic)</SelectItem>
+                                <SelectItem value="claude-3-opus">🧠 Claude 3 Opus (Anthropic)</SelectItem>
+                                <SelectItem value="gemini-pro">💎 Gemini Pro (Google)</SelectItem>
+                                <SelectItem value="gemini-1.5-pro">💎 Gemini 1.5 Pro (Google)</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
@@ -728,7 +799,7 @@ const BotBuilder = () => {
 
                         <div className="space-y-4">
                           <div className="space-y-2">
-                            <label className="text-sm font-medium">Advanced Settings</label>
+                            <label className="text-sm font-medium">AI Optimization</label>
                             <div className="space-y-3">
                               <div className="flex items-center justify-between">
                                 <span className="text-sm">Enable Context Memory</span>
@@ -746,12 +817,20 @@ const BotBuilder = () => {
                                 <span className="text-sm">Enable Multi-language</span>
                                 <input type="checkbox" className="w-4 h-4" />
                               </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm">Enable RAG (Retrieval-Augmented Generation)</span>
+                                <input type="checkbox" className="w-4 h-4" defaultChecked />
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm">Enable Fine-tuning</span>
+                                <input type="checkbox" className="w-4 h-4" />
+                              </div>
                             </div>
                           </div>
 
                           <div className="space-y-2">
                             <label className="text-sm font-medium">Response Length</label>
-                            <Select defaultValue="medium">
+                            <Select value={botConfig.responseLength} onValueChange={(value) => handleConfigChange('responseLength', value)}>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select length" />
                               </SelectTrigger>
@@ -761,6 +840,41 @@ const BotBuilder = () => {
                                 <SelectItem value="long">Long (4+ sentences)</SelectItem>
                               </SelectContent>
                             </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Accuracy Level</label>
+                            <Select value={botConfig.accuracyLevel} onValueChange={(value) => handleConfigChange('accuracyLevel', value)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select accuracy level" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="fast">⚡ Fast (Lower accuracy, faster responses)</SelectItem>
+                                <SelectItem value="balanced">⚖️ Balanced (Good accuracy and speed)</SelectItem>
+                                <SelectItem value="accurate">🎯 Accurate (Higher accuracy, slower responses)</SelectItem>
+                                <SelectItem value="maximum">🏆 Maximum (Best accuracy, slowest responses)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Temperature (Creativity)</label>
+                            <div className="space-y-2">
+                              <input 
+                                type="range" 
+                                min="0" 
+                                max="1" 
+                                step="0.1" 
+                                value={botConfig.temperature || 0.7}
+                                onChange={(e) => handleConfigChange('temperature', e.target.value)}
+                                className="w-full"
+                              />
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>Conservative (0.0)</span>
+                                <span>Current: {botConfig.temperature || 0.7}</span>
+                                <span>Creative (1.0)</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
