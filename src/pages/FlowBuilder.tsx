@@ -238,7 +238,31 @@ const FlowBuilder: React.FC = () => {
     <TooltipProvider>
       <AdminPageLayout 
         title="Flow Builder" 
-        description="Create and manage automated conversation flows"
+        description={
+          <div className="flex items-center space-x-2">
+            <span>Create and manage automated conversation flows</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 hover:text-gray-800 transition-colors">
+                  <span className="text-xs font-bold">?</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent 
+                className="max-w-sm bg-gray-900 text-white border-gray-700" 
+                side="bottom"
+                align="start"
+              >
+                <div className="space-y-2">
+                  <p className="font-medium text-white">What is a Flow?</p>
+                  <p className="text-sm text-gray-300">
+                    A Flow contains the messages, actions, and transitions that make up an automated conversation for your bot. 
+                    It defines how your bot responds to user inputs and guides users through your desired conversation path.
+                  </p>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        }
       >
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
@@ -308,8 +332,8 @@ const FlowBuilder: React.FC = () => {
                           <Copy className="w-4 h-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Duplicate this flow</p>
+                      <TooltipContent className="bg-gray-900 text-white border-gray-700">
+                        <p className="text-white">Duplicate this flow</p>
                       </TooltipContent>
                     </Tooltip>
                     <Tooltip>
@@ -318,8 +342,8 @@ const FlowBuilder: React.FC = () => {
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Delete this flow</p>
+                      <TooltipContent className="bg-gray-900 text-white border-gray-700">
+                        <p className="text-white">Delete this flow</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -345,8 +369,8 @@ const FlowBuilder: React.FC = () => {
                         Save
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Save your flow changes</p>
+                    <TooltipContent className="bg-gray-900 text-white border-gray-700">
+                      <p className="text-white">Save your flow changes</p>
                     </TooltipContent>
                   </Tooltip>
                   <Tooltip>
@@ -356,8 +380,8 @@ const FlowBuilder: React.FC = () => {
                         Test Flow
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Test your flow with sample data</p>
+                    <TooltipContent className="bg-gray-900 text-white border-gray-700">
+                      <p className="text-white">Test your flow with sample data</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -430,8 +454,16 @@ const FlowBuilder: React.FC = () => {
                             <span className="text-xs text-muted-foreground text-center">{nodeType.description}</span>
                           </div>
                         </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Drag to canvas to add {nodeType.title.toLowerCase()}</p>
+                        <TooltipContent 
+                          className="max-w-xs bg-gray-900 text-white border-gray-700" 
+                          side="top"
+                          align="center"
+                        >
+                          <div className="space-y-2">
+                            <p className="font-medium text-white">{nodeType.title}</p>
+                            <p className="text-sm text-gray-300">{nodeType.description}</p>
+                            <p className="text-xs text-blue-400">Drag to canvas to add this node</p>
+                          </div>
                         </TooltipContent>
                       </Tooltip>
                     ))}
@@ -525,8 +557,8 @@ const FlowBuilder: React.FC = () => {
                         Use Template
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Import this template into your flows</p>
+                    <TooltipContent className="bg-gray-900 text-white border-gray-700">
+                      <p className="text-white">Import this template into your flows</p>
                     </TooltipContent>
                   </Tooltip>
                 </CardContent>
