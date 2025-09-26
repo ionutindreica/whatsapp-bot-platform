@@ -68,24 +68,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   console.log('🔍 ProtectedRoute: Checking RBAC props:', { rbacRole, rbacMinRole, rbacPermissions, rbacFeatures });
   console.log('🔍 ProtectedRoute: User object:', user);
   
-  // Root admin has access to everything
+  // Root Owner has access to everything - check this first
   if (user.role === 'ROOT_OWNER') {
     console.log('👑 Root Owner detected - granting full access');
     return <>{children}</>;
-  }
-  
-  // Check if user is trying to access root admin panel
-  if (location.pathname === '/dashboard/root' && user.role !== 'ROOT_OWNER') {
-    console.log('🚫 Access denied: Root admin privileges required');
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
-          <p className="text-gray-600 mb-4">Root admin privileges required.</p>
-          <a href="/login" className="text-blue-600 hover:underline">Go to Login</a>
-        </div>
-      </div>
-    );
   }
   
   // Super Admin also has access to admin panels
@@ -94,14 +80,24 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <>{children}</>;
   }
   
-  // Root Owner has access to everything
-  if (user.role === 'ROOT_OWNER' && (rbacMinRole === 'ROOT_OWNER' || rbacRole === 'ROOT_OWNER')) {
-    console.log('👑 Root Owner detected - granting full access');
-    return <>{children}</>;
+  // Check if user is trying to access root admin panel without proper role
+  if (location.pathname === '/dashboard/root' && user.role !== 'ROOT_OWNER') {
+    console.log('🚫 Access denied: Root admin privileges required');
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
+          <p className="text-gray-600 mb-4">Root admin privileges required.</p>
+          <p className="text-sm text-gray-500 mb-4">Current role: {user.role}</p>
+          <a href="/login" className="text-blue-600 hover:underline">Go to Login</a>
+        </div>
+      </div>
+    );
   }
 
   // Use new RBAC system if requested or if RBAC props are provided
   if (useRBAC || rbacPermissions || rbacFeatures || rbacRole || rbacMinRole) {
+    console.log('🔍 Using RBAC system for authorization');
     return (
       <RBACRoute
         requiredPermissions={rbacPermissions}
