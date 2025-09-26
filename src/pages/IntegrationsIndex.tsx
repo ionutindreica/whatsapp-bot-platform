@@ -295,7 +295,6 @@ const IntegrationsIndex = () => {
             </div>
           </CardContent>
         </Card>
-        </div>
       </div>
     </div>
   );
