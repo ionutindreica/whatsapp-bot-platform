@@ -1,0 +1,24 @@
+{
+  "name": "ai-saas-llm-server",
+  "version": "1.0.0",
+  "description": "LLM Server with llama.cpp integration",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "download-model": "node scripts/download-model.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.0",
+    "langchain": "^0.1.0",
+    "qdrant-client": "^1.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

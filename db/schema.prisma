@@ -1,0 +1,84 @@
+// Minimal MVP Database Schema
+// PostgreSQL schema for AI SaaS platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  plan          String   @default("free") // free, pro, enterprise
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  bots          Bot[]
+  messages      Message[]
+
+  @@map("users")
+}
+
+model Bot {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    Message[]
+  knowledge   KnowledgeBase[]
+
+  @@map("bots")
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  botId       String
+  userId      String
+  userMessage String
+  aiResponse  String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  bot         Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model KnowledgeBase {
+  id              String   @id @default(cuid())
+  botId           String
+  fileName        String
+  fileUrl         String
+  fileType        String   // pdf, txt, docx
+  content         String?   // extracted text
+  embeddingVector Float[]? // vector for semantic search
+  createdAt       DateTime @default(now())
+
+  // Relations
+  bot             Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@map("knowledge_base")
+}
+
+// Optional: Cache for embeddings
+model EmbeddingCache {
+  id        String   @id @default(cuid())
+  content   String   @unique
+  embedding Float[]
+  createdAt DateTime @default(now())
+
+  @@map("embedding_cache")
+}
