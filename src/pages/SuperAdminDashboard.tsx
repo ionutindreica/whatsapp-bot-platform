@@ -64,8 +64,8 @@ const SuperAdminDashboard = () => {
     try {
       setError('');
       
-      // Check if user is super admin
-      if (!user || user.role !== 'SUPER_ADMIN') {
+      // Check if user is super admin or root owner
+      if (!user || (user.role !== 'SUPER_ADMIN' && user.role !== 'ROOT_OWNER')) {
         setError('Access denied. Super admin privileges required.');
         setLoading(false);
         return;
