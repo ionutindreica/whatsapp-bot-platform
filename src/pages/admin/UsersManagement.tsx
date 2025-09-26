@@ -304,7 +304,13 @@ const UsersManagement: React.FC = () => {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Admins</p>
                   <p className="text-2xl font-bold text-foreground">
-                    {users.filter(u => ['ROOT_OWNER', 'SUPER_ADMIN', 'ADMIN'].includes(u.role)).length}
+                    {(() => {
+                      const adminUsers = users.filter(u => ['ROOT_OWNER', 'SUPER_ADMIN', 'ADMIN'].includes(u.role));
+                      console.log('🔍 All users:', users);
+                      console.log('👑 Admin users:', adminUsers);
+                      console.log('📊 Admin count:', adminUsers.length);
+                      return adminUsers.length;
+                    })()}
                   </p>
                 </div>
               </div>

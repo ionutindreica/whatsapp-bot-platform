@@ -75,7 +75,7 @@ const SuperAdminDashboard = () => {
       // Load dashboard stats from API
       const statsResponse = await fetch('http://localhost:5000/api/admin/dashboard', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -90,7 +90,7 @@ const SuperAdminDashboard = () => {
       // Load users from API
       const usersResponse = await fetch('http://localhost:5000/api/admin/users', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -100,6 +100,8 @@ const SuperAdminDashboard = () => {
       }
 
       const usersData = await usersResponse.json();
+      console.log('📊 SuperAdminDashboard - Users data:', usersData);
+      console.log('👑 Admin count in dashboard:', usersData.users?.filter(u => ['ROOT_OWNER', 'SUPER_ADMIN', 'ADMIN'].includes(u.role)).length || 0);
       setUsers(usersData.users);
 
     } catch (error) {
