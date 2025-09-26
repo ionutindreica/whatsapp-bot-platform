@@ -767,7 +767,6 @@ const PlatformSettings: React.FC = () => {
             )}
           </Button>
         </div>
-      </div>
     </AdminPageLayout>
   );
 };
