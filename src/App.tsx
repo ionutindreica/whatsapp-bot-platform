@@ -341,6 +341,7 @@ function App() {
                     } />
                     
                     {/* Settings - All authenticated users */}
+                    <Route path="settings" element={<Navigate to="/dashboard/settings/profile" replace />} />
                     <Route path="settings/phone" element={<SettingsPhone />} />
                     <Route path="settings/account" element={<SettingsAccount />} />
                     <Route path="settings/profile" element={<SettingsProfile />} />
