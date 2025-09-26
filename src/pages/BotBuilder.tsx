@@ -200,16 +200,16 @@ const BotBuilder = () => {
 
           {/* Main Content */}
           <div className="w-full">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="configuration">Basic Setup</TabsTrigger>
-                  <TabsTrigger value="design">Appearance</TabsTrigger>
-                  <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
-                  <TabsTrigger value="integration">Connections</TabsTrigger>
-                </TabsList>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="configuration">Basic Setup</TabsTrigger>
+                <TabsTrigger value="design">Appearance</TabsTrigger>
+                <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
+                <TabsTrigger value="integration">Connections</TabsTrigger>
+              </TabsList>
 
-                {/* Configuration Tab */}
-                <TabsContent value="configuration" className="space-y-6">
+              {/* Configuration Tab */}
+              <TabsContent value="configuration" className="space-y-6">
                   <Card>
                     <CardHeader>
                       <CardTitle>Basic Configuration</CardTitle>
@@ -407,10 +407,10 @@ const BotBuilder = () => {
                       )}
                     </CardContent>
                   </Card>
-                </TabsContent>
+              </TabsContent>
 
                 {/* Design Tab */}
-                <TabsContent value="design" className="space-y-6">
+              <TabsContent value="design" className="space-y-6">
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -498,10 +498,10 @@ const BotBuilder = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </TabsContent>
+              </TabsContent>
 
                 {/* Knowledge Tab */}
-                <TabsContent value="knowledge" className="space-y-6">
+              <TabsContent value="knowledge" className="space-y-6">
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -684,11 +684,11 @@ const BotBuilder = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </TabsContent>
+              </TabsContent>
 
 
                 {/* Integration Tab */}
-                <TabsContent value="integration" className="space-y-6">
+              <TabsContent value="integration" className="space-y-6">
                   {/* Channel Management */}
                   <Card>
                     <CardHeader>
@@ -1226,9 +1226,8 @@ const BotBuilder = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </TabsContent>
-              </Tabs>
-            </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>
