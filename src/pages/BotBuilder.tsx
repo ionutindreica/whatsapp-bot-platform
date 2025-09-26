@@ -199,76 +199,7 @@ const BotBuilder = () => {
           </div>
 
           {/* Main Content */}
-          <div className="grid lg:grid-cols-4 gap-6">
-            {/* Sidebar Navigation */}
-            <div className="lg:col-span-1">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Bot Configuration</CardTitle>
-                  <CardDescription>Configure your AI bot settings</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {navItems.map((item) => (
-                    <Button
-                      key={item.id}
-                      variant={activeTab === item.title.toLowerCase() ? "default" : "ghost"}
-                      className="w-full justify-start"
-                      onClick={() => setActiveTab(item.title.toLowerCase())}
-                    >
-                      <item.icon className="mr-2 w-4 h-4" />
-                      {item.title}
-                    </Button>
-                  ))}
-                </CardContent>
-              </Card>
-
-              {/* Quick Stats */}
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle className="text-lg">Quick Stats</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Status</span>
-                    <Badge className={botConfig.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
-                      {botConfig.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Language</span>
-                    <span className="text-sm font-medium">{botConfig.language}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Personality</span>
-                    <span className="text-sm font-medium capitalize">{botConfig.personality}</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Actions */}
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle className="text-lg">Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <Button variant="outline" className="w-full justify-start">
-                    <Download className="mr-2 w-4 h-4" />
-                    Export Configuration
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Upload className="mr-2 w-4 h-4" />
-                    Import Configuration
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Settings className="mr-2 w-4 h-4" />
-                    Advanced Settings
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Main Configuration Panel */}
-            <div className="lg:col-span-3">
+          <div className="w-full">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
                 <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="configuration">Basic Setup</TabsTrigger>
